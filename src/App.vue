@@ -1,7 +1,12 @@
 <script>
 import { ref, watch } from "vue";
+import IgnitionUsersForm from "./components/IgnitionUsersForm.vue";
 
 export default {
+  components: {
+    IgnitionUsersForm,
+  },
+
   setup() {
     const formData = ref({});
 
@@ -40,19 +45,20 @@ export default {
     };
 
     const toIgnitionConfig = (formData) => {
-      return {
+      let json = {
         ignition: { version: "3.2.0" },
-        passwd: {
-          users: [
-            {
-              name: formData.user_name,
-              password: formData.user_passwd_hashed,
-            },
-          ],
-        },
-
         "debug:form": formData,
       };
+
+      var keys = Object.keys(formData)
+        .filter((x) => x.includes("user_name"))
+        .map((key) => key.replace("user_name_", ""))
+        .forEach((id) => {
+          json.passwd = ('passwd' in json) ? json.passwd.users : {users: []};
+          json.passwd.users.push({"name": formData['user_name_' + id], "passwordHash": formData['user_passwd_' + id]});
+        });
+
+      return json;
     };
 
     return {
@@ -85,8 +91,11 @@ async function sha256(message) {
   <div class="container">
     <div class="sample-input">
       <h1>Ignition Config Generator</h1>
+
       <FormKit type="group" v-model="formData">
-        <FormKit
+        <IgnitionUsersForm :unique="Date.now()"></IgnitionUsersForm>
+
+        <!-- <FormKit
           name="user_name"
           label="OS Username"
           placeholder="write your os username here"
@@ -102,7 +111,7 @@ async function sha256(message) {
           validation="required"
           validation-behavior="live"
           help="Your password is never sent over the internet, everything is local."
-        />
+        /> -->
         <FormKit
           name="likes_microOS"
           label="Opinion"
