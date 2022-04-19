@@ -1,0 +1,18 @@
+{
+  "name": "formkit-vite-starter-project",
+  "version": "1.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@formkit/themes": "^1.0.0-beta.6",
+    "@formkit/vue": "^1.0.0-beta.6",
+    "vue": "^3.2.16"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.9.3",
+    "vite": "^2.6.4"
+  }
+}
