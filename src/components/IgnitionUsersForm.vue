@@ -4,9 +4,10 @@
       :name="'user_name_' + unique"
       label="OS Username"
       placeholder="write your os username here"
-      validation="required"
+      validation="optional"
       validation-behavior="live"
-      help="Users can be added to an OS with the passwd.users key."
+      value="root"
+      help="Users can be added to an OS with the passwd.users key. If the user doesn't exist, it will be created."
     />
 
     <FormKit
@@ -14,7 +15,7 @@
       label="OS Password"
       placeholder="write the corresponding password here"
       type="password"
-      validation="required"
+      validation="optional"
       validation-behavior="live"
       help="Your password is never sent over the internet, everything is local."
     />

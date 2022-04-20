@@ -11,11 +11,17 @@ export default {
     const formData = ref({});
 
     watch(formData, async (newData, oldData) => {
-      if (newData.user_passwd !== undefined) {
-        sha256(newData.user_passwd).then(
-          (hash) => (newData.user_passwd_hashed = hash)
-        );
-      }
+      Object.keys(newData)
+        .filter((x) => x.includes("user_passwd"))
+        .map((key) => key.replace("user_passwd_", ""))
+        .forEach((id) => {
+          console.log("id: " + id);
+          sha256(formData["user_passwd_" + id]).then(
+            (hash) => (formData.user_passwd_hashedasd = hash)
+          );
+        });
+
+        formData.test = "asd";
     });
 
     const saveTemplateAsFile = (filename, dataObjToWrite) => {
@@ -45,17 +51,20 @@ export default {
     };
 
     const toIgnitionConfig = (formData) => {
-      let json = {
+      let json = ref({
         ignition: { version: "3.2.0" },
         "debug:form": formData,
-      };
+      });
 
-      var keys = Object.keys(formData)
+      Object.keys(formData)
         .filter((x) => x.includes("user_name"))
         .map((key) => key.replace("user_name_", ""))
         .forEach((id) => {
-          json.passwd = ('passwd' in json) ? json.passwd.users : {users: []};
-          json.passwd.users.push({"name": formData['user_name_' + id], "passwordHash": formData['user_passwd_' + id]});
+          json.passwd = "passwd" in json ? json.passwd.users : { users: [] };
+          json.passwd.users.push({
+            name: formData["user_name_" + id],
+            passwordHash: formData["user_passwd_" + id],
+          });
         });
 
       return json;
@@ -95,23 +104,6 @@ async function sha256(message) {
       <FormKit type="group" v-model="formData">
         <IgnitionUsersForm :unique="Date.now()"></IgnitionUsersForm>
 
-        <!-- <FormKit
-          name="user_name"
-          label="OS Username"
-          placeholder="write your os username here"
-          validation="required"
-          validation-behavior="live"
-          help="Users can be added to an OS with the passwd.users key."
-        />
-        <FormKit
-          name="user_passwd"
-          label="OS Password"
-          placeholder="write the corresponding password here"
-          type="password"
-          validation="required"
-          validation-behavior="live"
-          help="Your password is never sent over the internet, everything is local."
-        /> -->
         <FormKit
           name="likes_microOS"
           label="Opinion"
