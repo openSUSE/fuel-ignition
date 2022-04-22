@@ -1,10 +1,10 @@
 <template>
-  <div class="users mt-5">
+  <div class="users">
     <FormKit
       :name="'user_name_' + unique"
-      label="OS Username"
+      label="Username"
       placeholder="write your os username here"
-      validation="optional"
+      validation="required"
       validation-behavior="live"
       value="root"
       help="A new user will be created, if it does not exist."
@@ -12,7 +12,7 @@
 
     <FormKit
       :name="'user_passwd_' + unique"
-      label="OS Password"
+      label="Password"
       placeholder="write the corresponding password here"
       type="password"
       validation="optional"
@@ -22,7 +22,7 @@
 
     <FormKit
       :name="'user_ssh_keys_' + unique"
-      label="SSH Keys"
+      label="SSH Public Keys"
       placeholder="write the corresponding ssh keys here, separated by commas without a space"
       type="textarea"
       validation="optional"
@@ -52,14 +52,14 @@ export default {
         .forEach((id) => {
           json.passwd = "passwd" in json ? json.passwd : { users: [] };
 
-          console.log(json.passwd);
-
           if (json.passwd.users !== undefined) {
             console.log();
+            const publicKeys = formData["user_ssh_keys_" + id];
+            const publicKeysArray = (publicKeys !== undefined && publicKeys.includes(',')) ? publicKeys.split(',') : [publicKeys];
             json.passwd.users.push({
               name: formData["user_name_" + id],
               passwordHash: formData["user_passwd_hashed_" + id],
-              sshAuthorizedKeys: formData["user_ssh_keys_" + id],
+              sshAuthorizedKeys: publicKeys === undefined ? publicKeys : publicKeysArray,
             });
           }
         });
@@ -72,7 +72,11 @@ export default {
         .filter((x) => x.includes("user_passwd") && !x.includes("hashed"))
         .map((key) => key.replace("user_passwd_", ""))
         .forEach((id) => {
-          sha256(newData["user_passwd_" + id]).then(
+          const passwd = newData["user_passwd_" + id];
+          if(passwd === "" || passwd === undefined) {
+            return;
+          }
+          sha256(passwd).then(
             (hash) => (newData["user_passwd_hashed_" + id] = hash)
           );
         });

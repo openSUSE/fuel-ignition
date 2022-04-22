@@ -1,3 +1,47 @@
+<template>
+  <div class="container-fluid">
+    <div class="justify-content-center mx-auto center">
+      <h1>Ignition Config Generator</h1>
+
+      <FormKit type="group" v-model="formData">
+        <ExpandableComponent title="OS Users" :displayAtLeastOne="false">
+          <IgnitionUsersForm></IgnitionUsersForm>
+        </ExpandableComponent>
+        <FormKit
+          name="likes_microOS"
+          label="Opinion"
+          help="How excited are you about MicroOS?"
+          type="radio"
+          value="A lot"
+          :options="['A little', 'A lot']"
+        />
+      </FormKit>
+
+      <section>
+        <h2>config.ign</h2>
+        <pre class="form-data">{{ toIgnitionConfig(formData) }}</pre>
+
+        <button class="btn btn-primary mb-4" @click="downloadConfigIgn">
+          Download
+        </button>
+
+        <FormKit
+          v-model="formData.debug"
+          type="checkbox"
+          label="Debug"
+          name="debug"
+        />
+      </section>
+
+      <h2 class="mt-4">Convert to ISO</h2>
+
+      <pre class="form-data">
+# mkisofs -o ignition.iso -V ignition config.ign</pre
+      >
+    </div>
+  </div>
+</template>
+
 <script setup>
 import { ref, watch } from "vue";
 import Utils from "./utils/utils.js";
@@ -6,7 +50,7 @@ import IgnitionUsersForm from "./components/forms/IgnitionUsersForm.vue";
 
 const formComponents = [IgnitionUsersForm];
 
-const formData = ref({});
+const formData = ref({ debug: true });
 
 // setup optional Watchers if a component needs it
 formComponents.forEach((comp) =>
@@ -26,45 +70,10 @@ const toIgnitionConfig = (formData) => {
     .filter((comp) => comp.methods.hasOwnProperty("encodeToIgn"))
     .forEach((comp) => comp.methods.encodeToIgn(json, formData));
 
-  json["debug:form"] = formData;
+  if (formData.debug) {
+    json["debug:form"] = formData;
+  }
 
   return json;
 };
 </script>
-
-<template>
-  <div class="container-fluid">
-    <div class="justify-content-center mx-auto center">
-      <h1>Ignition Config Generator</h1>
-
-      <FormKit type="group" v-model="formData">
-        <ExpandableComponent>
-          <IgnitionUsersForm></IgnitionUsersForm>
-        </ExpandableComponent>
-        <FormKit
-          name="likes_microOS"
-          label="Opinion"
-          help="How excited are you about MicroOS?"
-          type="radio"
-          value="A lot"
-          :options="['A little', 'A lot']"
-        />
-      </FormKit>
-
-      <section>
-        <h2>config.ign</h2>
-        <pre class="form-data">{{ toIgnitionConfig(formData) }}</pre>
-
-        <button class="btn btn-primary" @click="downloadConfigIgn">
-          Download
-        </button>
-      </section>
-
-      <h2 class="mt-4">Convert to ISO</h2>
-
-      <pre class="form-data">
-# mkisofs -o ignition.iso -V ignition config.ign</pre
-      >
-    </div>
-  </div>
-</template>
