@@ -1,109 +1,46 @@
-<script>
+<script setup>
 import { ref, watch } from "vue";
-import IgnitionUsersForm from "./components/IgnitionUsersForm.vue";
+import Utils from "./utils/utils.js";
+import ExpandableComponent from "./components/ExpandableComponent.vue";
+import IgnitionUsersForm from "./components/forms/IgnitionUsersForm.vue";
 
-export default {
-  components: {
-    IgnitionUsersForm,
-  },
+const formComponents = [IgnitionUsersForm];
 
-  setup() {
-    const formData = ref({});
+const formData = ref({});
 
-    watch(formData, async (newData, oldData) => {
-      Object.keys(newData)
-        .filter((x) => x.includes("user_passwd"))
-        .map((key) => key.replace("user_passwd_", ""))
-        .forEach((id) => {
-          console.log("id: " + id);
-          sha256(formData["user_passwd_" + id]).then(
-            (hash) => (formData.user_passwd_hashedasd = hash)
-          );
-        });
+// setup optional Watchers if a component needs it
+formComponents.forEach((comp) =>
+  Utils.setupFormComponentWatcher(comp, watch, formData)
+);
 
-        formData.test = "asd";
-    });
-
-    const saveTemplateAsFile = (filename, dataObjToWrite) => {
-      const blob = new Blob([JSON.stringify(dataObjToWrite)], {
-        type: "text/json",
-      });
-      const link = document.createElement("a");
-
-      link.download = filename;
-      link.href = window.URL.createObjectURL(blob);
-      link.dataset.downloadurl = ["text/json", link.download, link.href].join(
-        ":"
-      );
-
-      const evt = new MouseEvent("click", {
-        view: window,
-        bubbles: true,
-        cancelable: true,
-      });
-
-      link.dispatchEvent(evt);
-      link.remove();
-    };
-
-    const downloadConfigIgn = () => {
-      saveTemplateAsFile("config.ign", toIgnitionConfig(formData));
-    };
-
-    const toIgnitionConfig = (formData) => {
-      let json = ref({
-        ignition: { version: "3.2.0" },
-        "debug:form": formData,
-      });
-
-      Object.keys(formData)
-        .filter((x) => x.includes("user_name"))
-        .map((key) => key.replace("user_name_", ""))
-        .forEach((id) => {
-          json.passwd = "passwd" in json ? json.passwd.users : { users: [] };
-          json.passwd.users.push({
-            name: formData["user_name_" + id],
-            passwordHash: formData["user_passwd_" + id],
-          });
-        });
-
-      return json;
-    };
-
-    return {
-      formData,
-      toIgnitionConfig,
-      downloadConfigIgn,
-    };
-  },
+const downloadConfigIgn = () => {
+  Utils.saveTemplateAsFile("config.ign", toIgnitionConfig(formData));
 };
 
-async function sha256(message) {
-  // encode as UTF-8
-  const msgBuffer = new TextEncoder().encode(message);
+const toIgnitionConfig = (formData) => {
+  let json = {
+    ignition: { version: "3.2.0" },
+  };
 
-  // hash the message
-  const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+  formComponents
+    .filter((comp) => comp.methods.hasOwnProperty("encodeToIgn"))
+    .forEach((comp) => comp.methods.encodeToIgn(json, formData));
 
-  // convert ArrayBuffer to Array
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  json["debug:form"] = formData;
 
-  // convert bytes to hex string
-  const hashHex = hashArray
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-  return hashHex;
-}
+  return json;
+};
 </script>
 
 <template>
-  <div class="container">
-    <div class="sample-input">
+  <div class="container-fluid">
+    <div class="justify-content-center mx-auto center">
       <h1>Ignition Config Generator</h1>
 
       <FormKit type="group" v-model="formData">
-        <IgnitionUsersForm :unique="Date.now()"></IgnitionUsersForm>
-
+        <ExpandableComponent>
+          <IgnitionUsersForm></IgnitionUsersForm>
+        </ExpandableComponent>
         <FormKit
           name="likes_microOS"
           label="Opinion"
@@ -114,57 +51,20 @@ async function sha256(message) {
         />
       </FormKit>
 
-      <h2>config.ign</h2>
-      <pre class="form-data">{{ toIgnitionConfig(formData) }}</pre>
+      <section>
+        <h2>config.ign</h2>
+        <pre class="form-data">{{ toIgnitionConfig(formData) }}</pre>
 
-      <button @click="downloadConfigIgn">Download</button>
+        <button class="btn btn-primary" @click="downloadConfigIgn">
+          Download
+        </button>
+      </section>
 
-      <h2>Turn to ISO</h2>
+      <h2 class="mt-4">Convert to ISO</h2>
+
       <pre class="form-data">
 # mkisofs -o ignition.iso -V ignition config.ign</pre
       >
     </div>
   </div>
 </template>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
-.container {
-  margin: auto;
-  display: flex;
-  justify-content: center;
-}
-
-.side-by-side {
-  display: flex;
-  align-items: flex-start;
-}
-
-pre.range-output {
-  background: #eee;
-  border-radius: 0.5em;
-  text-align: center;
-  margin-left: 1em;
-  margin-top: 1.5em;
-  font-weight: bold;
-  padding: 0.5em;
-  line-height: 1;
-  width: 1.5em;
-}
-
-pre.form-data {
-  box-sizing: border-box;
-  background: #eee;
-  border: 1px solid #ccc;
-  width: 100%;
-  padding: 1em;
-  border-radius: 0.5em;
-}
-</style>
