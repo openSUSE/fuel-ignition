@@ -7,6 +7,7 @@
         <ExpandableComponent title="OS Users" :displayAtLeastOne="false">
           <IgnitionUsersForm></IgnitionUsersForm>
         </ExpandableComponent>
+
         <FormKit
           name="likes_microOS"
           label="Opinion"
