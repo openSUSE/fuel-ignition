@@ -23,7 +23,7 @@
     <FormKit
       :name="'user_ssh_keys_' + unique"
       label="SSH Public Keys"
-      placeholder="write the corresponding ssh keys here, separated by commas without a space"
+      placeholder="write the corresponding ssh keys here, separated by commas, spaces are ignored"
       type="textarea"
       validation="optional"
       validation-behavior="live"
@@ -55,11 +55,25 @@ export default {
           if (json.passwd.users !== undefined) {
             console.log();
             const publicKeys = formData["user_ssh_keys_" + id];
-            const publicKeysArray = (publicKeys !== undefined && publicKeys.includes(',')) ? publicKeys.split(',') : [publicKeys];
+            
+            const publicKeysArray =
+              publicKeys !== undefined && publicKeys.includes(",")
+                ? publicKeys.replaceAll(" ", "").split(",") // base64 ssh keys can't contain spaces
+                : [publicKeys];
+
+            const userPasswdIsEmpty =
+              formData["user_passwd_" + id] === "" ||
+              formData["user_passwd_" + id] === undefined;
+            
             json.passwd.users.push({
               name: formData["user_name_" + id],
-              passwordHash: formData["user_passwd_hashed_" + id],
-              sshAuthorizedKeys: publicKeys === undefined ? publicKeys : publicKeysArray,
+              passwordHash: userPasswdIsEmpty
+                ? undefined
+                : formData["user_passwd_hashed_" + id],
+              sshAuthorizedKeys:
+                publicKeys === undefined || publicKeys === ""
+                  ? undefined
+                  : publicKeysArray,
             });
           }
         });
@@ -73,7 +87,7 @@ export default {
         .map((key) => key.replace("user_passwd_", ""))
         .forEach((id) => {
           const passwd = newData["user_passwd_" + id];
-          if(passwd === "" || passwd === undefined) {
+          if (passwd === "" || passwd === undefined) {
             return;
           }
           sha256(passwd).then(

@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <h4 v-if="props.title !== undefined">{{ props.title }}</h4>
 
     <div v-for="n in compCount" :key="n">
@@ -31,7 +30,7 @@ const props = defineProps({
     default: true,
   },
 
-  title: String
+  title: String,
 });
 
 const compCount = ref(1);

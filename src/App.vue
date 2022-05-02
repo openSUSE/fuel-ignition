@@ -53,7 +53,7 @@ const formComponents = [IgnitionUsersForm];
 
 const formData = ref({ debug: true });
 
-// setup optional Watchers if a component needs it
+// setup optional Watchers if a FormComponent needs it
 formComponents.forEach((comp) =>
   Utils.setupFormComponentWatcher(comp, watch, formData)
 );
