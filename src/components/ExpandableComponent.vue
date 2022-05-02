@@ -33,5 +33,5 @@ const props = defineProps({
   title: String,
 });
 
-const compCount = ref(1);
+const compCount = ref(0);
 </script>

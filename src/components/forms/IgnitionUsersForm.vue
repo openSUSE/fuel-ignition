@@ -2,7 +2,7 @@
   <div class="users">
     <FormKit
       :name="'user_name_' + unique"
-      label="Username"
+      label="Username (required)"
       placeholder="write your os username here"
       validation="required"
       validation-behavior="live"

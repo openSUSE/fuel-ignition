@@ -8,6 +8,10 @@
           <IgnitionUsersForm></IgnitionUsersForm>
         </ExpandableComponent>
 
+        <ExpandableComponent title="Create Files on the Root Filesystem" :displayAtLeastOne="false">
+          <CreateFileForm></CreateFileForm>
+        </ExpandableComponent>
+
         <FormKit
           name="likes_microOS"
           label="Opinion"
@@ -48,8 +52,10 @@ import { ref, watch } from "vue";
 import Utils from "./utils/utils.js";
 import ExpandableComponent from "./components/ExpandableComponent.vue";
 import IgnitionUsersForm from "./components/forms/IgnitionUsersForm.vue";
+import CreateFileForm from "./components/forms/CreateFileForm.vue";
+import ServicesForm from "./components/forms/AddServiceForm.vue";
 
-const formComponents = [IgnitionUsersForm];
+const formComponents = [IgnitionUsersForm, CreateFileForm, ServicesForm];
 
 const formData = ref({ debug: true });
 
