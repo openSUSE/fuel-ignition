@@ -1,0 +1,3 @@
+- ask about users uid
+- systemd services, 
+- let user decide if they want to hash yourself -> also allow for options with bcrypt, sha256, sha512

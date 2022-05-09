@@ -1,7 +1,7 @@
 <template>
   <div class="users">
     <FormKit
-      :name="'user_name_' + unique"
+      :name="formKey('name')"
       label="Username (required)"
       placeholder="write your os username here"
       validation="required"
@@ -11,7 +11,7 @@
     />
 
     <FormKit
-      :name="'user_passwd_' + unique"
+      :name="formKey('passwd')"
       label="Password"
       placeholder="write the corresponding password here"
       type="password"
@@ -21,7 +21,7 @@
     />
 
     <FormKit
-      :name="'user_ssh_keys_' + unique"
+      :name="formKey('ssh_keys')"
       label="SSH Public Keys"
       placeholder="write the corresponding ssh keys here, separated by commas, spaces are ignored"
       type="textarea"
@@ -34,42 +34,47 @@
 
 <script>
 import Utils from "../../utils/utils.js";
+const formPrefix = "user";
 
 export default {
   setup: () => {
-    const unique = Utils.uid();
+    const uid = Utils.uid();
 
     return {
-      unique,
+      uid,
+      formKey: (key) => Utils.getFormKey(formPrefix, key, uid),
     };
   },
 
   methods: {
     encodeToIgn: function (json, formData) {
+      const formValue = (key, uid) =>
+        Utils.getFormValue(formPrefix, formData, key, uid);
+
+      const keyPrefix = formPrefix + "_name_";
       Object.keys(formData)
-        .filter((x) => x.includes("user_name"))
-        .map((key) => key.replace("user_name_", ""))
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
         .forEach((id) => {
           json.passwd = "passwd" in json ? json.passwd : { users: [] };
 
           if (json.passwd.users !== undefined) {
-            console.log();
-            const publicKeys = formData["user_ssh_keys_" + id];
-            
+            const publicKeys = formValue('ssh_keys', id);
+
             const publicKeysArray =
               publicKeys !== undefined && publicKeys.includes(",")
                 ? publicKeys.replaceAll(" ", "").split(",") // base64 ssh keys can't contain spaces
                 : [publicKeys];
 
             const userPasswdIsEmpty =
-              formData["user_passwd_" + id] === "" ||
-              formData["user_passwd_" + id] === undefined;
-            
+              formValue('passwd', id) === "" ||
+              formValue('passwd', id) === undefined;
+
             json.passwd.users.push({
-              name: formData["user_name_" + id],
+              name: formValue('name', id),
               passwordHash: userPasswdIsEmpty
                 ? undefined
-                : formData["user_passwd_hashed_" + id],
+                : formValue('passwd_hashed', id),
               sshAuthorizedKeys:
                 publicKeys === undefined || publicKeys === ""
                   ? undefined

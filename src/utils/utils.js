@@ -31,5 +31,14 @@ export default {
 
   uid: () => {
     return (performance.now().toString(36)+Math.random().toString(36)).replace(/\./g,"");
+  },
+
+
+  getFormKey: (prefix, key, uid) => {
+    return prefix + '_' + key + '_' + uid;
+  },
+
+  getFormValue: function(prefix, formData, key, uid) {
+    return formData[this.getFormKey(prefix, key, uid)];
   }
 };

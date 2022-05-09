@@ -8,9 +8,13 @@
           <IgnitionUsersForm></IgnitionUsersForm>
         </ExpandableComponent>
 
-        <ExpandableComponent title="Create Files on the Root Filesystem" :displayAtLeastOne="false">
+        <ExpandableComponent
+          title="Create Files on the Root Filesystem"
+          :displayAtLeastOne="false"
+        >
           <CreateFileForm></CreateFileForm>
         </ExpandableComponent>
+
 
         <FormKit
           name="likes_microOS"

@@ -1,10 +1,7 @@
-
-
-
 <template>
   <div class="createfiles">
     <FormKit
-      :name="'create_file_path_' + unique"
+      :name="formKey('path')"
       label="File Path (required)"
       placeholder="path on the root filesystem"
       validation="required"
@@ -14,7 +11,7 @@
     />
 
     <FormKit
-      :name="'create_file_overwrite_' + unique"
+      :name="formKey('overwrite')"
       label="Overwrite"
       placeholder="path on the root filesystem"
       validation="required"
@@ -24,67 +21,107 @@
     />
 
     <FormKit
-      :name="'create_file_mode_' + unique"
+      :name="formKey('mode')"
       label="File Mode (required)"
       placeholder="write the corresponding password here"
       type="number"
       value="420"
       validation="required"
       validation-behavior="live"
-      help="the file’s permission mode. Note that the mode must be properly specified as a decimal value (i.e. 0644 -> 420)."
+      help="the file's permission mode. Note that the mode must be properly specified as a decimal value (i.e. 0644 -> 420)."
     />
 
-    <FormKit
-      :name="'create_file_content_' + unique"
-      label="File Content Data (required)"
-      placeholder="write the file content here, spaces, newlines etc. are preserved"
-      type="textarea"
-      validation="required"
-      validation-behavior="live"
-      help="leaving this empty will create an empty file, options for https, etc. will be implemented soon"
-    />
+    <div class="source">
+      <FormKit
+        type="select"
+        :name="formKey('source_type')"
+        v-model="sourceType"
+        label="Scheme for file contents url (use data for plain text)"
+        help="When using http, it is advisable to use the verification option to ensure the contents haven't been modified. If source is omitted and a regular file already exists at the path, Ignition will do nothing. If source is omitted and no file exists, an empty file will be created."
+        :options="['data', 'https', 'http (not implemented)', 'tftp (not implemented)', 's3 (not implemented)', 'gs (not implemented)']"
+      />
+    </div>
+
+    <div v-if="sourceType === 'data'" class="data">
+      <FormKit
+        :name="formKey('data_content')"
+        label="File Content Data (required)"
+        placeholder="write the file content here, spaces, newlines etc. are preserved"
+        type="textarea"
+        validation="required"
+        validation-behavior="live"
+        help="leaving this empty will create an empty file, options for https, etc. will be implemented soon"
+      />
+    </div>
+
+    <div v-if="sourceType === 'https'" class="https">
+      <FormKit
+        :name="formKey('https_content')"
+        label="HTTPS Url (required)"
+        placeholder="the URL of the file contents"
+        type="text"
+        validation="required|url"
+        validation-behavior="live"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 import Utils from "../../utils/utils.js";
+import { ref } from "vue";
+const formPrefix = "create_file";
 
 export default {
   setup: () => {
-    const unique = Utils.uid();
-
+    const uid = Utils.uid();
+    const sourceType = ref("data");
     return {
-      unique,
+      sourceType,
+      formKey: (key) => Utils.getFormKey(formPrefix, key, uid),
     };
   },
 
-//   {
-//   "ignition": { "version": "3.0.0" },
-//   "storage": {
-//     "files": [{
-//       "path": "/etc/someconfig",
-//       "mode": 420,
-//       "contents": { "source": "data:,example%20file%0A" }
-//     }]
-//   }
-// }
-
   methods: {
     encodeToIgn: function (json, formData) {
+      const formValue = (key, uid) =>
+        Utils.getFormValue(formPrefix, formData, key, uid);
+
+      const keyPrefix = formPrefix + "_path_";
       Object.keys(formData)
-        .filter((x) => x.includes("create_file_path_"))
+        .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace("create_file_path_", ""))
         .forEach((id) => {
-          json.storage = "storage"  in json ? json.storage : { files: [] };
+          json.storage =
+            "storage" in json
+              ? json.storage
+              : {
+                  files: [],
+                };
 
-          const path = formData['create_file_path_' + id];
-          
-          const mode = formData['create_file_mode_' + id];
-          
-          const content = 'data:text/plain;charset=utf-8;,' + encodeURIComponent(formData['create_file_content_' + id]);
+          let content;
 
-          json.storage.files.push({path: path, mode: mode, contents: { source: content }});
-          
+          console.log(formValue("source_type", id));
+          switch (formValue("source_type", id)) {
+            case "data":
+              content =
+                "data:text/plain;charset=utf-8;," +
+                encodeURIComponent(formValue("data_content", id));
+              break;
+
+            case "https":
+              content = formValue("https_content", id);
+              break;
+          }
+
+          json.storage.files.push({
+            path: formValue("path", id),
+            mode: formValue("mode", id),
+            overwrite: formValue("overwrite", id),
+            contents: {
+              source: content,
+            },
+          });
         });
     },
   },
