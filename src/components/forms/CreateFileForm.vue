@@ -38,7 +38,7 @@
         v-model="sourceType"
         label="Scheme for file contents url (use data for plain text)"
         help="When using http, it is advisable to use the verification option to ensure the contents haven't been modified. If source is omitted and a regular file already exists at the path, Ignition will do nothing. If source is omitted and no file exists, an empty file will be created."
-        :options="['data', 'https', 'http (not implemented)', 'tftp (not implemented)', 's3 (not implemented)', 'gs (not implemented)']"
+        :options="['data', 'https', 'http', 'tftp', 's3', 'gs']"
       />
     </div>
 
@@ -61,6 +61,41 @@
         placeholder="the URL of the file contents"
         type="text"
         validation="required|url"
+        validation-behavior="live"
+      />
+    </div>
+
+    <div v-if="sourceType === 'http'" class="http">
+      <FormKit
+        :name="formKey('http_content')"
+        label="HTTP Url (required)"
+        placeholder="the URL of the file contents"
+        type="text"
+        validation="required|url"
+        validation-behavior="live"
+      />
+
+      <FormKit
+        :name="formKey('http_verification')"
+        label="Verification Hash (optional)"
+        placeholder="e.g. sha512-012345678.."
+        type="text"
+        validation="optional"
+        validation-behavior="live"
+        help="the hash of the contents, in the form <type>-<value> where type is either sha512 or sha256."
+      />
+    </div>
+
+    <div
+      v-if="!sourceType.includes('http') && sourceType !== 'data'"
+      class="tftp-s3-gs"
+    >
+      <FormKit
+        :name="formKey('tftp_s3_gs_content')"
+        :label="sourceType.toUpperCase() + ' Url (required)'"
+        placeholder="the URL of the file contents"
+        type="text"
+        validation="required"
         validation-behavior="live"
       />
     </div>
@@ -100,6 +135,7 @@ export default {
                 };
 
           let content;
+          let fileObject = {};
 
           console.log(formValue("source_type", id));
           switch (formValue("source_type", id)) {
@@ -112,16 +148,35 @@ export default {
             case "https":
               content = formValue("https_content", id);
               break;
+
+            case "http":
+              content = formValue("http_content", id);
+              let verification = formValue("http_verification", id);
+              if (verification)
+                fileObject.verification = { hash: verification };
+              break;
+
+            case "tftp":
+            case "s3":
+            case "gs":
+              content = formValue("tftp_s3_gs_content", id);
+              break;
           }
 
-          json.storage.files.push({
-            path: formValue("path", id),
-            mode: formValue("mode", id),
-            overwrite: formValue("overwrite", id),
-            contents: {
-              source: content,
-            },
-          });
+          json.storage.files.push(
+            Object.assign(
+              {
+                // merging the two object, in case verification was written to fileObject
+                path: formValue("path", id),
+                mode: formValue("mode", id),
+                overwrite: formValue("overwrite", id),
+                contents: {
+                  source: content,
+                },
+              },
+              fileObject
+            )
+          );
         });
     },
   },
