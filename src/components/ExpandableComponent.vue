@@ -7,7 +7,7 @@
       <div class="mb-5" v-if="n < compCount"></div>
     </div>
 
-    <button class="btn btn-success mb-5 mr-1" @click="compCount++">Add</button>
+    <button class="btn btn-success mb-5" @click="compCount++">Add</button>
 
     <button
       v-if="compCount > 1 || (!props.displayAtLeastOne && compCount > 0)"

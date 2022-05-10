@@ -1,3 +1,8 @@
-- ask about users uid
-- systemd services, 
-- let user decide if they want to hash yourself -> also allow for options with bcrypt, sha256, sha512
+- [X] ask about users uid
+- [X] let user decide if they want to hash yourself -> also allow for options with sha256, sha512
+- [x] implement different urls (data, http, https)
+- [X] what is a work report?
+- [] ask about data uri (base64 or leave it like this)
+- [] bcrypt?
+- [] implement import of existing ignition json
+- [] systemd services, 

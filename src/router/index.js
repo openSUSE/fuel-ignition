@@ -1,0 +1,36 @@
+import { createRouter, createWebHistory } from 'vue-router'
+
+const base = '/fuel-ignition/'
+
+import HomeView from '../pages/HomeView.vue'
+import EditView from '../pages/EditView.vue'
+
+const routes = [
+  {
+    path: '/',
+    name: 'Home',
+    component: HomeView
+  },
+  {
+    path: '/edit',
+    name: 'Edit',
+    component: EditView
+  },
+  // {
+  //   path: '/edit',
+  //   name: 'Edit',
+  //   // route level code-splitting
+  //   // this generates a separate chunk (about.[hash].js) for this route
+  //   // which is lazy-loaded when the route is visited.
+  //   component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+  // }
+]
+
+const router = createRouter({
+  history: createWebHistory(base),
+  routes
+})
+
+export default router
+
+export { base }
