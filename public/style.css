@@ -1,11 +1,3 @@
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
 .side-by-side {
   display: flex;
   align-items: flex-start;
@@ -36,4 +28,4 @@ pre.form-data {
 .center {
   margin: 0 auto;
   width: 80%;
-}
+} */

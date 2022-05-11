@@ -9,7 +9,7 @@ import ServicesForm from "@/components/forms/AddServiceForm.vue";
 
 const formComponents = [IgnitionUsersForm, CreateFileForm, ServicesForm];
 
-const formData = ref({ debug: true });
+const formData = ref({ debug: false });
 
 // setup optional Watchers if a FormComponent needs it
 formComponents.forEach((comp) =>
