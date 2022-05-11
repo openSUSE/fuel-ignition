@@ -9,7 +9,7 @@
           <p
             class="text-white-75 mb-4"
           >Looking for an easy way to write and edit Ignition configs? Look no further than Fuel Ignition! Our user-friendly web application makes it a breeze to create the config files you need. No strings attached!</p>
-          <a class="btn btn-light btn-xl" href="#services">Get Started!</a>
+          <a class="btn btn-light btn-xl" href="/fuel-ignition/edit">Get Started!</a>
         </div>
       </div>
     </div>

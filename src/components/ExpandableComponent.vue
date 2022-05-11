@@ -1,17 +1,19 @@
 <template>
-  <div>
-    <h4 v-if="props.title !== undefined">{{ props.title }}</h4>
+  <div style="width: 100% !important;" class="text-white">
+    <h4 class="" v-if="props.title !== undefined">{{ props.title }}</h4>
 
     <div v-for="n in compCount" :key="n">
       <slot></slot>
-      <div class="mb-5" v-if="n < compCount"></div>
+      <div class="mb-5" v-if="n < compCount">
+        <hr class="divider">
+      </div>
     </div>
 
-    <button class="btn btn-success mb-5" @click="compCount++">Add</button>
+    <button class="btn btn-primary mb-5" @click="compCount++">Add</button>
 
     <button
       v-if="compCount > 1 || (!props.displayAtLeastOne && compCount > 0)"
-      class="btn btn-danger mb-5"
+      class="btn btn-danger ml-5 mb-5"
       @click="
         compCount > 1 || !props.displayAtLeastOne ? compCount-- : compCount
       "
@@ -20,6 +22,13 @@
     </button>
   </div>
 </template>
+
+<style scoped>
+hr {
+    border: none;
+    max-height: 0.1px;
+}
+</style>
 
 <script setup>
 import { ref } from "vue";
