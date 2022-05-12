@@ -5,8 +5,9 @@ import ExpandableComponent from "@/components/ExpandableComponent.vue";
 
 import IgnitionUsersForm from "@/components/forms/IgnitionUsersForm.vue";
 import CreateFileForm from "@/components/forms/CreateFileForm.vue";
+import StartServiceForm from "@/components/forms/StartServiceForm.vue";
 
-const formComponents = [IgnitionUsersForm, CreateFileForm];
+const formComponents = [IgnitionUsersForm, CreateFileForm, StartServiceForm];
 
 const formData = ref({ debug: false });
 
@@ -55,7 +56,7 @@ const toIgnitionConfig = (formData) => {
         <div class="col-lg-6">
           <div class="form-floating mb-3">
             <FormKit type="group" v-model="formData">
-              <ExpandableComponent title="OS Users" :displayAtLeastOne="false">
+              <ExpandableComponent title="Add Users" :displayAtLeastOne="false">
                 <IgnitionUsersForm></IgnitionUsersForm>
               </ExpandableComponent>
 
@@ -65,7 +66,17 @@ const toIgnitionConfig = (formData) => {
               >
                 <CreateFileForm></CreateFileForm>
               </ExpandableComponent>
-              <!-- 
+
+              <ExpandableComponent
+                title="Start Services"
+                :displayAtLeastOne="false"
+              >
+              <StartServiceForm></StartServiceForm>
+              </ExpandableComponent>
+              
+
+
+              <!-- I know it's super unnecessary, but I like it, maybe add in the future
                 <FormKit
                   name="likes_microOS"
                   label="Opinion"

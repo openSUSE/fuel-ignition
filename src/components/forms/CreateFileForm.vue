@@ -36,8 +36,8 @@
         :name="formKey('source_type')"
         v-model="sourceType"
         label="Scheme for file contents url (use data for plain text)"
-        help="When using http, it is advisable to use the verification option to ensure the contents haven't been modified. If source is omitted and a regular file already exists at the path, Ignition will do nothing. If source is omitted and no file exists, an empty file will be created."
-        :options="['data', 'https', 'http', 'tftp', 's3', 'gs']"
+        help="If source is omitted and a regular file already exists at the path, Ignition will do nothing. If source is omitted and no file exists, an empty file will be created."
+        :options="['data', 'https', 'http', 'tftp', 's3', 'gs', 'omit']"
       />
     </div>
 
@@ -49,7 +49,7 @@
         type="textarea"
         validation="required"
         validation-behavior="live"
-        help="leaving this empty will create an empty file, options for https, etc. will be implemented soon"
+        help="leaving this empty will create an empty file"
       />
     </div>
 
@@ -86,7 +86,7 @@
     </div>
 
     <div
-      v-if="!sourceType.includes('http') && sourceType !== 'data'"
+      v-if="!sourceType.includes('http') && sourceType !== 'data' && sourceType !== 'omit'"
       class="tftp-s3-gs"
     >
       <FormKit

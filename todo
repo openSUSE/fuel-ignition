@@ -2,7 +2,9 @@
 - [X] let user decide if they want to hash yourself -> also allow for options with sha256, sha512
 - [x] implement different urls (data, http, https)
 - [X] what is a work report?
+- [] systemd services, 
 - [] ask about data uri (base64 or leave it like this)
+- [] first iso-blob implementation
 - [] bcrypt?
 - [] implement import of existing ignition json
-- [] systemd services, 
+- [] go over every 'required' form option and evaluate whether it could be optional
