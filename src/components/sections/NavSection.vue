@@ -28,7 +28,8 @@
               href="https://microos.opensuse.org/"
               target="_blank"
               rel="noopener noreferrer"
-            >MicroOS</a>
+              >MicroOS</a
+            >
           </li>
           <li class="nav-item">
             <a
@@ -36,7 +37,8 @@
               href="https://kubic.opensuse.org/"
               target="_blank"
               rel="noopener noreferrer"
-            >Kubic</a>
+              >Kubic</a
+            >
           </li>
           <li class="nav-item">
             <a
@@ -44,7 +46,8 @@
               href="https://coreos.github.io/ignition/"
               target="_blank"
               rel="noopener noreferrer"
-            >Ignition Docs</a>
+              >Ignition Docs</a
+            >
           </li>
         </ul>
       </div>

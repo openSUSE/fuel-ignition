@@ -23,7 +23,6 @@
     <FormKit
       :name="formKey('mode')"
       label="File Mode (required)"
-      placeholder="write the corresponding password here"
       type="number"
       value="420"
       validation="required"

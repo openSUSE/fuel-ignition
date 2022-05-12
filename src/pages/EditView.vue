@@ -5,9 +5,8 @@ import ExpandableComponent from "@/components/ExpandableComponent.vue";
 
 import IgnitionUsersForm from "@/components/forms/IgnitionUsersForm.vue";
 import CreateFileForm from "@/components/forms/CreateFileForm.vue";
-import ServicesForm from "@/components/forms/AddServiceForm.vue";
 
-const formComponents = [IgnitionUsersForm, CreateFileForm, ServicesForm];
+const formComponents = [IgnitionUsersForm, CreateFileForm];
 
 const formData = ref({ debug: false });
 
@@ -38,13 +37,6 @@ const toIgnitionConfig = (formData) => {
 </script>
 
 <template>
-  <!-- Masthead-->
-  <!-- <header class="masthead">
-    <div class="">
-      
-    </div>
-  </header> -->
-
   <section class="page-section p-2 bg-dark" id="contact">
     <div class="container mt-5 px-0">
       <div class="row gx-4 gx-lg-5 justify-content-center">
@@ -61,7 +53,6 @@ const toIgnitionConfig = (formData) => {
       </div>
       <div class="row gx-4 gx-lg-5 justify-content-center mb-5">
         <div class="col-lg-6">
-          <!-- Name input-->
           <div class="form-floating mb-3">
             <FormKit type="group" v-model="formData">
               <ExpandableComponent title="OS Users" :displayAtLeastOne="false">
@@ -92,29 +83,7 @@ const toIgnitionConfig = (formData) => {
     <hr class="divider" />
   </section>
 
-  <!-- <FormKit type="group" v-model="formData">
-        <ExpandableComponent title="OS Users" :displayAtLeastOne="false">
-          <IgnitionUsersForm></IgnitionUsersForm>
-        </ExpandableComponent>
-
-        <ExpandableComponent
-          title="Create Files on the Root Filesystem"
-          :displayAtLeastOne="false"
-        >
-          <CreateFileForm></CreateFileForm>
-        </ExpandableComponent>
-
-        <FormKit
-          name="likes_microOS"
-          label="Opinion"
-          help="How excited are you about MicroOS?"
-          type="radio"
-          value="A lot"
-          :options="['A little', 'A lot']"
-        />
-      </FormKit> -->
-
-  <section class="page-section p-2" id="contact">
+  <section class="page-section p-2" id="export">
     <div class="container mt-5 px-0">
       <div class="row gx-4 gx-lg-5 justify-content-center">
         <div class="col-lg-8 col-xl-6">

@@ -28,4 +28,8 @@ pre.form-data {
 .center {
   margin: 0 auto;
   width: 80%;
-} */
+}
+
+label {
+  font-size: larger;
+}

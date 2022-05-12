@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import { plugin, defaultConfig } from '@formkit/vue'
 import '@/assets/template/scss/styles.scss'
+import 'bootstrap';
 import '@/assets/template/js/scripts.js'
 // import '@formkit/themes/genesis'
 

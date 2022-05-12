@@ -9,11 +9,11 @@
       </div>
     </div>
 
-    <button class="btn btn-primary mb-5" @click="compCount++">Add</button>
+    <button class="btn btn-primary mr-5 mb-5" @click="compCount++">Add</button>
 
     <button
       v-if="compCount > 1 || (!props.displayAtLeastOne && compCount > 0)"
-      class="btn btn-danger ml-5 mb-5"
+      class="btn btn-danger ml-5 mr-5 mb-5"
       @click="
         compCount > 1 || !props.displayAtLeastOne ? compCount-- : compCount
       "
