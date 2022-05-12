@@ -16,7 +16,8 @@ formComponents.forEach((comp) =>
   Utils.setupFormComponentWatcher(comp, watch, formData)
 );
 
-const downloadConfigIgn = () => {
+const downloadConfigIgn = (formData) => {
+  console.log("downloading..");
   Utils.saveTemplateAsFile("config.ign", toIgnitionConfig(formData));
 };
 
@@ -32,6 +33,8 @@ const toIgnitionConfig = (formData) => {
   if (formData.debug) {
     json["debug:form"] = formData;
   }
+
+  console.log(json);
 
   return json;
 };
@@ -71,10 +74,8 @@ const toIgnitionConfig = (formData) => {
                 title="Start Services"
                 :displayAtLeastOne="false"
               >
-              <StartServiceForm></StartServiceForm>
+                <StartServiceForm></StartServiceForm>
               </ExpandableComponent>
-              
-
 
               <!-- I know it's super unnecessary, but I like it, maybe add in the future
                 <FormKit
@@ -110,7 +111,7 @@ const toIgnitionConfig = (formData) => {
               name="debug"
             />
 
-            <button class="btn btn-primary mb-4" @click="downloadConfigIgn">
+            <button class="btn btn-primary mb-4" @click="downloadConfigIgn(formData)">
               Download
             </button>
 
