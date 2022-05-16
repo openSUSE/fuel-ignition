@@ -5,6 +5,7 @@ const base = '/fuel-ignition/'
 import HomeView from '../pages/HomeView.vue'
 import EditView from '../pages/EditView.vue'
 import ImportView from '@/pages/ImportView.vue'
+import TestView from '@/pages/TestView.vue'
 
 const routes = [
   {
@@ -21,6 +22,11 @@ const routes = [
     path: '/import',
     name: 'Import',
     component: ImportView
+  },
+  {
+    path: '/test',
+    name: 'Test',
+    component: TestView,
   }
   // {
   //   path: '/edit',

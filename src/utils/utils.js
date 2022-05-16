@@ -22,7 +22,7 @@ export default {
   },
 
   setupFormComponentWatcher: (component, watch, formData) => {
-    if ("methods" in component && "watchFormData" in component.methods) {
+    if (component !== undefined && "methods" in component && "watchFormData" in component.methods) {
         watch(formData, async (newData, oldData) => {
           component.methods.watchFormData(newData);
         });

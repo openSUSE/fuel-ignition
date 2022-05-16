@@ -2,12 +2,14 @@
 import { ref, watch } from "vue";
 import Utils from "@/utils/utils.js";
 import ExpandableComponent from "@/components/ExpandableComponent.vue";
+import BlobEditorComponent from "@/components/IsoFSBlobEditorComponent.vue";
 
 import IgnitionUsersForm from "@/components/forms/IgnitionUsersForm.vue";
 import CreateFileForm from "@/components/forms/CreateFileForm.vue";
 import StartServiceForm from "@/components/forms/StartServiceForm.vue";
+import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 
-const formComponents = [IgnitionUsersForm, CreateFileForm, StartServiceForm];
+const formComponents = [IgnitionUsersForm, CreateFileForm, StartServiceForm, ModifyServiceForm];
 
 const formData = ref({ debug: false });
 
@@ -34,14 +36,12 @@ const toIgnitionConfig = (formData) => {
     json["debug:form"] = formData;
   }
 
-  console.log(json);
-
   return json;
 };
 </script>
 
 <template>
-  <section class="page-section p-2 bg-dark" id="contact">
+  <section class="page-section p-2 bg-dark" id="edit">
     <div class="container mt-5 px-0">
       <div class="row gx-4 gx-lg-5 justify-content-center">
         <div class="col-lg-8 col-xl-6 text-white text-center">
@@ -75,6 +75,14 @@ const toIgnitionConfig = (formData) => {
                 :displayAtLeastOne="false"
               >
                 <StartServiceForm></StartServiceForm>
+              </ExpandableComponent>
+
+              <!-- rename to "Modify Services (Drop-Ins)"? -->
+              <ExpandableComponent
+                title="Modify Services"
+                :displayAtLeastOne="false"
+              >
+                <ModifyServiceForm></ModifyServiceForm>
               </ExpandableComponent>
 
               <!-- I know it's super unnecessary, but I like it, maybe add in the future
@@ -111,15 +119,24 @@ const toIgnitionConfig = (formData) => {
               name="debug"
             />
 
-            <button class="btn btn-primary mb-4" @click="downloadConfigIgn(formData)">
+            <button
+              class="btn btn-primary mb-4"
+              @click="downloadConfigIgn(formData)"
+            >
               Download
             </button>
 
-            <h2 class="mt-5">Convert to ISO</h2>
+            <h2 class="mt-5">Convert to ISO FileSystem with mkisofs</h2>
 
             <pre class="form-data">
 # mkisofs -o ignition.iso -V ignition config.ign</pre
             >
+
+            <div v-if="formData.debug">
+              <h2 class="mt-5">Convert to ISO in the Browser (Alpha)</h2>
+
+              <BlobEditorComponent></BlobEditorComponent>
+            </div>
           </div>
         </div>
       </div>

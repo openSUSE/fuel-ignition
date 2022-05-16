@@ -1,5 +1,5 @@
 <template>
-  <section class="page-section bg-dark" id="contact">
+  <section class="page-section bg-dark" id="import">
     <div class="container px-4 px-lg-5">
       <div class="row gx-4 gx-lg-5 justify-content-center">
         <div class="d-grid">

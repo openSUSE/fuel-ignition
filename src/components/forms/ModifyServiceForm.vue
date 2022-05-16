@@ -1,0 +1,101 @@
+<template>
+  <div class="modifyservice">
+    <FormKit
+      :name="formKey('name')"
+      label="Name of the service that you want to modify (required)"
+      validation="required"
+      validation-behavior="live"
+      value="systemd-journald.service"
+      help="Every unit must have a unique name."
+    />
+
+    <FormKit
+      :name="formKey('dropin_name')"
+      label="Name of the drop-in file"
+      validation="required"
+      validation-behavior="live"
+      value="debug.conf"
+      help="the name of the drop-in. This must be suffixed with “.conf”."
+    />
+
+    <FormKit
+      :name="formKey('contents')"
+      label="Drop-In Unit Content (required)"
+      placeholder="write the service unit content here, spaces, newlines etc. are preserved"
+      type="textarea"
+      validation="required"
+      validation-behavior="live"
+      help="This unit will be enabled as a dependency of multi-user.target and therefore start on boot."
+    />
+  </div>
+</template>
+
+<script>
+import Utils from "../../utils/utils.js";
+const formPrefix = "modify_service";
+
+export default {
+  setup: () => {
+    const uid = Utils.uid();
+    return {
+      formKey: (key) => Utils.getFormKey(formPrefix, key, uid),
+    };
+  },
+
+  methods: {
+    encodeToIgn: function (json, formData) {
+      const formValue = (key, uid) =>
+        Utils.getFormValue(formPrefix, formData, key, uid);
+
+      const keyPrefix = formPrefix + "_name_";
+
+      // "systemd": {
+      //   "units": [{
+      //     "name": "systemd-journald.service",
+      //     "dropins": [{
+      //       "name": "debug.conf",
+      //       "contents": "[Service]\nEnvironment=SYSTEMD_LOG_LEVEL=debug"
+      //     }]
+      //   }]
+
+      Object.keys(formData)
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+          console.log(json);
+
+          json.systemd =
+            "systemd" in json
+              ? json.systemd
+              : {
+                  units: [{}],
+                };
+
+          let unit = json.systemd.units.find(
+            (unit) => unit.name === formValue("name", id)
+          );
+
+          let dropin = {
+            name: formValue("dropin_name", id),
+            contents: formValue("contents", id),
+          };
+
+          if (unit !== undefined) {
+            if (unit.dropins !== undefined) {
+              unit.dropins.push(dropin);
+              return;
+            }
+
+            unit.dropins = [dropin];
+            return;
+          }
+
+          json.systemd.units.push({
+            name: formValue("name", id),
+            dropins: [dropin],
+          });
+        });
+    },
+  },
+};
+</script>

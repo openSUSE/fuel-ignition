@@ -1,15 +1,17 @@
 <template>
-  <div style="width: 100% !important;" class="text-white">
+  <div style="width: 100% !important" class="text-white">
     <h4 class="" v-if="props.title !== undefined">{{ props.title }}</h4>
 
     <div v-for="n in compCount" :key="n">
       <slot></slot>
       <div class="mb-5" v-if="n < compCount">
-        <hr class="divider">
+        <hr class="divider" />
       </div>
     </div>
-
-    <button class="btn btn-primary mr-5 mb-5" @click="compCount++">Add</button>
+    <button class="btn btn-primary mr-5 mb-5" @click="compCount++">
+      <!-- who wants padding, if they can just do nonbreaking spaces? :bigbrain: -->
+      &nbsp;&nbsp;&nbsp;Add&nbsp;&nbsp;&nbsp;
+    </button>
 
     <button
       v-if="compCount > 1 || (!props.displayAtLeastOne && compCount > 0)"
@@ -25,8 +27,8 @@
 
 <style scoped>
 hr {
-    border: none;
-    max-height: 0.1px;
+  border: none;
+  max-height: 0.1px;
 }
 </style>
 
