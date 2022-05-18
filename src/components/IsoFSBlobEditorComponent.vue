@@ -18,7 +18,7 @@
 <script setup>
 import { ref } from "vue";
 const props = defineProps(["ignJson"]);
-let loading = ref(false);
+var loading = ref(false);
 
 String.prototype.replaceAt = function (index, replacement) {
   return (
