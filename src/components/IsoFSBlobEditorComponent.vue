@@ -1,10 +1,32 @@
 <template>
-  <input type="file" @change="previewFile()" />
+  <button
+    class="btn btn-primary mb-4"
+    style="width: 100%"
+    @click="convertAndDownload()"
+  >
+    Convert and Download
+  </button>
+
+  <div v-if="loading" class="sk-folding-cube">
+    <div class="sk-cube1 sk-cube"></div>
+    <div class="sk-cube2 sk-cube"></div>
+    <div class="sk-cube4 sk-cube"></div>
+    <div class="sk-cube3 sk-cube"></div>
+  </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
-const blobFile = {};
+const props = defineProps(["ignJson"]);
+let loading = ref(false);
+
+String.prototype.replaceAt = function (index, replacement) {
+  return (
+    this.substring(0, index) +
+    replacement +
+    this.substring(index + replacement.length)
+  );
+};
 
 function bufferToHex(buffer) {
   return [...new Uint8Array(buffer)]
@@ -12,44 +34,96 @@ function bufferToHex(buffer) {
     .join("");
 }
 
-function previewFile() {
+let alphabet = [
+  "Alfa",
+  "Bravo",
+  "Charlie",
+  "Delta",
+  "Echo",
+  "Foxtrot",
+  "Golf",
+  "Hotel",
+  "India",
+  "Juliett",
+  "Kilo",
+  "Lima",
+  "Mike",
+  "November",
+  "Oscar",
+  "Papa",
+  "Quebec",
+  "Romeo",
+  "Sierra",
+  "Tango",
+  "Uniform",
+  "Victor",
+  "Whiskey",
+  "X-ray",
+  "Yankee",
+  "Zulu",
+  "Nico",
+];
+
+function toHex(str) {
+  var result = "";
+  for (var i = 0; i < str.length; i++) {
+    result += str.charCodeAt(i).toString(16);
+  }
+  return result;
+}
+
+async function convertAndDownload() {
   console.log("runs!");
-  var file = document.querySelector("input[type=file]").files[0];
+
+  this.loading = true;
+  console.log(this.loading);
+
+  let file = await fetch("src/assets/template/ignition.img").then((response) =>
+    response.blob()
+  );
 
   console.log(file);
-  console.log(file instanceof Blob);
-  console.log(file.arrayBuffer());
-  console.log(bufferToHex(file.arrayBuffer()));
+  let hexJson = toHex(JSON.stringify(props.ignJson));
 
   file.arrayBuffer().then((buffer) => {
     let hex = bufferToHex(buffer);
-    hex.replace("6c6f72656d697073756d", "68656c6c6f776f726c64"); // replace 'loremipsum' with 'helloworld', same length
+    console.log(hex.slice(43068, 43068 + 4));
+    let cleanedHex = hex
+      .replace("6c6f72656d697073756d", hexJson)
+      .replaceAt(43068, toHex(new Blob([hexJson]).size)); // replace 'loremipsum' with 'helloworld', same length
 
-    var byteArray = new Uint8Array(hex.length / 2);
-    for (var x = 0; x < byteArray.length; x++) {
-      byteArray[x] = parseInt(hex.substr(x * 2, 2), 16);
+    console.log(cleanedHex.slice(43068, 43068 + 4));
+
+    if (cleanedHex.length % 2) {
+      alert("Error: cleaned hex string length is odd.");
+      return;
     }
 
+    var binary = new Array();
+    for (var i = 0; i < cleanedHex.length / 2; i++) {
+      var h = cleanedHex.substr(i * 2, 2);
+      binary[i] = parseInt(h, 16);
+    }
 
-// lastModified: 1652443065991
-// lastModifiedDate: Fri May 13 2022 13:57:45 GMT+0200 (Central European Summer Time) {}
-// name: "ignition-blob.iso"
-// size: 358400
-// type: "application/x-cd-image
-    var newFile = new File(byteArray, file.name, {lastModified: file.lastModified, lastModifiedDate: file.lastModifiedDate, type: file.type});
+    this.loading = false;
 
-    console.log(newFile);
+    var byteArray = new Uint8Array(binary);
+    var a = window.document.createElement("a");
 
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(newFile);
+    a.href = window.URL.createObjectURL(
+      new Blob([byteArray], { type: "application/octet-stream" })
+    );
+    a.download =
+      "ignition-" +
+      alphabet[Math.floor(Math.random() * alphabet.length)].toLowerCase() +
+      ".img";
 
-    link.href = url;
-    link.download = newFile.name;
-    document.body.appendChild(link);
-    link.click();
+    // Append anchor to body.
+    document.body.appendChild(a);
+    a.click();
 
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
+    // Remove anchor from body
+    document.body.removeChild(a);
   });
 }
 </script>

@@ -9,7 +9,7 @@
       </div>
     </div>
     <button class="btn btn-primary mr-5 mb-5" @click="compCount++">
-      <!-- who wants padding, if they can just do nonbreaking spaces? :bigbrain: -->
+      <!-- who needs padding, if they can just do nonbreaking spaces? :bigbrain: -->
       &nbsp;&nbsp;&nbsp;Add&nbsp;&nbsp;&nbsp;
     </button>
 

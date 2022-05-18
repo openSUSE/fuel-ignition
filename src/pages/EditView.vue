@@ -138,9 +138,9 @@ const toIgnitionConfig = (formData) => {
             >
 
             <div v-if="formData.debug">
-              <h2 class="mt-5">Convert to ISO in the Browser (Alpha)</h2>
+              <h2 class="mt-5">Convert to IMG in the Browser (Alpha)</h2>
 
-              <BlobEditorComponent></BlobEditorComponent>
+              <BlobEditorComponent :ignJson="toIgnitionConfig(formData)"></BlobEditorComponent>
             </div>
           </div>
         </div>
