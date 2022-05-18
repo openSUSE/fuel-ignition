@@ -5,8 +5,8 @@
       label="Name of the service that you want to modify (required)"
       validation="required"
       validation-behavior="live"
-      value="systemd-journald.service"
-      help="Every unit must have a unique name."
+      placeholder="e.g. systemd-journald.service"
+      help="The name of the unit. This must be suffixed with a valid unit type (e.g. “thing.service”)."
     />
 
     <FormKit
@@ -15,7 +15,7 @@
       validation="required"
       validation-behavior="live"
       value="debug.conf"
-      help="the name of the drop-in. This must be suffixed with “.conf”."
+      help="The name of the drop-in. This must be suffixed with “.conf”."
     />
 
     <FormKit
@@ -71,6 +71,7 @@ export default {
                   units: [{}],
                 };
 
+          // see if this service unit is used already by another component
           let unit = json.systemd.units.find(
             (unit) => unit.name === formValue("name", id)
           );

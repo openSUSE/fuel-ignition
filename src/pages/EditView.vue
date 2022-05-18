@@ -9,7 +9,12 @@ import CreateFileForm from "@/components/forms/CreateFileForm.vue";
 import StartServiceForm from "@/components/forms/StartServiceForm.vue";
 import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 
-const formComponents = [IgnitionUsersForm, CreateFileForm, StartServiceForm, ModifyServiceForm];
+const formComponents = [
+  IgnitionUsersForm,
+  CreateFileForm,
+  StartServiceForm,
+  ModifyServiceForm,
+];
 
 const formData = ref({ debug: false });
 
@@ -64,7 +69,7 @@ const toIgnitionConfig = (formData) => {
               </ExpandableComponent>
 
               <ExpandableComponent
-                title="Create Files on the Root Filesystem"
+                title="Create Files"
                 :displayAtLeastOne="false"
               >
                 <CreateFileForm></CreateFileForm>

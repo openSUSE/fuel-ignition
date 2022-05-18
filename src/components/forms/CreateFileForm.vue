@@ -3,21 +3,21 @@
     <FormKit
       :name="formKey('path')"
       label="File Path (required)"
-      placeholder="path on the root filesystem"
+      placeholder="path on the filesystem"
       validation="required"
       validation-behavior="live"
       value="/etc/someconfig"
-      help="the absolute path to the file"
+      help="The absolute path to the file"
     />
 
     <FormKit
       :name="formKey('overwrite')"
       label="Overwrite"
-      placeholder="path on the root filesystem"
+      placeholder="path on the filesystem"
       validation="required"
       type="checkbox"
       validation-behavior="live"
-      help="whether to delete preexisting nodes at the path"
+      help="Whether to delete preexisting nodes at the path"
     />
 
     <FormKit
@@ -27,7 +27,7 @@
       value="420"
       validation="required"
       validation-behavior="live"
-      help="the file's permission mode. Note that the mode must be properly specified as a decimal value (i.e. 0644 -> 420)."
+      help="The file's permission mode. Note that the mode must be properly specified as a decimal value (i.e. 0644 -> 420)."
     />
 
     <div class="source">
@@ -49,7 +49,7 @@
         type="textarea"
         validation="required"
         validation-behavior="live"
-        help="leaving this empty will create an empty file"
+        help="Leaving this empty will create an empty file"
       />
     </div>
 
@@ -81,7 +81,7 @@
         type="text"
         validation="optional"
         validation-behavior="live"
-        help="the hash of the contents, in the form <type>-<value> where type is either sha512 or sha256."
+        help="The hash of the contents, in the form <type>-<value> where type is either sha512 or sha256."
       />
     </div>
 

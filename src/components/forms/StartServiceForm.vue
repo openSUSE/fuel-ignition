@@ -16,7 +16,7 @@
       validation="optional"
       type="select"
       validation-behavior="live"
-      help="whether or not the service shall be enabled. When true, the service is enabled. When false, the service is disabled. When omitted, the service is unmodified."
+      help="Whether or not the service shall be enabled. When true, the service is enabled. When false, the service is disabled. When omitted, the service is unmodified."
       :options="['yes', 'no', 'omit']"
     />
 
@@ -27,7 +27,7 @@
       type="textarea"
       validation="optional"
       validation-behavior="live"
-      help="This unit will be enabled as a dependency of multi-user.target and therefore start on boot."
+      help="The contents of the unit."
     />
   </div>
 </template>
