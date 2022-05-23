@@ -1,14 +1,10 @@
-FROM registry.suse.com/bci/nodejs 
+FROM registry.suse.com/bci/nodejs
 ARG CONTAINER_USERID
 
-# Install our requirements
-RUN zypper -n install --no-recommends mkisofs
+# Install requirements and add user
+RUN zypper -n install --no-recommends mkisofs && useradd -m -d /fuelignition fuelignition -u ${CONTAINER_USERID}
 
-# Add our user
-RUN useradd -m -d /fuelignition fuelignition -u ${CONTAINER_USERID}
-
-ADD . /fuelignition/
-RUN chown -R fuelignition /fuelignition
+COPY --chown=fuelignition . /fuelignition/
 
 USER fuelignition
 WORKDIR /fuelignition
