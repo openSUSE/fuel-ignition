@@ -71,7 +71,7 @@ async function convertAndDownload() {
 
   console.log(hexJsonByteSize);
 
-  let file = await fetch("src/assets/template/ignition.img").then((response) =>
+  let file = await fetch("src/assets/template/ignition-new.img").then((response) =>
     response.blob()
   );
 
@@ -80,7 +80,7 @@ async function convertAndDownload() {
   console.log("jsonSize(dec): " + JSON.stringify(props.ignJson).length);
   console.log("jsonSize(hex): " + hexJsonByteSize);
 
-  let decimalOffset = 43068 * 2; // 1 byte = 8 bit = 2^8 = 256 = 0xFF
+  let decimalOffset = 61564 * 2; // 1 byte = 8 bit = 2^8 = 256 = 0xFF
 
   let buffer = await file.arrayBuffer().then();
 
@@ -99,11 +99,11 @@ async function convertAndDownload() {
     return;
   }
 
-  if (JSON.stringify(props.ignJson).length > 2000) {
+  if (JSON.stringify(props.ignJson).length > 2000) { // check for 2048
     alert(
       "Warning. The resulting image is most likely corrupt, since this config is quite large.\n\n" +
-        "If you have problems, kindly try again with a smaller config. We are actively working on this limitation." +
-        "\nFuel-Ignition is still in active development. Thank you for your understanding!"
+        "If you have problems, kindly try again with a smaller config. We are actively working on fixing this limitation." +
+        "\nFuel-Ignition is still in active development."
     );
   }
 
