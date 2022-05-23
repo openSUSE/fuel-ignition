@@ -18,7 +18,7 @@
       type="select"
       validation="optional"
       validation-behavior="live"
-      value="SHA-256"
+      value="SHA-512"
       :options="['SHA-256', 'SHA-512', 'Hash Yourself']"
       help="The way you want your password to be hashed."
     />
