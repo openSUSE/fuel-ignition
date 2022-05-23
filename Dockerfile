@@ -5,7 +5,7 @@ ARG CONTAINER_USERID
 RUN zypper -n install --no-recommends mkisofs
 
 # Add our user
-RUN useradd -m fuelignition  -u ${CONTAINER_USERID} 
+RUN useradd -m fuelignition  -u ${CONTAINER_USERID}
 RUN mkdir /fuelignition
 ADD . /fuelignition/
 RUN chown -R fuelignition /fuelignition
