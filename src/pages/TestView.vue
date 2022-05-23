@@ -19,7 +19,7 @@
         <hr class="divider" />
         <div class="d-grid mb-5">
           <div class="mx-auto">
-            <BlobEditorComponent></BlobEditorComponent>
+            <!-- <BlobEditorComponent></BlobEditorComponent> -->
           </div>
         </div>
       </div>
@@ -28,5 +28,5 @@
 </template>
 
 <script setup>
-import BlobEditorComponent from "@/components/IsoFSBlobEditorComponent.vue";
+// import BlobEditorComponent from "@/components/IsoFSBlobEditorComponent.vue";
 </script>

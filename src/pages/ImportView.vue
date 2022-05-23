@@ -10,7 +10,7 @@
         </div>
 
         <div class="col-lg-8 col-xl-6 text-white text-center">
-          <h2 class="mt-2">I'm sorry, but this is not implemented yet!</h2>
+          <h2 class="mt-2">Sorry, this is not implemented yet!</h2>
           <hr class="divider" />
           <p class="mb-5">
             For now, Fuel Ignition can only create new configs.

@@ -34,37 +34,7 @@ function bufferToHex(buffer) {
     .join("");
 }
 
-let alphabet = [
-  "Alfa",
-  "Bravo",
-  "Charlie",
-  "Delta",
-  "Echo",
-  "Foxtrot",
-  "Golf",
-  "Hotel",
-  "India",
-  "Juliett",
-  "Kilo",
-  "Lima",
-  "Mike",
-  "November",
-  "Oscar",
-  "Papa",
-  "Quebec",
-  "Romeo",
-  "Sierra",
-  "Tango",
-  "Uniform",
-  "Victor",
-  "Whiskey",
-  "X-ray",
-  "Yankee",
-  "Zulu",
-  "Nico",
-];
-
-function toHex(str) {
+function strToHex(str) {
   var result = "";
   for (var i = 0; i < str.length; i++) {
     result += str.charCodeAt(i).toString(16);
@@ -73,26 +43,49 @@ function toHex(str) {
 }
 
 async function convertAndDownload() {
-  console.log("runs!");
-
   this.loading = true;
-  console.log(this.loading);
+  console.log("loading: " + this.loading);
+
+  let hexJson = strToHex(JSON.stringify(props.ignJson));
+  let jsonByteSize = JSON.stringify(props.ignJson).length;
+
+  console.log(jsonByteSize.toString(16));
+  console.log(jsonByteSize.toString(16).slice(2)[1]);
+
+  // let hexJsonByteSize =
+  //   jsonByteSize < 255
+  //     ? jsonByteSize.toString(16)
+  //     : jsonByteSize.toString(16).slice(2)[1] +
+  //       jsonByteSize.toString(16).slice(2)[0];
+
+
+  let hexJsonByteSize =
+    jsonByteSize < 255
+      ? jsonByteSize.toString(16)
+      : "4E2000"; // pad to even number and then flip in the middle
+  console.log("flipped tuple: " + (jsonByteSize > 255));
+  console.log(hexJsonByteSize);
 
   let file = await fetch("src/assets/template/ignition.img").then((response) =>
     response.blob()
   );
 
   console.log(file);
-  let hexJson = toHex(JSON.stringify(props.ignJson));
 
+  console.log("jsonSize(dec): " + JSON.stringify(props.ignJson).length);
+  console.log("jsonSize(hex): " + hexJsonByteSize);
+
+  let decimalOffset = 43068 * 2; // 1 byte = 8 bit = 2^8 = 256 = 0xFF
   file.arrayBuffer().then((buffer) => {
     let hex = bufferToHex(buffer);
-    console.log(hex.slice(43068, 43068 + 4));
+    console.log(new Blob([hex]).size);
+    console.log(hex.slice(decimalOffset, decimalOffset + 4));
+
     let cleanedHex = hex
       .replace("6c6f72656d697073756d", hexJson)
-      .replaceAt(43068, toHex(new Blob([hexJson]).size)); // replace 'loremipsum' with 'helloworld', same length
+      .replaceAt(decimalOffset, hexJsonByteSize); // replace 'loremipsum' with 'helloworld', same length
 
-    console.log(cleanedHex.slice(43068, 43068 + 4));
+    console.log(cleanedHex.slice(decimalOffset, decimalOffset + 4));
 
     if (cleanedHex.length % 2) {
       alert("Error: cleaned hex string length is odd.");
@@ -126,4 +119,34 @@ async function convertAndDownload() {
     document.body.removeChild(a);
   });
 }
+
+let alphabet = [
+  "Alfa",
+  "Bravo",
+  "Charlie",
+  "Delta",
+  "Echo",
+  "Foxtrot",
+  "Golf",
+  "Hotel",
+  "India",
+  "Juliett",
+  "Kilo",
+  "Lima",
+  "Mike",
+  "November",
+  "Oscar",
+  "Papa",
+  "Quebec",
+  "Romeo",
+  "Sierra",
+  "Tango",
+  "Uniform",
+  "Victor",
+  "Whiskey",
+  "X-ray",
+  "Yankee",
+  "Zulu",
+  "Nico",
+];
 </script>

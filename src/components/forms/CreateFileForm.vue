@@ -86,7 +86,11 @@
     </div>
 
     <div
-      v-if="!sourceType.includes('http') && sourceType !== 'data' && sourceType !== 'omit'"
+      v-if="
+        !sourceType.includes('http') &&
+        sourceType !== 'data' &&
+        sourceType !== 'omit'
+      "
       class="tftp-s3-gs"
     >
       <FormKit
@@ -162,10 +166,10 @@ export default {
               break;
           }
 
+          // merging the two objects, in case verification was written to fileObject
           json.storage.files.push(
             Object.assign(
               {
-                // merging the two object, in case verification was written to fileObject
                 path: formValue("path", id),
                 mode: formValue("mode", id),
                 overwrite: formValue("overwrite", id),

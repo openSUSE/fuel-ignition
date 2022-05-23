@@ -2,7 +2,7 @@
 import { ref, watch } from "vue";
 import Utils from "@/utils/utils.js";
 import ExpandableComponent from "@/components/ExpandableComponent.vue";
-import BlobEditorComponent from "@/components/IsoFSBlobEditorComponent.vue";
+import BlobEditorComponent from "@/components/TemplateBlobEditorComponent.vue";
 
 import IgnitionUsersForm from "@/components/forms/IgnitionUsersForm.vue";
 import CreateFileForm from "@/components/forms/CreateFileForm.vue";
@@ -137,8 +137,8 @@ const toIgnitionConfig = (formData) => {
 # mkisofs -o ignition.iso -V ignition config.ign</pre
             >
 
-            <div v-if="formData.debug">
-              <h2 class="mt-5">Convert to IMG in the Browser (Alpha)</h2>
+            <div>
+              <h2 class="mt-5">Convert to IMG in the Browser (In Dev)</h2>
 
               <BlobEditorComponent :ignJson="toIgnitionConfig(formData)"></BlobEditorComponent>
             </div>
