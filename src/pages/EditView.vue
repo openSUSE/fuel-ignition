@@ -25,7 +25,7 @@ formComponents.forEach((comp) =>
 
 const downloadConfigIgn = (formData) => {
   console.log("downloading..");
-  Utils.saveTemplateAsFile("config.ign", toIgnitionConfig(formData));
+  Utils.saveTemplateAsFile("ignition.ign", toIgnitionConfig(formData));
 };
 
 const toIgnitionConfig = (formData) => {
@@ -112,7 +112,7 @@ const toIgnitionConfig = (formData) => {
     <div class="container mt-5 px-0">
       <div class="row gx-4 gx-lg-5 justify-content-center">
         <div class="col-lg-8 col-xl-6">
-          <h1 class="mt-5 text-center">config.ign</h1>
+          <h1 class="mt-5 text-center">ignition.ign</h1>
           <hr class="divider" />
           <div class="d-grid mb-5">
             <pre class="form-data">{{ toIgnitionConfig(formData) }}</pre>
@@ -134,7 +134,7 @@ const toIgnitionConfig = (formData) => {
             <h2 class="mt-5">Convert to ISO FileSystem with mkisofs</h2>
 
             <pre class="form-data">
-# mkisofs -o ignition.iso -V ignition config.ign</pre
+# mkisofs -o ignition.iso -V ignition ignition.ign</pre
             >
 
             <div>
