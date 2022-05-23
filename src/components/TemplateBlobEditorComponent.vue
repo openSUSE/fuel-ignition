@@ -50,20 +50,33 @@ async function convertAndDownload() {
   let jsonByteSize = JSON.stringify(props.ignJson).length;
 
   console.log(jsonByteSize.toString(16));
-  console.log(jsonByteSize.toString(16).slice(2)[1]);
 
-  // let hexJsonByteSize =
-  //   jsonByteSize < 255
-  //     ? jsonByteSize.toString(16)
-  //     : jsonByteSize.toString(16).slice(2)[1] +
-  //       jsonByteSize.toString(16).slice(2)[0];
-
-
-  let hexJsonByteSize =
-    jsonByteSize < 255
-      ? jsonByteSize.toString(16)
-      : "4E2000"; // pad to even number and then flip in the middle
   console.log("flipped tuple: " + (jsonByteSize > 255));
+
+  let hexJsonByteSize = jsonByteSize.toString(16);
+
+  if (hexJsonByteSize.length % 2 !== 0) {
+    hexJsonByteSize = "0" + hexJsonByteSize;
+  }
+
+  // change to little endian
+
+  if (jsonByteSize > 255) {
+    console.log(hexJsonByteSize);
+
+    let middle = hexJsonByteSize.length / 2;
+    console.log("middle :>> ", middle);
+
+    let slices = [
+      hexJsonByteSize.substring(0, middle),
+      hexJsonByteSize.substring(middle),
+    ];
+
+    console.log(slices[1] + "|" + slices[0]);
+
+    hexJsonByteSize = slices[1] + slices[0];
+  }
+
   console.log(hexJsonByteSize);
 
   let file = await fetch("src/assets/template/ignition.img").then((response) =>
@@ -76,48 +89,57 @@ async function convertAndDownload() {
   console.log("jsonSize(hex): " + hexJsonByteSize);
 
   let decimalOffset = 43068 * 2; // 1 byte = 8 bit = 2^8 = 256 = 0xFF
-  file.arrayBuffer().then((buffer) => {
-    let hex = bufferToHex(buffer);
-    console.log(new Blob([hex]).size);
-    console.log(hex.slice(decimalOffset, decimalOffset + 4));
 
-    let cleanedHex = hex
-      .replace("6c6f72656d697073756d", hexJson)
-      .replaceAt(decimalOffset, hexJsonByteSize); // replace 'loremipsum' with 'helloworld', same length
+  let buffer = await file.arrayBuffer().then();
 
-    console.log(cleanedHex.slice(decimalOffset, decimalOffset + 4));
+  let hex = bufferToHex(buffer);
+  console.log(new Blob([hex]).size);
+  console.log(hex.slice(decimalOffset, decimalOffset + 4));
 
-    if (cleanedHex.length % 2) {
-      alert("Error: cleaned hex string length is odd.");
-      return;
-    }
+  let cleanedHex = hex
+    .replace("6c6f72656d697073756d", hexJson)
+    .replaceAt(decimalOffset, hexJsonByteSize); // replace 'loremipsum' with 'helloworld', same length
 
-    var binary = new Array();
-    for (var i = 0; i < cleanedHex.length / 2; i++) {
-      var h = cleanedHex.substr(i * 2, 2);
-      binary[i] = parseInt(h, 16);
-    }
+  console.log(cleanedHex.slice(decimalOffset, decimalOffset + 4));
 
-    this.loading = false;
+  if (cleanedHex.length % 2) {
+    alert("Error: cleaned hex string length is odd.");
+    return;
+  }
 
-    var byteArray = new Uint8Array(binary);
-    var a = window.document.createElement("a");
-
-    a.href = window.URL.createObjectURL(
-      new Blob([byteArray], { type: "application/octet-stream" })
+  if (JSON.stringify(props.ignJson).length > 2000) {
+    alert(
+      "Warning. The resulting image is most likely corrupt, since this config is quite large.\n\n" +
+        "If you have problems, kindly try again with a smaller config. We are actively working on this limitation." +
+        "\nFuel-Ignition is still in active development. Thank you for your understanding!"
     );
-    a.download =
-      "ignition-" +
-      alphabet[Math.floor(Math.random() * alphabet.length)].toLowerCase() +
-      ".img";
+  }
 
-    // Append anchor to body.
-    document.body.appendChild(a);
-    a.click();
+  var binary = new Array();
+  for (var i = 0; i < cleanedHex.length / 2; i++) {
+    var h = cleanedHex.substr(i * 2, 2);
+    binary[i] = parseInt(h, 16);
+  }
 
-    // Remove anchor from body
-    document.body.removeChild(a);
-  });
+  this.loading = false;
+
+  var byteArray = new Uint8Array(binary);
+  var a = window.document.createElement("a");
+
+  a.href = window.URL.createObjectURL(
+    new Blob([byteArray], { type: "application/octet-stream" })
+  );
+  a.download =
+    "ignition-" +
+    alphabet[Math.floor(Math.random() * alphabet.length)].toLowerCase() + // add random word, so there are more diverse file names for debugging
+    ".img";
+
+  // Append anchor to body.
+  document.body.appendChild(a);
+  a.click();
+
+  // Remove anchor from body
+  document.body.removeChild(a);
 }
 
 let alphabet = [
@@ -148,5 +170,6 @@ let alphabet = [
   "Yankee",
   "Zulu",
   "Nico",
+  "Ignaz",
 ];
 </script>
