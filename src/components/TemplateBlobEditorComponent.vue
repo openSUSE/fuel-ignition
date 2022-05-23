@@ -65,16 +65,8 @@ async function convertAndDownload() {
     console.log(hexJsonByteSize);
 
     let middle = hexJsonByteSize.length / 2;
-    console.log("middle :>> ", middle);
-
-    let slices = [
-      hexJsonByteSize.substring(0, middle),
-      hexJsonByteSize.substring(middle),
-    ];
-
-    console.log(slices[1] + "|" + slices[0]);
-
-    hexJsonByteSize = slices[1] + slices[0];
+    hexJsonByteSize =
+      hexJsonByteSize.substring(middle) + hexJsonByteSize.substring(0, middle);
   }
 
   console.log(hexJsonByteSize);
