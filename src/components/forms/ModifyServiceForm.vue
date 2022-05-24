@@ -68,7 +68,7 @@ export default {
             "systemd" in json
               ? json.systemd
               : {
-                  units: [{}],
+                  units: [],
                 };
 
           // see if this service unit is used already by another component

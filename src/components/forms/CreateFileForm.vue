@@ -143,9 +143,10 @@ export default {
           console.log(formValue("source_type", id));
           switch (formValue("source_type", id)) {
             case "data":
+              let dataValue = formValue("data_content", id);
               content =
                 "data:text/plain;charset=utf-8;," +
-                encodeURIComponent(formValue("data_content", id));
+                encodeURIComponent(dataValue === undefined ? "" : dataValue);
               break;
 
             case "https":
@@ -171,7 +172,7 @@ export default {
             Object.assign(
               {
                 path: formValue("path", id),
-                mode: formValue("mode", id),
+                mode: parseInt(formValue("mode", id)),
                 overwrite: formValue("overwrite", id),
                 contents: {
                   source: content,
