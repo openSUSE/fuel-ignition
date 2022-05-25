@@ -9,11 +9,15 @@ import CreateFileForm from "@/components/forms/CreateFileForm.vue";
 import StartServiceForm from "@/components/forms/StartServiceForm.vue";
 import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 
+import DebugAddBytesForm from "@/components/forms/DebugAddBytesForm.vue";
+
 const formComponents = [
   IgnitionUsersForm,
   CreateFileForm,
   StartServiceForm,
   ModifyServiceForm,
+
+  DebugAddBytesForm,
 ];
 
 const formData = ref({ debug: false });
@@ -89,6 +93,16 @@ const toIgnitionConfig = (formData) => {
               >
                 <ModifyServiceForm></ModifyServiceForm>
               </ExpandableComponent>
+
+              <div v-if="formData.debug">
+                <!-- rename to "Modify Services (Drop-Ins)"? -->
+                <ExpandableComponent
+                  title="DEBUG: Add Bytes"
+                  :displayAtLeastOne="false"
+                >
+                  <DebugAddBytesForm></DebugAddBytesForm>
+                </ExpandableComponent>
+              </div>
 
               <!-- I know it's super unnecessary, but I like it, maybe add in the future
                 <FormKit

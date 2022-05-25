@@ -99,7 +99,7 @@ async function convertAndDownload() {
     return;
   }
 
-  if (JSON.stringify(props.ignJson).length > 2000) { // check for 2048
+  if (JSON.stringify(props.ignJson).length > 2048) { // check for 2048
     alert(
       "Warning. The resulting image is most likely corrupt, since this config is quite large.\n\n" +
         "If you have problems, kindly try again with a smaller config. We are actively working on fixing this limitation." +
