@@ -1,4 +1,7 @@
 export default {
+  PasswordHashes: class {
+    static hashes = { hello: [] };
+  },
   saveTemplateAsFile: (filename, dataObjToWrite) => {
     const blob = new Blob([JSON.stringify(dataObjToWrite, null, 2)], {
       type: "text/json",
@@ -22,23 +25,28 @@ export default {
   },
 
   setupFormComponentWatcher: (component, watch, formData) => {
-    if (component !== undefined && "methods" in component && "watchFormData" in component.methods) {
-        watch(formData, async (newData, oldData) => {
-          component.methods.watchFormData(newData);
-        });
-      }
+    if (
+      component !== undefined &&
+      "methods" in component &&
+      "watchFormData" in component.methods
+    ) {
+      watch(formData, async (newData, oldData) => {
+        component.methods.watchFormData(newData, oldData);
+      });
+    }
   },
 
   uid: () => {
-    return (performance.now().toString(36)+Math.random().toString(36)).replace(/\./g,"");
+    return (
+      performance.now().toString(36) + Math.random().toString(36)
+    ).replace(/\./g, "");
   },
-
 
   getFormKey: (prefix, key, uid) => {
-    return prefix + '_' + key + '_' + uid;
+    return prefix + "_" + key + "_" + uid;
   },
 
-  getFormValue: function(prefix, formData, key, uid) {
+  getFormValue: function (prefix, formData, key, uid) {
     return formData[this.getFormKey(prefix, key, uid)];
-  }
+  },
 };

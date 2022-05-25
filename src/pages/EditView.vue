@@ -4,7 +4,7 @@ import Utils from "@/utils/utils.js";
 import ExpandableComponent from "@/components/ExpandableComponent.vue";
 import BlobEditorComponent from "@/components/TemplateBlobEditorComponent.vue";
 
-import IgnitionUsersForm from "@/components/forms/IgnitionUsersForm.vue";
+import AddUsersForm from "@/components/forms/AddUsersForm.vue";
 import CreateFileForm from "@/components/forms/CreateFileForm.vue";
 import StartServiceForm from "@/components/forms/StartServiceForm.vue";
 import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
@@ -12,7 +12,7 @@ import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 import DebugAddBytesForm from "@/components/forms/DebugAddBytesForm.vue";
 
 const formComponents = [
-  IgnitionUsersForm,
+  AddUsersForm,
   CreateFileForm,
   StartServiceForm,
   ModifyServiceForm,
@@ -69,7 +69,7 @@ const toIgnitionConfig = (formData) => {
           <div class="form-floating mb-3">
             <FormKit type="group" v-model="formData">
               <ExpandableComponent title="Add Users" :displayAtLeastOne="false">
-                <IgnitionUsersForm></IgnitionUsersForm>
+                <AddUsersForm></AddUsersForm>
               </ExpandableComponent>
 
               <ExpandableComponent

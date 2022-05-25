@@ -36,11 +36,14 @@ export default {
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))
         .forEach((id) => {
-          var str = new Array(parseInt(formValue("size", id)-128) + 1).join("B");
-          json.debugBytes = (json.debugBytes !== undefined) ? json.debugBytes : [];
+          var str = new Array(parseInt(formValue("size", id) - 128) + 1).join(
+            "B"
+          );
+          json.debugBytes =
+            json.debugBytes !== undefined ? json.debugBytes : [];
           json.debugBytes.push(str);
         });
-    }
-  }
+    },
+  },
 };
 </script>

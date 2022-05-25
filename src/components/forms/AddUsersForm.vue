@@ -18,8 +18,8 @@
       type="select"
       validation="optional"
       validation-behavior="live"
-      value="SHA-512"
-      :options="['SHA-256', 'SHA-512', 'Hash Yourself']"
+      value="bcrypt"
+      :options="['bcrypt', 'Hash Yourself']"
       help="The way you want your password to be hashed."
     />
 
@@ -77,12 +77,12 @@
 
 <script>
 import Utils from "../../utils/utils.js";
+import Bcrypt from "bcryptjs";
 const formPrefix = "user";
 
 export default {
   setup: () => {
     const uid = Utils.uid();
-
     return {
       uid,
       formKey: (key) => Utils.getFormKey(formPrefix, key, uid),
@@ -117,7 +117,7 @@ export default {
               name: formValue("name", id),
               passwordHash: userPasswdIsEmpty
                 ? undefined
-                : formValue("passwd_hashed", id),
+                : Utils.PasswordHashes.hashes[id],
               sshAuthorizedKeys:
                 publicKeys === undefined || publicKeys === ""
                   ? undefined
@@ -129,22 +129,28 @@ export default {
 
     // asynchronously hash the passwd, since the hashMessage method is async as well,
     // replace with a single call later, instead of watching the entire form
-    watchFormData: function async(newData) {
+    watchFormData: async function (newData, oldData) {
+      const formValue = (key, uid) =>
+        newData[Utils.getFormKey(formPrefix, key, uid)];
+
       Object.keys(newData)
         .filter((x) => x.includes("user_passwd") && !x.includes("hashed"))
         .map((key) => key.replace("user_passwd_", ""))
-        .forEach((id) => {
-          const passwd = newData["user_passwd_" + id];
-          if (passwd === "" || passwd === undefined) {
+        .forEach(async (id) => {
+          const password = formValue("passwd", id);
+          const hashType = formValue("hash_type", id);
+
+          const passwordIsEmpty = password === "" || password === undefined;
+
+          const passwordHasNotChanged =
+            newData["user_passwd_" + id] === oldData["user_passwd_" + id];
+
+          if (passwordIsEmpty || passwordHasNotChanged) {
             return;
           }
-
-          const hashType =
-            newData[Utils.getFormKey(formPrefix, "hash_type", id)];
-          hashMessage(passwd, hashType).then(
-            (hash) =>
-              (newData[Utils.getFormKey(formPrefix, "passwd_hashed", id)] =
-                hash)
+          
+          hashMessage(password, hashType).then(
+            (hash) => (Utils.PasswordHashes.hashes[id] = hash)
           );
         });
     },
@@ -154,19 +160,26 @@ export default {
 async function hashMessage(message, hashType) {
   if (hashType === "Hash Yourself") return message;
 
-  // encode as UTF-8
-  const msgBuffer = new TextEncoder().encode(message);
+  // TODO: implement other hash types in the future
 
-  // hash the message, hashType can be SHA-256, SHA-384, SHA-512
-  const hashBuffer = await crypto.subtle.digest(hashType, msgBuffer);
+  var salt = await Bcrypt.genSalt(10).then();
+  return Bcrypt.hash(message, salt);
 
-  // convert ArrayBuffer to Array
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  // relic from the way I used to hash
 
-  // convert bytes to hex string
-  const hashHex = hashArray
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-  return hashHex;
+  // // encode as UTF-8
+  // const msgBuffer = new TextEncoder().encode(message);
+
+  // // hash the message, hashType can be SHA-256, SHA-384, SHA-512
+  // const hashBuffer = await crypto.subtle.digest(hashType, msgBuffer);
+
+  // // convert ArrayBuffer to Array
+  // const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+  // // convert bytes to hex string
+  // const hashHex = hashArray
+  //   .map((b) => b.toString(16).padStart(2, "0"))
+  //   .join("");
+  // return hashHex;
 }
 </script>
