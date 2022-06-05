@@ -166,7 +166,7 @@ export default {
               let datavagrantValue = formValue("data_vagrant_content", id);
               content =
                 "data:," +
-                encodeURIComponent(datavagrantValue === undefined ? "" : dataValue);
+                encodeURIComponent(datavagrantValue === undefined ? "" : datavagrantValue);
               break;
 
             case "https":
