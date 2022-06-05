@@ -37,13 +37,25 @@
         v-model="sourceType"
         label="Scheme for file contents url (use data for plain text)"
         help="If source is omitted and a regular file already exists at the path, Ignition will do nothing. If source is omitted and no file exists, an empty file will be created."
-        :options="['data', 'https', 'http', 'tftp', 's3', 'gs', 'omit']"
+        :options="['data', 'data-vagrant', 'https', 'http', 'tftp', 's3', 'gs', 'omit']"
       />
     </div>
 
     <div v-if="sourceType === 'data'" class="data">
       <FormKit
         :name="formKey('data_content')"
+        label="File Content Data (required)"
+        placeholder="write the file content here, spaces, newlines etc. are preserved"
+        type="textarea"
+        validation="required"
+        validation-behavior="live"
+        help="Leaving this empty will create an empty file"
+      />
+    </div>
+
+    <div v-if="sourceType === 'data-vagrant'" class="data-vagrant">
+      <FormKit
+        :name="formKey('data_vagrant_content')"
         label="File Content Data (required)"
         placeholder="write the file content here, spaces, newlines etc. are preserved"
         type="textarea"
@@ -89,6 +101,7 @@
       v-if="
         !sourceType.includes('http') &&
         sourceType !== 'data' &&
+        sourceType !== 'data-vagrant' &&
         sourceType !== 'omit'
       "
       class="tftp-s3-gs"
@@ -147,6 +160,13 @@ export default {
               content =
                 "data:text/plain;charset=utf-8;," +
                 encodeURIComponent(dataValue === undefined ? "" : dataValue);
+              break;
+
+            case "data-vagrant":
+              let datavagrantValue = formValue("data_vagrant_content", id);
+              content =
+                "data:," +
+                encodeURIComponent(datavagrantValue === undefined ? "" : dataValue);
               break;
 
             case "https":
