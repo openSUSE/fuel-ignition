@@ -163,10 +163,10 @@ export default {
               break;
 
             case "data-vagrant":
-              let datavagrantValue = formValue("data_vagrant_content", id);
+              let dataVagrantValue = formValue("data_vagrant_content", id);
               content =
                 "data:," +
-                encodeURIComponent(datavagrantValue === undefined ? "" : datavagrantValue);
+                encodeURIComponent(dataVagrantValue === undefined ? "" : dataVagrantValue);
               break;
 
             case "https":
