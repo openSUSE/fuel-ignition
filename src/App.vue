@@ -2,7 +2,6 @@
 import { ref, watch } from "vue";
 import Utils from "./utils/utils.js";
 import Navigation from "./components/sections/NavSection.vue";
-
 import About from "./components/sections/AboutSection.vue";
 </script>
 
