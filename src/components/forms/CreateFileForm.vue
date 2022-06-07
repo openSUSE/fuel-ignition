@@ -37,7 +37,16 @@
         v-model="sourceType"
         label="Scheme for file contents url (use data for plain text)"
         help="If source is omitted and a regular file already exists at the path, Ignition will do nothing. If source is omitted and no file exists, an empty file will be created."
-        :options="['data', 'data-vagrant', 'https', 'http', 'tftp', 's3', 'gs', 'omit']"
+        :options="[
+          'data',
+          'data-vagrant',
+          'https',
+          'http',
+          'tftp',
+          's3',
+          'gs',
+          'omit',
+        ]"
       />
     </div>
 
@@ -138,6 +147,20 @@ export default {
       const formValue = (key, uid) =>
         Utils.getFormValue(formPrefix, formData, key, uid);
 
+      const b64EncodeUnicode = function (str) {
+        // first we use encodeURIComponent to get percent-encoded UTF-8,
+        // then we convert the percent encodings into raw bytes which
+        // can be fed into btoa.
+        return window.btoa(
+          encodeURIComponent(str).replace(
+            /%([0-9A-F]{2})/g,
+            function toSolidBytes(match, p1) {
+              return String.fromCharCode("0x" + p1);
+            }
+          )
+        );
+      };
+
       const keyPrefix = formPrefix + "_path_";
       Object.keys(formData)
         .filter((x) => x.includes(keyPrefix))
@@ -153,20 +176,21 @@ export default {
           let content;
           let fileObject = {};
 
-          console.log(formValue("source_type", id));
           switch (formValue("source_type", id)) {
             case "data":
               let dataValue = formValue("data_content", id);
               content =
-                "data:text/plain;charset=utf-8;," +
-                encodeURIComponent(dataValue === undefined ? "" : dataValue);
+                "data:text/plain;charset=utf-8;base64," +
+                b64EncodeUnicode(dataValue === undefined ? "" : dataValue);
               break;
 
             case "data-vagrant":
               let dataVagrantValue = formValue("data_vagrant_content", id);
               content =
                 "data:," +
-                encodeURIComponent(dataVagrantValue === undefined ? "" : dataVagrantValue);
+                encodeURIComponent(
+                  dataVagrantValue === undefined ? "" : dataVagrantValue
+                );
               break;
 
             case "https":

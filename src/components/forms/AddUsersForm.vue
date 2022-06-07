@@ -8,13 +8,13 @@
       validation="required"
       validation-behavior="live"
       value="root"
-      help="A new user will be created, if it does not exist."
+      help="A new user will be created, if it does not exist. &emsp; NOTE for MicroOS: If you want to edit a user which is not named root, you need to mount /home."
     />
 
     <FormKit
       :name="formKey('hash_type')"
       label="Password Hash Type"
-      placeholder="write the corresponding password here"
+      placeholder="bcrypt"
       type="select"
       validation="optional"
       validation-behavior="live"
@@ -42,6 +42,10 @@
       validation-behavior="live"
       help="Your keys are never sent over the internet, everything is local."
     />
+
+    <!-- {"ignition":{"version":"3.1.0"},"passwd":{"users":[{"name":"root"}]},"storage":{"filesystems":[{"device":"/dev/disk/by-label/ROOT","format":"btrfs","mountOptions":["subvol=/@/home"],"path":"/home","wipeFilesystem":false}]}} -->
+
+    <!-- Add option to append above json if microos checkbox is selected -->
   </div>
 </template>
 
