@@ -39,12 +39,10 @@ $ firefox http://localhost:3000/fuel-ignition/
 
 ## Local Development in Rancher-Desktop <img src="images/rancher_desktop.jpeg" width="75">
 
-After cloning and cd'ing to the fuel-ignition directory, you will need to edit the Dockerfile to remove `-u ${CONTAINER_USERID}` from line 5 (FIXME?).
-
 Add your own version tag as required, in this example v0.1 is used.
 
 ```
-$ nerdctl --namespace k8s.io build -t fuelignition:v0.1 .
+$ nerdctl --namespace k8s.io build -t fuelignition:v0.1 --build-arg CONTAINER_USERID=`id -u` .
 ```
 
 Once the build has completed, the image should appear in Rancher-Desktop -> Images;
