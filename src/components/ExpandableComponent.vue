@@ -8,7 +8,15 @@
         <hr class="divider" />
       </div>
     </div>
-    <button class="btn btn-primary mr-5 mb-5" @click="compCount++">
+
+    <button
+      class="btn btn-primary mr-5 mb-5"
+      @click="compCount++"
+      v-if="
+        maxComponents === -1 ||
+        (maxComponents !== -1 && maxComponents > compCount)
+      "
+    >
       <!-- who needs padding, if they can just do nonbreaking spaces? :bigbrain: -->
       &nbsp;&nbsp;&nbsp;Add&nbsp;&nbsp;&nbsp;
     </button>
@@ -41,8 +49,14 @@ const props = defineProps({
     default: true,
   },
 
+  maxComponents: {
+    // -1 == infinite, maybe find a more intuitive way
+    type: Number,
+    default: -1,
+  },
+
   title: String,
 });
 
-const compCount = ref(0);
+const compCount = ref(props.displayAtLeastOne ? 1 : 0);
 </script>

@@ -68,7 +68,11 @@ const toIgnitionConfig = (formData) => {
         <div class="col-lg-6">
           <div class="form-floating mb-3">
             <FormKit type="group" v-model="formData">
-              <ExpandableComponent title="Add Users" :displayAtLeastOne="false">
+              <ExpandableComponent
+                title="Add User"
+                :displayAtLeastOne="false"
+                :maxComponents="1"
+              >
                 <AddUsersForm></AddUsersForm>
               </ExpandableComponent>
 
