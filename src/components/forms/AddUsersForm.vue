@@ -8,7 +8,7 @@
       validation="required"
       validation-behavior="live"
       value="root"
-      help="A new user will be created, if it does not exist. &emsp; NOTE for MicroOS: If you want to edit a user which is not named root, you need to mount /home."
+      help="A new user will be created, if it does not exist."
     />
 
     <FormKit
@@ -43,9 +43,16 @@
       help="Your keys are never sent over the internet, everything is local."
     />
 
-    <!-- {"ignition":{"version":"3.1.0"},"passwd":{"users":[{"name":"root"}]},"storage":{"filesystems":[{"device":"/dev/disk/by-label/ROOT","format":"btrfs","mountOptions":["subvol=/@/home"],"path":"/home","wipeFilesystem":false}]}} -->
-
-    <!-- Add option to append above json if microos checkbox is selected -->
+    <div v-if="Utils.GlobalStorage.store.addUsers.amount == 0">
+      <FormKit
+        :name="formKey('runs_on_suse')"
+        label="Mount /home"
+        validation="required"
+        type="checkbox"
+        validation-behavior="live"
+        help="Required on SUSE related systems for creating users not named root. Otherwise, the system will boot in emergency mode"
+      />
+    </div>
   </div>
 </template>
 
@@ -57,14 +64,18 @@ const formPrefix = "user";
 export default {
   setup: () => {
     const uid = Utils.uid();
+
     return {
       uid,
+      Utils,
       formKey: (key) => Utils.getFormKey(formPrefix, key, uid),
     };
   },
 
   methods: {
     encodeToIgn: function (json, formData) {
+      Utils.GlobalStorage.store.addUsers.amount = 0;
+
       const formValue = (key, uid) =>
         Utils.getFormValue(formPrefix, formData, key, uid);
 
@@ -74,6 +85,26 @@ export default {
         .map((key) => key.replace(keyPrefix, ""))
         .forEach((id) => {
           json.passwd = "passwd" in json ? json.passwd : { users: [] };
+          Utils.GlobalStorage.store.addUsers.amount++;
+
+          if (formValue("name", id) !== "root") {
+            Utils.GlobalStorage.store.addUsers.onlyUsernameRoot = false;
+          }
+
+          // append config for mounting /home, since otherwise users not named root will cause an ignition emergency mode
+          if (formValue("runs_on_suse", id) === true) {
+            json["storage"] = {
+              filesystems: [
+                {
+                  device: "/dev/disk/by-label/ROOT",
+                  format: "btrfs",
+                  mountOptions: ["subvol=/@/home"],
+                  path: "/home",
+                  wipeFilesystem: false,
+                },
+              ],
+            };
+          }
 
           if (json.passwd.users !== undefined) {
             const publicKeys = formValue("ssh_keys", id);
@@ -122,7 +153,7 @@ export default {
           if (passwordIsEmpty || passwordHasNotChanged) {
             return;
           }
-          
+
           hashMessage(password, hashType).then(
             (hash) => (Utils.PasswordHashes.hashes[id] = hash)
           );

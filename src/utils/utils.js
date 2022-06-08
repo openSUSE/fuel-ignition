@@ -1,6 +1,9 @@
 export default {
+  GlobalStorage: class {
+    static store = { addUsers: { amount: 0 } };
+  },
   PasswordHashes: class {
-    static hashes = { hello: [] };
+    static hashes = {};
   },
   saveTemplateAsFile: (filename, dataObjToWrite) => {
     const blob = new Blob([JSON.stringify(dataObjToWrite, null, 2)], {
