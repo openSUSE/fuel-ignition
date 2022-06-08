@@ -1,3 +1,8 @@
+.double {
+  display: flex;
+  justify-content: space-between;
+}
+
 .formkit-input[type="checkbox"] {
   border-radius: 0.25em;
   width: 1em;
@@ -197,7 +202,6 @@ label {
   border: 1px solid rgba(0, 0, 0, 0.25);
   appearance: none;
   padding-top: 12px;
-  padding-bottom: 12px;
   color-adjust: exact;
 }
 .formkit-input:checked {

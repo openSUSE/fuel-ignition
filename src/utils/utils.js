@@ -26,7 +26,15 @@ export default {
     link.dispatchEvent(evt);
     link.remove();
   },
-
+  copy: function (text) {
+    var input = document.createElement("textarea");
+    input.innerHTML = text;
+    document.body.appendChild(input);
+    input.select();
+    var result = document.execCommand("copy");
+    document.body.removeChild(input);
+    return result;
+  },
   setupFormComponentWatcher: (component, watch, formData) => {
     if (
       component !== undefined &&
