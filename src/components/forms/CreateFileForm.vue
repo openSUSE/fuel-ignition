@@ -166,12 +166,13 @@ export default {
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace("create_file_path_", ""))
         .forEach((id) => {
-          json.storage =
-            "storage" in json
-              ? json.storage
-              : {
-                  files: [],
-                };
+          if (json.storage === undefined) {
+            json.storage = {};
+          }
+
+          if (json.storage.files === undefined) {
+            json.storage.files = [];
+          }
 
           let content;
           let fileObject = {};

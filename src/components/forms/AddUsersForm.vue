@@ -93,17 +93,21 @@ export default {
 
           // append config for mounting /home, since otherwise users not named root will cause an ignition emergency mode
           if (formValue("runs_on_suse", id) === true) {
-            json["storage"] = {
-              filesystems: [
-                {
-                  device: "/dev/disk/by-label/ROOT",
-                  format: "btrfs",
-                  mountOptions: ["subvol=/@/home"],
-                  path: "/home",
-                  wipeFilesystem: false,
-                },
-              ],
-            };
+            if (json.storage === undefined) {
+              json.storage = {};
+            }
+
+            if (json.storage.filesystems === undefined) {
+              json.storage.filesystems = [];
+            }
+
+            json.storage.filesystems.push({
+              device: "/dev/disk/by-label/ROOT",
+              format: "btrfs",
+              mountOptions: ["subvol=/@/home"],
+              path: "/home",
+              wipeFilesystem: false,
+            });
           }
 
           if (json.passwd.users !== undefined) {
