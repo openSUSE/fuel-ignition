@@ -7,7 +7,7 @@
     Convert and Download
   </button>
 
-  <div v-if="loading" class="sk-folding-cube">
+  <div v-if="this.loading" class="sk-folding-cube">
     <div class="sk-cube1 sk-cube"></div>
     <div class="sk-cube2 sk-cube"></div>
     <div class="sk-cube4 sk-cube"></div>
@@ -42,7 +42,7 @@ function strToHex(str) {
   return result;
 }
 
-async function convertAndDownload() {
+let convertAndDownload = async function () {
   this.loading = true;
   console.log("loading: " + this.loading);
 
@@ -71,8 +71,8 @@ async function convertAndDownload() {
 
   console.log(hexJsonByteSize);
 
-  let file = await fetch("src/assets/template/ignition-new.img").then((response) =>
-    response.blob()
+  let file = await fetch("src/assets/template/ignition-new.img").then(
+    (response) => response.blob()
   );
 
   console.log(file);
@@ -99,7 +99,8 @@ async function convertAndDownload() {
     return;
   }
 
-  if (JSON.stringify(props.ignJson).length > 2048) { // check for 2048
+  if (JSON.stringify(props.ignJson).length > 2048) {
+    // check for 2048
     alert(
       "Warning. The resulting image is most likely corrupt, since this config is quite large.\n\n" +
         "If you have problems, kindly try again with a smaller config. We are actively working on fixing this limitation." +
@@ -132,7 +133,7 @@ async function convertAndDownload() {
 
   // Remove anchor from body
   document.body.removeChild(a);
-}
+};
 
 let alphabet = [
   "Alfa",
