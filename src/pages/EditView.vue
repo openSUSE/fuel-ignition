@@ -148,7 +148,7 @@ const toIgnitionConfig = (formData) => {
               />
 
               <button
-                class="btn btn-outline-dark mb-2"
+                class="btn btn-outline-secondary mb-2"
                 @click="copyConfigToClipboard(formData)"
               >
                 Copy
