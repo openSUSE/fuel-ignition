@@ -33,10 +33,6 @@ const downloadConfigIgn = (formData) => {
 };
 
 const copyConfigToClipboard = (formData) => {
-  // copyToClipboard(
-  //   JSON.stringify(toIgnitionConfig(formData), null, 2)
-  // );
-
   Utils.copy(JSON.stringify(toIgnitionConfig(formData), null, 2));
 };
 
