@@ -1,6 +1,6 @@
 <template>
-  <div style="width: 100% !important" class="text-white">
-    <h4 class="" v-if="props.title !== undefined">{{ props.title }}</h4>
+  <div style="width: 100% !important" class="expandable-comp text-white">
+    <h4 v-if="props.title !== undefined">{{ props.title }}</h4>
 
     <div v-for="n in compCount" :key="n">
       <slot></slot>
@@ -32,13 +32,6 @@
     </button>
   </div>
 </template>
-
-<style scoped>
-hr {
-  border: none;
-  max-height: 0.1px;
-}
-</style>
 
 <script setup>
 import { ref } from "vue";
