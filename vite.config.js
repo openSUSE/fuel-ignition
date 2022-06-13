@@ -6,9 +6,6 @@ const path = require("path");
 export default defineConfig({
   plugins: [vue()],
   base: "/fuel-ignition/", // also needs to be changed in router/index.js
-  build: {
-    minify: false,
-  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
