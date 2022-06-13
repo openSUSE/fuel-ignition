@@ -40,7 +40,7 @@ Pre-bundling dependencies:
 $ firefox http://localhost:3000/fuel-ignition/
 ```
 
-## <img src="images/rancher_desktop.jpeg" width="20"> Local Development in Rancher-Desktop 
+## <img src="src/assets/template/img/readme/rancher_desktop.jpeg" width="20"> Local Development in Rancher-Desktop 
 Add your own version tag as required, in this example v0.1 is used.
 
 ```
@@ -49,7 +49,7 @@ $ nerdctl --namespace k8s.io build -t fuelignition:v0.1 --build-arg CONTAINER_US
 
 Once the build has completed, the image should appear in Rancher-Desktop -> Images;
 
-<img src="images/rancher_desktop_images.png" width="450">
+<img src="src/assets/template/img/readme/rancher_desktop_images.png" width="450">
 
 ```
 $ kubectl run --image fuelignition:v0.1 fuelignition
