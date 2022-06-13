@@ -6,10 +6,10 @@
 - [x] ask about data uri (base64 or leave it like this)
 - [x] first iso-blob implementation
 - [x] bcrypt?
-- [] add mounting
+- [x] add mounting
 - [] debug 2048 B limitation
-- [] put on github pages (better ask for forgiveness, than permission)
-- [] deploy
+- [x] put on github pages
+- [x] deploy
 - [] add simple combustion support
 - [] implement import of existing ignition json
 - [] go over every 'required' form option and evaluate whether it could be optional
