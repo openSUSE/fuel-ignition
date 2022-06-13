@@ -5,6 +5,7 @@
       label="Name of the service that you want to modify (required)"
       validation="required"
       validation-behavior="live"
+      value="example.service"
       placeholder="e.g. systemd-journald.service"
       help="The name of the unit. This must be suffixed with a valid unit type (e.g. “thing.service”)."
     />
