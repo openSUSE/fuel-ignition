@@ -7,18 +7,26 @@
     Convert and Download
   </button>
 
-  <div v-if="this.loading" class="sk-folding-cube">
+  <div v-if="loading" class="sk-folding-cube">
     <div class="sk-cube1 sk-cube"></div>
     <div class="sk-cube2 sk-cube"></div>
     <div class="sk-cube4 sk-cube"></div>
     <div class="sk-cube3 sk-cube"></div>
   </div>
+
+  <!-- workaround for a vite build production bug, where the scope changes and 'this' becomes undefined -->
+  <button id="loadingToggle" hidden @click="loading = !loading"></button>
 </template>
 
 <script setup>
 import { ref } from "vue";
 const props = defineProps(["ignJson"]);
 var loading = ref(false);
+
+function toggleLoading() {
+  // hacky workaround to access ref from three closures deep, which works on the dev server but not in a production build for some reason
+  document.querySelector("#loadingToggle").click();
+}
 
 String.prototype.replaceAt = function (index, replacement) {
   return (
@@ -43,8 +51,7 @@ function strToHex(str) {
 }
 
 let convertAndDownload = async function () {
-  this.loading = true;
-  console.log("loading: " + this.loading);
+  toggleLoading();
 
   let hexJson = strToHex(JSON.stringify(props.ignJson));
   let jsonByteSize = JSON.stringify(props.ignJson).length;
@@ -71,7 +78,7 @@ let convertAndDownload = async function () {
 
   console.log(hexJsonByteSize);
 
-  let file = await fetch("src/assets/template/ignition-new.img").then(
+  let file = await fetch("templates/ignition-base-template.img").then(
     (response) => response.blob()
   );
 
@@ -114,8 +121,6 @@ let convertAndDownload = async function () {
     binary[i] = parseInt(h, 16);
   }
 
-  this.loading = false;
-
   var byteArray = new Uint8Array(binary);
   var a = window.document.createElement("a");
 
@@ -133,6 +138,8 @@ let convertAndDownload = async function () {
 
   // Remove anchor from body
   document.body.removeChild(a);
+
+  toggleLoading();
 };
 
 let alphabet = [
