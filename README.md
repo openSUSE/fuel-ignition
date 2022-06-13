@@ -3,6 +3,9 @@
 Easily generate new or edit existing Ignition configs.
 No more fiddling around with JSON or Butane.
 
+https://opensuse.github.io/fuel-ignition/
+
+
 ## Local Development
 
 ```bash
@@ -37,8 +40,7 @@ Pre-bundling dependencies:
 $ firefox http://localhost:3000/fuel-ignition/
 ```
 
-## Local Development in Rancher-Desktop <img src="images/rancher_desktop.jpeg" width="75">
-
+## <img src="images/rancher_desktop.jpeg" width="20"> Local Development in Rancher-Desktop 
 Add your own version tag as required, in this example v0.1 is used.
 
 ```
@@ -46,6 +48,7 @@ $ nerdctl --namespace k8s.io build -t fuelignition:v0.1 --build-arg CONTAINER_US
 ```
 
 Once the build has completed, the image should appear in Rancher-Desktop -> Images;
+
 <img src="images/rancher_desktop_images.png" width="450">
 
 ```
@@ -70,9 +73,16 @@ $ kubectl delete pod fuelignition
 ```
 The created fuelignition image(s) can be deleted via Rancher-Desktop -> Images.
 
+## Build for production
+
+```bash
+npm run build
+```
+dist/ contains a minified and cleaned up production build
+
 ## Notice
 
 Fuel-ignition is still in early development and will most likely undergo massive changes.
 I'm always open to feedback and enjoy hearing your thoughts. Cheers!
 
-![human sitting in a tent next to a fire](https://i.imgur.com/LzK3sOo.png)
+<img alt="human sitting in a tent next to a fire" src="images/undraw_camping_noc8.svg" width="250">
