@@ -28,28 +28,6 @@ function toggleLoading() {
   document.querySelector("#loadingToggle").click();
 }
 
-String.prototype.replaceAt = function (index, replacement) {
-  return (
-    this.substring(0, index) +
-    replacement +
-    this.substring(index + replacement.length)
-  );
-};
-
-function bufferToHex(buffer) {
-  return [...new Uint8Array(buffer)]
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
-
-function strToHex(str) {
-  var result = "";
-  for (var i = 0; i < str.length; i++) {
-    result += str.charCodeAt(i).toString(16);
-  }
-  return result;
-}
-
 let convertAndDownload = async function () {
   toggleLoading();
 
@@ -62,11 +40,12 @@ let convertAndDownload = async function () {
 
   let hexJsonByteSize = jsonByteSize.toString(16);
 
+  // pad size with a 0 if it's not even, so we can split in the middle
   if (hexJsonByteSize.length % 2 !== 0) {
     hexJsonByteSize = "0" + hexJsonByteSize;
   }
 
-  // change to little endian
+  // change size to little endian
 
   if (jsonByteSize > 255) {
     console.log(hexJsonByteSize);
@@ -96,8 +75,8 @@ let convertAndDownload = async function () {
   console.log(hex.slice(decimalOffset, decimalOffset + 4));
 
   let cleanedHex = hex
-    .replace("6c6f72656d697073756d", hexJson)
-    .replaceAt(decimalOffset, hexJsonByteSize); // replace 'loremipsum' with 'helloworld', same length
+    .replace("6c6f72656d697073756d", hexJson) // replace 'loremipsum' with our generated content
+    .replaceAt(decimalOffset, hexJsonByteSize); // set file size in bytes at offset so the filesystem is not corrupt
 
   console.log(cleanedHex.slice(decimalOffset, decimalOffset + 4));
 
@@ -141,6 +120,28 @@ let convertAndDownload = async function () {
 
   toggleLoading();
 };
+
+String.prototype.replaceAt = function (index, replacement) {
+  return (
+    this.substring(0, index) +
+    replacement +
+    this.substring(index + replacement.length)
+  );
+};
+
+function bufferToHex(buffer) {
+  return [...new Uint8Array(buffer)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function strToHex(str) {
+  var result = "";
+  for (var i = 0; i < str.length; i++) {
+    result += str.charCodeAt(i).toString(16);
+  }
+  return result;
+}
 
 let alphabet = [
   "Alfa",
