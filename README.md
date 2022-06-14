@@ -1,10 +1,13 @@
 # Fuel Ignition
 **Ignition & Combustion Config Generator.**
 Easily generate new or edit existing Ignition configs.
+
 No more fiddling around with JSON or Butane.
 
 https://opensuse.github.io/fuel-ignition/
 
+
+<img src="src/assets/template/img/readme/edit-page-1.png" width="225"> <img src="src/assets/template/img/readme/edit-page-2.png" width="150"> 
 
 ## Local Development
 
@@ -85,4 +88,4 @@ dist/ contains a minified and cleaned up production build
 Fuel-ignition is still in early development and will most likely undergo massive changes.
 I'm always open to feedback and enjoy hearing your thoughts. Cheers!
 
-<img alt="human sitting in a tent next to a fire" src="images/undraw_camping_noc8.svg" width="250">
+<img alt="human sitting in a tent next to a fire" src="src/assets/template/img/readme/undraw_camping_noc8.svg" width="250">
