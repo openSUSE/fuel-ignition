@@ -22,11 +22,11 @@
     <FormKit
       :name="formKey('contents')"
       label="Drop-In Unit Content (required)"
-      placeholder="write the service unit content here, spaces, newlines etc. are preserved"
+      placeholder="e.g. [Service].. | spaces, newlines etc. are preserved"
       type="textarea"
       validation="required"
       validation-behavior="live"
-      help="This unit will be enabled as a dependency of multi-user.target and therefore start on boot."
+      help="Write the service unit content here, spaces, newlines etc. are preserved."
     />
   </div>
 </template>
@@ -50,21 +50,10 @@ export default {
 
       const keyPrefix = formPrefix + "_name_";
 
-      // "systemd": {
-      //   "units": [{
-      //     "name": "systemd-journald.service",
-      //     "dropins": [{
-      //       "name": "debug.conf",
-      //       "contents": "[Service]\nEnvironment=SYSTEMD_LOG_LEVEL=debug"
-      //     }]
-      //   }]
-
       Object.keys(formData)
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))
         .forEach((id) => {
-          console.log(json);
-
           json.systemd =
             "systemd" in json
               ? json.systemd

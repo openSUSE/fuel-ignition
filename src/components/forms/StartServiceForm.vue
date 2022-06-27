@@ -65,7 +65,6 @@ export default {
                 };
 
           let enabledVal = formValue("enabled", id);
-          console.log(enabledVal);
           let omitted = enabledVal === "omit";
           json.systemd.units.push({
             name: formValue("name", id),
