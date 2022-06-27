@@ -126,12 +126,13 @@ export class BlobEditor {
       this.images[imgTemplateName]
     );
 
-    // if (jsonLength > 15730099) { // number found through testing
-    //   alert(
-    //     "Warning!\n\nThe output img file system will most likely be corrupt, since the supplied JSON config is larger than 15.7 MB." +
-    //       "\n\nThis is a specific limitation of this config generator. Proceed at your own risk."
-    //   );
-    // }
+    if (jsonLength > 15730099) {
+      // number found through testing, yet since the template config.ign file is about 15.3 MB it makes sense
+      alert(
+        "Warning!\n\nThe output img file system will most likely be corrupt, since the supplied JSON config is larger than 15.7 MB." +
+          "\n\nThis is a specific limitation of this config generator. Proceed at your own risk."
+      );
+    }
 
     const buffer = await file.arrayBuffer().then();
     let imgHexStr = this.bufferToHex(buffer);
