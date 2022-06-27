@@ -7,10 +7,10 @@
 - [x] first iso-blob implementation
 - [x] bcrypt?
 - [x] add mounting
-- [] debug 2048 B limitation
+- [x] debug 2048 B limitation
 - [x] put on github pages
 - [x] deploy
-- [ ] remove 'will be enabled as dependency' text from modify service
+- [x] remove 'will be enabled as dependency' text from modify service
 - [] add simple combustion support
 - [] implement import of existing ignition json
 - [] go over every 'required' form option and evaluate whether it could be optional
