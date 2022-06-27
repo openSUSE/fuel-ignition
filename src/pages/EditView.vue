@@ -10,6 +10,7 @@ import StartServiceForm from "@/components/forms/StartServiceForm.vue";
 import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 
 import DebugAddBytesForm from "@/components/forms/DebugAddBytesForm.vue";
+import DebugAnalyzeImgForm from "@/components/forms/DebugAnalyzeImgForm.vue";
 
 const formComponents = [
   AddUsersForm,
@@ -18,6 +19,7 @@ const formComponents = [
   ModifyServiceForm,
 
   DebugAddBytesForm,
+  DebugAnalyzeImgForm,
 ];
 
 const formData = ref({ debug: false });
@@ -109,6 +111,14 @@ const toIgnitionConfig = (formData) => {
                   :displayAtLeastOne="false"
                 >
                   <DebugAddBytesForm></DebugAddBytesForm>
+                </ExpandableComponent>
+
+                <ExpandableComponent
+                  title="DEBUG: Analyze File"
+                  :displayAtLeastOne="true"
+                  :maxComponents=1
+                >
+                  <DebugAnalyzeImgForm></DebugAnalyzeImgForm>
                 </ExpandableComponent>
               </div>
 

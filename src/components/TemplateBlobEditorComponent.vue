@@ -23,154 +23,200 @@ import { ref } from "vue";
 const props = defineProps(["ignJson"]);
 var loading = ref(false);
 
-function toggleLoading() {
-  // hacky workaround to access ref from three closures deep, which works on the dev server but not in a production build for some reason
-  document.querySelector("#loadingToggle").click();
-}
+const blobEditor = new BlobEditor();
 
-let convertAndDownload = async function () {
+const convertAndDownload = async function () {
   toggleLoading();
+  let image = await blobEditor.convertToImage(props.ignJson, "zero");
+  blobEditor.downloadImageFile(image);
+  toggleLoading();
+};
 
-  let hexJson = strToHex(JSON.stringify(props.ignJson));
-  let jsonByteSize = JSON.stringify(props.ignJson).length;
+const toggleLoading = function () {
+  // hacky workaround to access ref from three or four closures deep, which works on the dev server but not in a production build for some reason
+  document.querySelector("#loadingToggle").click();
+};
+</script>
 
-  console.log(jsonByteSize.toString(16));
-
-  console.log("flipped tuple: " + (jsonByteSize > 255));
-
-  let hexJsonByteSize = jsonByteSize.toString(16);
-
-  // pad size with a 0 if it's not even, so we can split in the middle
-  if (hexJsonByteSize.length % 2 !== 0) {
-    hexJsonByteSize = "0" + hexJsonByteSize;
+<script>
+export class BlobEditor {
+  constructor() {
+    String.prototype.replaceAt = function (index, replacement) {
+      return (
+        this.substring(0, index) +
+        replacement +
+        this.substring(index + replacement.length)
+      );
+    };
   }
 
-  // change size to little endian
-
-  if (jsonByteSize > 255) {
-    console.log(hexJsonByteSize);
-
-    let middle = hexJsonByteSize.length / 2;
-    hexJsonByteSize =
-      hexJsonByteSize.substring(middle) + hexJsonByteSize.substring(0, middle);
+  bufferToHex(buffer) {
+    return [...new Uint8Array(buffer)]
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
   }
 
-  console.log(hexJsonByteSize);
-
-  let file = await fetch("templates/ignition-base-template.img").then(
-    (response) => response.blob()
-  );
-
-  console.log(file);
-
-  console.log("jsonSize(dec): " + JSON.stringify(props.ignJson).length);
-  console.log("jsonSize(hex): " + hexJsonByteSize);
-
-  let decimalOffset = 61564 * 2; // 1 byte = 8 bit = 2^8 = 256 = 0xFF
-
-  let buffer = await file.arrayBuffer().then();
-
-  let hex = bufferToHex(buffer);
-  console.log(new Blob([hex]).size);
-  console.log(hex.slice(decimalOffset, decimalOffset + 4));
-
-  let cleanedHex = hex
-    .replace("6c6f72656d697073756d", hexJson) // replace 'loremipsum' with our generated content
-    .replaceAt(decimalOffset, hexJsonByteSize); // set file size in bytes at offset so the filesystem is not corrupt
-
-  console.log(cleanedHex.slice(decimalOffset, decimalOffset + 4));
-
-  if (cleanedHex.length % 2) {
-    alert("Error: cleaned hex string length is odd.");
-    return;
+  strToHex(str) {
+    var result = "";
+    for (var i = 0; i < str.length; i++) {
+      result += str.charCodeAt(i).toString(16);
+    }
+    return result;
   }
 
-  if (JSON.stringify(props.ignJson).length > 2048) {
-    // check for 2048
-    alert(
-      "Warning. The resulting image is most likely corrupt, since this config is quite large.\n\n" +
-        "If you have problems, kindly try again with a smaller config. We are actively working on fixing this limitation." +
-        "\nFuel-Ignition is still in active development."
+  images = {
+    base: { fatDirEntry: 0xf060 },
+    zero: { fatDirEntry: 0xf060 }, // 0xf07c
+    bell: { fatDirEntry: 0xf860 },
+  };
+
+  async fetchImage(imageName) {
+    return fetch("templates/ignition-" + imageName + "-template.img").then(
+      (response) => response.blob()
     );
   }
 
-  var binary = new Array();
-  for (var i = 0; i < cleanedHex.length / 2; i++) {
-    var h = cleanedHex.substr(i * 2, 2);
-    binary[i] = parseInt(h, 16);
+  applyPaddingAndLittleEndianIfNecessary(jsonLength, jsonLengthInHex) {
+    // pad length with a 0 if it's not even, so we can split more easily for big endian little endian conversion
+    if (jsonLengthInHex.length % 2 !== 0) {
+      jsonLengthInHex = "0" + jsonLengthInHex;
+    }
+
+    console.log("bigEndian :>>", jsonLengthInHex);
+
+    if (jsonLength > 255) {
+      // split every 2 characters into array, then reverse that array ("32 16 5F" => "5F 16 32")
+      jsonLengthInHex = jsonLengthInHex.match(/.{2}/g).reverse().join("");
+      console.log("littleEndian :>> ", jsonLengthInHex);
+    }
+
+    return jsonLengthInHex + new Array(9 - jsonLengthInHex.length).join("0"); // pad to 8 bytes, to override existing file size at offset
   }
 
-  var byteArray = new Uint8Array(binary);
-  var a = window.document.createElement("a");
+  async convertToImage(json, imgTemplateName) {
+    let jsonStr = JSON.stringify(json);
+    let jsonStrHex = this.strToHex(jsonStr);
+    let jsonLength = jsonStr.length; // in bytes
+    let jsonLengthInHex = jsonLength.toString(16);
 
-  a.href = window.URL.createObjectURL(
-    new Blob([byteArray], { type: "application/octet-stream" })
-  );
-  a.download =
-    "ignition-" +
-    alphabet[Math.floor(Math.random() * alphabet.length)].toLowerCase() + // add random word, so there are more diverse file names for debugging
-    ".img";
+    console.log(
+      "images[" + imgTemplateName + "] :>> ",
+      this.images[imgTemplateName]
+    );
 
-  // Append anchor to body.
-  document.body.appendChild(a);
-  a.click();
+    jsonLengthInHex = this.applyPaddingAndLittleEndianIfNecessary(
+      jsonLength,
+      jsonLengthInHex
+    );
 
-  // Remove anchor from body
-  document.body.removeChild(a);
+    let file = await this.fetchImage(imgTemplateName);
 
-  toggleLoading();
-};
+    console.log(file);
 
-String.prototype.replaceAt = function (index, replacement) {
-  return (
-    this.substring(0, index) +
-    replacement +
-    this.substring(index + replacement.length)
-  );
-};
+    console.log("jsonSize(dec): " + jsonStr.length);
+    console.log("jsonSize(hex): " + jsonLengthInHex);
 
-function bufferToHex(buffer) {
-  return [...new Uint8Array(buffer)]
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
+    // https://de.wikipedia.org/wiki/File_Allocation_Table
 
-function strToHex(str) {
-  var result = "";
-  for (var i = 0; i < str.length; i++) {
-    result += str.charCodeAt(i).toString(16);
+    let dirEntry = this.images[imgTemplateName].fatDirEntry;
+    let fileSizeOffset = (dirEntry + 0x1c) * 2; // 4 Bytes of size
+
+    console.log(
+      "images[" + imgTemplateName + "] :>> ",
+      this.images[imgTemplateName]
+    );
+
+    // if (jsonLength > 15700000) {
+    //   alert(
+    //     "Warning!\n\nIt is very likely, that the output img file system is corrupt, since the supplied JSON config is larger than 15.7 MB." +
+    //       "\n\nThis is a specific limitation of this config generator. Proceed at your own risk."
+    //   );
+    // }
+
+    const buffer = await file.arrayBuffer().then();
+    let imgHexStr = this.bufferToHex(buffer);
+
+    console.log(
+      "fileSize slice:" + imgHexStr.slice(fileSizeOffset, fileSizeOffset + 8)
+    );
+
+    imgHexStr = imgHexStr
+      .replace("6c6f72656d697073756d", jsonStrHex) // replace 'loremipsum' with our generated content
+      .replaceAt(fileSizeOffset, jsonLengthInHex); // set the properly formatted length at the FAT-Filesize offset
+
+    console.log(
+      "fileSize slice:" + imgHexStr.slice(fileSizeOffset, fileSizeOffset + 8)
+    );
+
+    if (imgHexStr.length % 2) {
+      alert(
+        "Error: Cleaned hex string length is odd. Kindly open an issue on GitHub if the error persists."
+      );
+      return;
+    }
+
+    var binary = new Array();
+    for (var i = 0; i < imgHexStr.length / 2; i++) {
+      var h = imgHexStr.substr(i * 2, 2);
+      binary[i] = parseInt(h, 16);
+    }
+
+    var byteArray = new Uint8Array(binary);
+
+    return new Blob([byteArray], {
+      type: "application/octet-stream",
+    });
   }
-  return result;
-}
 
-let alphabet = [
-  "Alfa",
-  "Bravo",
-  "Charlie",
-  "Delta",
-  "Echo",
-  "Foxtrot",
-  "Golf",
-  "Hotel",
-  "India",
-  "Juliett",
-  "Kilo",
-  "Lima",
-  "Mike",
-  "November",
-  "Oscar",
-  "Papa",
-  "Quebec",
-  "Romeo",
-  "Sierra",
-  "Tango",
-  "Uniform",
-  "Victor",
-  "Whiskey",
-  "X-ray",
-  "Yankee",
-  "Zulu",
-  "Nico",
-  "Ignaz",
-];
+  downloadImageFile(file) {
+    var a = window.document.createElement("a");
+    a.href = window.URL.createObjectURL(file);
+    a.download =
+      "ignition-" +
+      this.alphabet[
+        Math.floor(Math.random() * this.alphabet.length) // add random word, so there are more diverse file names for debugging
+      ].toLowerCase() +
+      ".img";
+
+    // Append anchor to body.
+    document.body.appendChild(a);
+    a.click();
+
+    // Remove anchor from body
+    document.body.removeChild(a);
+  }
+
+  alphabet = [
+    "Alfa",
+    "Bravo",
+    "Charlie",
+    "Delta",
+    "Echo",
+    "Foxtrot",
+    "Golf",
+    "Hotel",
+    "India",
+    "Juliett",
+    "Kilo",
+    "Lima",
+    "Mike",
+    "November",
+    "Oscar",
+    "Papa",
+    "Quebec",
+    "Romeo",
+    "Sierra",
+    "Tango",
+    "Uniform",
+    "Victor",
+    "Whisky", // shoutout an nico
+    "X-ray",
+    "Yankee",
+    "Zulu",
+    "Nico",
+    "Ignaz",
+    "Robert",
+    "Moritz",
+  ];
+}
 </script>
