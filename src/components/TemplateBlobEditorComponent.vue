@@ -126,9 +126,9 @@ export class BlobEditor {
       this.images[imgTemplateName]
     );
 
-    // if (jsonLength > 15700000) {
+    // if (jsonLength > 15730099) { // number found through testing
     //   alert(
-    //     "Warning!\n\nIt is very likely, that the output img file system is corrupt, since the supplied JSON config is larger than 15.7 MB." +
+    //     "Warning!\n\nThe output img file system will most likely be corrupt, since the supplied JSON config is larger than 15.7 MB." +
     //       "\n\nThis is a specific limitation of this config generator. Proceed at your own risk."
     //   );
     // }
