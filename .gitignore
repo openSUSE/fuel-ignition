@@ -5,3 +5,4 @@ dist/
 *.local
 /.vscode
 deploy_gh_pages.sh
+public/templates/backup.img
