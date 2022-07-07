@@ -50,7 +50,7 @@
         validation="required"
         type="checkbox"
         validation-behavior="live"
-        help="Required on SUSE related systems for creating users not named root. Otherwise, the system will boot in emergency mode"
+        help="Required on SUSE related systems for creating users not named root. Otherwise, applying the Ignition config will fail"
       />
     </div>
   </div>

@@ -127,7 +127,7 @@ export class BlobEditor {
     );
 
     if (jsonLength > 15730099) {
-      // number found through testing, yet since the template config.ign file is about 15.3 MB it makes sense
+      // number found through testing, although since the template config.ign file is about 15.3 MB it makes sense
       alert(
         "Warning!\n\nThe output img file system will most likely be corrupt, since the supplied JSON config is larger than 15.7 MB." +
           "\n\nThis is a specific limitation of this config generator. Proceed at your own risk."
