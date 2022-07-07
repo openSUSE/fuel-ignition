@@ -188,7 +188,7 @@ const toIgnitionConfig = (formData) => {
             </button>
 
             <div>
-              <h2 class="mt-5">Convert to IMG in the Browser (In Dev)</h2>
+              <h2 class="mt-5 text-center">Convert to IMG in the Browser</h2>
 
               <BlobEditorComponent
                 :ignJson="toIgnitionConfig(formData)"

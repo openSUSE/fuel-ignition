@@ -23,13 +23,13 @@
             <div class="row">
               <div class="col-xs-6 mb-3">
                 <router-link class="btn btn-primary btn-xl" to="/edit"
-                  >Let's get started</router-link
+                  >Create New Config</router-link
                 >
               </div>
 
               <div class="col-xs-6">
-                <router-link class="btn btn-primary btn-xl" to="/import"
-                  >Edit Existing Config</router-link
+                <router-link class="btn btn-primary btn-xl" to="/convert"
+                  >JSON to Ignition IMG</router-link
                 >
               </div>
             </div>

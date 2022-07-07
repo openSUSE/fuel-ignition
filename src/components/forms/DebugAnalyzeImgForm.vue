@@ -44,8 +44,8 @@ export default {
           console.log("--- debug analyze file ---");
 
           let file;
-
           try {
+            console.log('formData["debug_analyze_file_" + id] :>> ', formData["debug_analyze_file_" + id]);
             file = Object.assign({}, formData["debug_analyze_file_" + id][0]);
           } catch (error) {}
 

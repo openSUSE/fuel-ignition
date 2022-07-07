@@ -1,33 +1,39 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from "vue-router";
 
-const base = '/fuel-ignition/'
+const base = "/fuel-ignition/";
 
-import HomeView from '../pages/HomeView.vue'
-import EditView from '../pages/EditView.vue'
-import ImportView from '@/pages/ImportView.vue'
-import TestView from '@/pages/TestView.vue'
+import HomeView from "../pages/HomeView.vue";
+import EditView from "../pages/EditView.vue";
+import ConvertView from "@/pages/ConvertView.vue";
+import ImportView from "@/pages/ImportView.vue";
+import TestView from "@/pages/TestView.vue";
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: HomeView
+    path: "/",
+    name: "Home",
+    component: HomeView,
   },
   {
-    path: '/edit',
-    name: 'Edit',
-    component: EditView
+    path: "/edit",
+    name: "Edit",
+    component: EditView,
   },
   {
-    path: '/import',
-    name: 'Import',
-    component: ImportView
+    path: "/import",
+    name: "Import",
+    component: ImportView,
   },
   {
-    path: '/test',
-    name: 'Test',
+    path: "/convert",
+    name: "Convert",
+    component: ConvertView,
+  },
+  {
+    path: "/test",
+    name: "Test",
     component: TestView,
-  }
+  },
   // {
   //   path: '/edit',
   //   name: 'Edit',
@@ -36,13 +42,13 @@ const routes = [
   //   // which is lazy-loaded when the route is visited.
   //   component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   // }
-]
+];
 
 const router = createRouter({
   history: createWebHistory(base),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
 
-export { base }
+export { base };
