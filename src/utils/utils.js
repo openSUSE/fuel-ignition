@@ -19,10 +19,13 @@ export default {
       fileReader.readAsText(file);
     });
   },
-  saveTemplateAsFile: (filename, dataObjToWrite) => {
-    const blob = new Blob([JSON.stringify(dataObjToWrite, null, 2)], {
-      type: "text/json",
-    });
+  saveTemplateAsFile: (filename, dataObjToWrite, isNotJson) => {
+    const blob = new Blob(
+      isNotJson ? [dataObjToWrite] : [JSON.stringify(dataObjToWrite, null, 2)],
+      {
+        type: "text/json",
+      }
+    );
     const link = document.createElement("a");
 
     link.download = filename;

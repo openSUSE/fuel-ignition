@@ -11,12 +11,16 @@ import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 
 import DebugAddBytesForm from "@/components/forms/DebugAddBytesForm.vue";
 import DebugAnalyzeImgForm from "@/components/forms/DebugAnalyzeImgForm.vue";
+import CombInstallPackageForm from "@/components/forms/combustion/CombInstallPackageForm.vue";
+import CombAddRawBash from "../components/forms/combustion/CombAddRawBash.vue";
 
 const formComponents = [
   AddUsersForm,
   CreateFileForm,
   StartServiceForm,
   ModifyServiceForm,
+  CombInstallPackageForm,
+  CombAddRawBash,
 
   DebugAddBytesForm,
   DebugAnalyzeImgForm,
@@ -55,7 +59,31 @@ const toIgnitionConfig = (formData) => {
     json["debug:form"] = formData;
   }
 
+  json.combustion = undefined;
+
   return json;
+};
+
+const toCombustionScript = (formData) => {
+  let json = { combustion: "" };
+
+  formComponents
+    .filter(
+      (comp) =>
+        comp.methods.hasOwnProperty("encodeToIgn") &&
+        comp.__file.includes("Comb") // probably need to replace it
+    )
+    .forEach((comp) => comp.methods.encodeToIgn(json, formData));
+
+  if (json.combustion !== "") {
+    console.log(json.combustion);
+    json.output =
+      "#!/bin/bash\n# combustion: network\n# script generated with https://opensuse.github.io/fuel-ignition/\n" +
+      json.combustion +
+      '\n# Leave a marker\necho "Configured with combustion" > /etc/issue.d/combustion';
+  }
+
+  return json.output;
 };
 </script>
 
@@ -74,6 +102,7 @@ const toIgnitionConfig = (formData) => {
           </div>
         </div>
       </div>
+
       <div class="row gx-4 gx-lg-5 justify-content-center mb-5">
         <div class="col-lg-6">
           <div class="form-floating mb-3">
@@ -96,7 +125,6 @@ const toIgnitionConfig = (formData) => {
                 <StartServiceForm></StartServiceForm>
               </ExpandableComponent>
 
-              <!-- rename to "Modify Services (Drop-Ins)"? -->
               <ExpandableComponent
                 title="Modify Services"
                 :displayAtLeastOne="false"
@@ -116,22 +144,47 @@ const toIgnitionConfig = (formData) => {
                 <ExpandableComponent
                   title="DEBUG: Analyze File"
                   :displayAtLeastOne="true"
-                  :maxComponents=1
+                  :maxComponents="1"
                 >
                   <DebugAnalyzeImgForm></DebugAnalyzeImgForm>
                 </ExpandableComponent>
               </div>
-
-              <!-- I know it's super unnecessary, but I like it, maybe add in the future
-                <FormKit
-                  name="likes_microOS"
-                  label="Opinion"
-                  help="How excited are you about MicroOS?"
-                  type="radio"
-                  value="A lot"
-                  :options="['A little', 'A lot']"
-                /> -->
             </FormKit>
+          </div>
+        </div>
+      </div>
+
+      <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-lg-8 col-xl-6 text-white text-center">
+          <h1 class="mt-5">Add Combustion Scripts</h1>
+          <hr class="divider" />
+          <div class="d-grid mb-5">
+            <img
+              class="text-center mx-auto w-50"
+              src="@/assets/template/img/undraw_building_blocks_re_5ahy.svg"
+            />
+          </div>
+        </div>
+
+        <div class="row gx-4 gx-lg-5 justify-content-center mb-5">
+          <div class="col-lg-6">
+            <div class="form-floating mb-3">
+              <FormKit type="group" v-model="formData">
+                <ExpandableComponent
+                  title="Install Package With Combustion"
+                  :displayAtLeastOne="false"
+                >
+                  <CombInstallPackageForm></CombInstallPackageForm>
+                </ExpandableComponent>
+
+                <ExpandableComponent
+                  title="Add Custom Lines To Combustion Script"
+                  :displayAtLeastOne="false"
+                >
+                  <CombAddRawBash></CombAddRawBash>
+                </ExpandableComponent>
+              </FormKit>
+            </div>
           </div>
         </div>
       </div>
@@ -187,15 +240,44 @@ const toIgnitionConfig = (formData) => {
               Download
             </button>
 
+            <div v-if="toCombustionScript(formData) !== undefined">
+              <h1 class="mt-5 text-center">combustion script</h1>
+              <hr class="divider" />
+              <div class="d-grid mb-5">
+                <pre class="form-data">{{ toCombustionScript(formData) }}</pre>
+
+                <button
+                  class="btn btn-primary mb-4"
+                  @click="
+                    Utils.saveTemplateAsFile(
+                      'script',
+                      toCombustionScript(formData),
+                      true // isNotJson parameter
+                    )
+                  "
+                >
+                  Download
+                </button>
+              </div>
+            </div>
+
             <div>
-              <h2 class="mt-5 text-center">Convert to IMG in the Browser</h2>
+              <h2 class="mt-5 text-center">
+                Convert to Ignition-<span
+                  v-if="toCombustionScript(formData) !== undefined"
+                  >Combustion-</span
+                >Ready Filesystem IMG in the Browser
+              </h2>
 
               <BlobEditorComponent
                 :ignJson="toIgnitionConfig(formData)"
+                :combustionScript="toCombustionScript(formData)"
               ></BlobEditorComponent>
             </div>
 
-            <h2 class="mt-5">Convert to ISO FileSystem with mkisofs</h2>
+            <h2 class="mt-5 text-center">
+              Convert to ISO Filesystem with mkisofs
+            </h2>
 
             <pre class="form-data">
 # mkisofs -o ignition.iso -V ignition config.ign</pre

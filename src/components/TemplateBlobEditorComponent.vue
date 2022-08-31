@@ -20,14 +20,17 @@
 
 <script setup>
 import { ref } from "vue";
-const props = defineProps(["ignJson"]);
+const props = defineProps(["ignJson", "combustionScript"]);
 var loading = ref(false);
 
 const blobEditor = new BlobEditor();
 
 const convertAndDownload = async function () {
   toggleLoading();
-  let image = await blobEditor.convertToImage(props.ignJson, "zero");
+  let image = await blobEditor.convertToImage(
+    props.ignJson,
+    props.combustionScript
+  );
   blobEditor.downloadImageFile(image);
   toggleLoading();
 };
@@ -48,6 +51,18 @@ export class BlobEditor {
         this.substring(index + replacement.length)
       );
     };
+
+    String.prototype.hexEncode = function () {
+      var hex, i;
+
+      var result = "";
+      for (i = 0; i < this.length; i++) {
+        hex = this.charCodeAt(i).toString(16);
+        result += ("000" + hex).slice(-4);
+      }
+
+      return result;
+    };
   }
 
   bufferToHex(buffer) {
@@ -65,9 +80,8 @@ export class BlobEditor {
   }
 
   images = {
-    base: { fatDirEntry: 0xf060 },
-    zero: { fatDirEntry: 0xf060 }, // 0xf07c
-    bell: { fatDirEntry: 0xf860 },
+    zero: { ignFatDirEntry: 0xf060 }, // 0xf07c
+    combustion: { ignFatDirEntry: 0xf0c0, combFatDirEntry: 0xf8c0 },
   };
 
   async fetchImage(imageName) {
@@ -93,11 +107,14 @@ export class BlobEditor {
     return jsonLengthInHex + new Array(9 - jsonLengthInHex.length).join("0"); // pad to 8 bytes, to override existing file size at offset
   }
 
-  async convertToImage(json, imgTemplateName) {
+  async convertToImage(json, combustionScript) {
     let jsonStr = JSON.stringify(json);
-    let jsonStrHex = this.strToHex(jsonStr);
-    let jsonLength = jsonStr.length; // in bytes
+    let jsonStrHex = jsonStr.hexEncode();
+    let jsonLength = jsonStr.length * 2; // in bytes
     let jsonLengthInHex = jsonLength.toString(16);
+    let imgTemplateName =
+      combustionScript === undefined ? "zero" : "combustion"; // TODO: rename zero template to ignition-only
+    let hasCombustion = combustionScript !== undefined;
 
     console.log(
       "images[" + imgTemplateName + "] :>> ",
@@ -113,12 +130,13 @@ export class BlobEditor {
 
     console.log(file);
 
-    console.log("jsonSize(dec): " + jsonStr.length);
+    console.log("jsonSize(dec): " + jsonStr.length * 2);
     console.log("jsonSize(hex): " + jsonLengthInHex);
 
     // https://de.wikipedia.org/wiki/File_Allocation_Table
 
-    let dirEntry = this.images[imgTemplateName].fatDirEntry;
+    let dirEntry = this.images[imgTemplateName].ignFatDirEntry;
+    console.log("dirEntry :>> ", dirEntry);
     let fileSizeOffset = (dirEntry + 0x1c) * 2; // 4 Bytes of size
 
     console.log(
@@ -126,7 +144,7 @@ export class BlobEditor {
       this.images[imgTemplateName]
     );
 
-    if (jsonLength > 15730099) {
+    if (jsonLength > 15730099 || (hasCombustion && jsonLength > 7865049)) {
       // number found through testing, although since the template config.ign file is about 15.3 MB it makes sense
       alert(
         "Warning!\n\nThe output img file system will most likely be corrupt, since the supplied JSON config is larger than 15.7 MB." +
@@ -141,9 +159,43 @@ export class BlobEditor {
       "fileSize slice:" + imgHexStr.slice(fileSizeOffset, fileSizeOffset + 8)
     );
 
+    console.log("--- ignJsonHex ---");
+    console.log(jsonStrHex);
+    console.log("---");
+
     imgHexStr = imgHexStr
       .replace("6c6f72656d697073756d", jsonStrHex) // replace 'loremipsum' with our generated content
       .replaceAt(fileSizeOffset, jsonLengthInHex); // set the properly formatted length at the FAT-Filesize offset
+
+    if (hasCombustion && true) {
+      console.log("-- working on combustion hex --");
+      let combDirEntry = this.images[imgTemplateName].combFatDirEntry;
+      let combFileSizeOffset = (combDirEntry + 0x1c) * 2; // 4 Bytes of size
+
+      // let combScriptHex = this.strToHex(combustionScript);
+      let combScriptHex = combustionScript.hexEncode();
+      console.log("combustionScript :>> ", combustionScript);
+      console.log("--- cmbScriptHex ---");
+      console.log(combScriptHex);
+      console.log("---");
+      let combScriptLength = combustionScript.length * 2; // in bytes
+      let combScriptLengthInHex = combScriptLength.toString(16);
+
+      combScriptLengthInHex = this.applyPaddingAndLittleEndianIfNecessary(
+        combScriptLength,
+        combScriptLengthInHex
+      );
+
+      console.log("combScriptLengthInHex :>> ", combScriptLengthInHex);
+
+      imgHexStr = imgHexStr
+        .replace(
+          "646f6c6f72736974616d" +
+            new Array(combScriptLength * 2 - 19).join("0"),
+          combScriptHex
+        ) // replace 'dolorsitam' with combustion script content
+        .replaceAt(combFileSizeOffset, combScriptLengthInHex); // set the properly formatted length at the FAT-Filesize offset
+    }
 
     console.log(
       "fileSize slice:" + imgHexStr.slice(fileSizeOffset, fileSizeOffset + 8)
