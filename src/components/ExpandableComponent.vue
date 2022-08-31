@@ -9,27 +9,29 @@
       </div>
     </div>
 
-    <button
-      class="btn btn-primary mr-5 mb-5"
-      @click="compCount++"
-      v-if="
-        maxComponents === -1 ||
-        (maxComponents !== -1 && maxComponents > compCount)
-      "
-    >
-      <!-- who needs padding, if they can just do nonbreaking spaces? :bigbrain: -->
-      &nbsp;&nbsp;&nbsp;Add&nbsp;&nbsp;&nbsp;
-    </button>
+    <div class="mt-1">
+      <button
+        class="btn btn-primary mr-5 mb-5"
+        @click="compCount++"
+        v-if="
+          maxComponents === -1 ||
+          (maxComponents !== -1 && maxComponents > compCount)
+        "
+      >
+        <!-- who needs padding, if they can just do nonbreaking spaces? :bigbrain: -->
+        &nbsp;&nbsp;&nbsp;Add&nbsp;&nbsp;&nbsp;
+      </button>
 
-    <button
-      v-if="compCount > 1 || (!props.displayAtLeastOne && compCount > 0)"
-      class="btn btn-danger ml-5 mr-5 mb-5"
-      @click="
-        compCount > 1 || !props.displayAtLeastOne ? compCount-- : compCount
-      "
-    >
-      Remove
-    </button>
+      <button
+        v-if="compCount > 1 || (!props.displayAtLeastOne && compCount > 0)"
+        class="btn btn-danger ml-5 mr-5 mb-5"
+        @click="
+          compCount > 1 || !props.displayAtLeastOne ? compCount-- : compCount
+        "
+      >
+        Remove
+      </button>
+    </div>
   </div>
 </template>
 
