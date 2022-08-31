@@ -68,11 +68,7 @@ const toCombustionScript = (formData) => {
   let json = { combustion: "" };
 
   formComponents
-    .filter(
-      (comp) =>
-        comp.methods.hasOwnProperty("encodeToIgn") &&
-        comp.__file.includes("Comb") // probably need to replace it
-    )
+    .filter((comp) => comp.methods.hasOwnProperty("encodeToIgn"))
     .forEach((comp) => comp.methods.encodeToIgn(json, formData));
 
   if (json.combustion !== "") {
@@ -119,14 +115,14 @@ const toCombustionScript = (formData) => {
               </ExpandableComponent>
 
               <ExpandableComponent
-                title="Start Services"
+                title="Enable or Create Services"
                 :displayAtLeastOne="false"
               >
                 <StartServiceForm></StartServiceForm>
               </ExpandableComponent>
 
               <ExpandableComponent
-                title="Modify Services"
+                title="Modify Existing Services"
                 :displayAtLeastOne="false"
               >
                 <ModifyServiceForm></ModifyServiceForm>
