@@ -1,9 +1,0 @@
-node_modules
-.DS_Store
-dist-ssr
-dist/
-*.local
-/.vscode
-deploy_gh_pages.sh
-public/templates/backup.img
-public/templates/combustion.img
