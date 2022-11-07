@@ -96,7 +96,7 @@ export class BlobEditor {
   }
 
   async convertToImage(json, combustionScript) {
-    let jsonStr = JSON.stringify(json);
+    let jsonStr = JSON.stringify(json, null, 2);
     let imgTemplateName =
       combustionScript === undefined ? "zero" : "combustion"; // TODO: rename zero template to ignition-only
     let hasCombustion = combustionScript !== undefined;
