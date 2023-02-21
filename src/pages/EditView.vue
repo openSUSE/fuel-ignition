@@ -6,6 +6,8 @@ import BlobEditorComponent from "@/components/TemplateBlobEditorComponent.vue";
 
 import AddUsersForm from "@/components/forms/AddUsersForm.vue";
 import CreateFileForm from "@/components/forms/CreateFileForm.vue";
+import AddHostnameForm from "@/components/forms/AddHostnameForm.vue";
+import AddNetworkForm from "@/components/forms/AddNetworkForm.vue";
 import StartServiceForm from "@/components/forms/StartServiceForm.vue";
 import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 
@@ -17,6 +19,8 @@ import CombAddRawBash from "../components/forms/combustion/CombAddRawBash.vue";
 const formComponents = [
   AddUsersForm,
   CreateFileForm,
+  AddHostnameForm,
+  AddNetworkForm,
   StartServiceForm,
   ModifyServiceForm,
   CombInstallPackageForm,
@@ -112,6 +116,21 @@ const toCombustionScript = (formData) => {
                 :displayAtLeastOne="false"
               >
                 <CreateFileForm></CreateFileForm>
+              </ExpandableComponent>
+
+              <ExpandableComponent
+                title="Add Hostname"
+                :displayAtLeastOne="false"
+		:maxComponents="1"
+              >
+                <AddHostnameForm></AddHostnameForm>
+              </ExpandableComponent>
+
+              <ExpandableComponent
+                title="Add Network Interface"
+                :displayAtLeastOne="false"
+              >
+                <AddNetworkForm></AddNetworkForm>
               </ExpandableComponent>
 
               <ExpandableComponent
