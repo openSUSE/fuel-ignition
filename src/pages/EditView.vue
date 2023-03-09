@@ -6,19 +6,25 @@ import BlobEditorComponent from "@/components/TemplateBlobEditorComponent.vue";
 
 import AddUsersForm from "@/components/forms/AddUsersForm.vue";
 import CreateFileForm from "@/components/forms/CreateFileForm.vue";
+import AddHostnameForm from "@/components/forms/AddHostnameForm.vue";
+import AddNetworkForm from "@/components/forms/AddNetworkForm.vue";
 import StartServiceForm from "@/components/forms/StartServiceForm.vue";
 import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 
 import DebugAddBytesForm from "@/components/forms/DebugAddBytesForm.vue";
 import DebugAnalyzeImgForm from "@/components/forms/DebugAnalyzeImgForm.vue";
+import CombRegistrationForm from "@/components/forms/combustion/CombRegistrationForm.vue";
 import CombInstallPackageForm from "@/components/forms/combustion/CombInstallPackageForm.vue";
 import CombAddRawBash from "../components/forms/combustion/CombAddRawBash.vue";
 
 const formComponents = [
   AddUsersForm,
   CreateFileForm,
+  AddHostnameForm,
+  AddNetworkForm,
   StartServiceForm,
   ModifyServiceForm,
+  CombRegistrationForm,
   CombInstallPackageForm,
   CombAddRawBash,
 
@@ -75,6 +81,8 @@ const toCombustionScript = (formData) => {
     console.log(json.combustion);
     json.output =
       "#!/bin/bash\n# combustion: network\n# script generated with https://opensuse.github.io/fuel-ignition/\n" +
+      "\n# Redirect output to the console\n" +
+      "exec > >(exec tee -a /dev/tty0) 2>&1\n" +
       json.combustion +
       '\n# Leave a marker\necho "Configured with combustion" > /etc/issue.d/combustion';
   }
@@ -112,6 +120,21 @@ const toCombustionScript = (formData) => {
                 :displayAtLeastOne="false"
               >
                 <CreateFileForm></CreateFileForm>
+              </ExpandableComponent>
+
+              <ExpandableComponent
+                title="Add Hostname"
+                :displayAtLeastOne="false"
+		:maxComponents="1"
+              >
+                <AddHostnameForm></AddHostnameForm>
+              </ExpandableComponent>
+
+              <ExpandableComponent
+                title="Add Network Interface"
+                :displayAtLeastOne="false"
+              >
+                <AddNetworkForm></AddNetworkForm>
               </ExpandableComponent>
 
               <ExpandableComponent
@@ -166,6 +189,13 @@ const toCombustionScript = (formData) => {
           <div class="col-lg-6">
             <div class="form-floating mb-3">
               <FormKit type="group" v-model="formData">
+                <ExpandableComponent
+                  title="Product Registration"
+                  :displayAtLeastOne="false"
+                >
+                  <CombRegistrationForm></CombRegistrationForm>
+                </ExpandableComponent>
+
                 <ExpandableComponent
                   title="Install Package With Combustion"
                   :displayAtLeastOne="false"
