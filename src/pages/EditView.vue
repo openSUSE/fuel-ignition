@@ -192,14 +192,14 @@ const toCombustionScript = (formData) => {
             <div class="form-floating mb-3">
               <FormKit type="group" v-model="formData">
                 <ExpandableComponent
-                  title="Product Registration"
+                  title="Register Product"
                   :displayAtLeastOne="false"
                 >
                   <CombRegistrationForm></CombRegistrationForm>
                 </ExpandableComponent>
 
                 <ExpandableComponent
-                  title="Salt Minion"
+                  title="Connect to Salt Master"
                   :maxComponents="1"
                   :displayAtLeastOne="false"
                 >
@@ -316,7 +316,7 @@ const toCombustionScript = (formData) => {
             </h2>
 
             <pre class="form-data">
-# mkisofs -o ignition.iso -V ignition config.ign</pre
+# mkisofs -full-iso9660-filenames -o ignition.iso -V ignition config.ign</pre
             >
           </div>
         </div>
