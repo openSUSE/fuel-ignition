@@ -18,6 +18,7 @@
   />
 
   <div v-if="ipv4enabled === true">
+    <hr class="divider divider-long" />
     <FormKit
       type="select"
       :name="formKey('ipv4_network_type')"
@@ -29,42 +30,59 @@
         'fixed IPv4 Address',
       ]"
     />
-  </div>
 
-  <div v-if="ipv4networkType === 'fixed IPv4 Address' && ipv4enabled === true">
+    <div v-if="ipv4networkType === 'fixed IPv4 Address'">
+      <FormKit
+        :name="formKey('ipv4_address')"
+        label="IPv4 Address"
+        placeholder="___.___.___.___"
+        type="text"
+        :validation="[['required'],['matches', /^(([1-9]?\d|[12]\d\d)\.){3}([1-9]?\d|[12]\d\d)$/]]"
+        :validation-messages="{
+           matches: 'IP number must be in the format xxx.xxx.xxx.xxx',
+        }"
+        help="IPv4 address in the format xxx.xxx.xxx.xxx"
+        validation-visibility="live"
+      />
+      <FormKit
+        :name="formKey('ipv4_netmask')"
+        label="IPv4-Netmask"
+        type="number"
+        value="24"
+        validation="between:0,32"
+        validation-visibility="live"
+        help="Values between 0 and 32"
+      />
+      <FormKit
+        :name="formKey('ipv4_gateway')"
+        label="IPv4-Gateway"
+        placeholder="___.___.___.___"
+        type="text"
+        :validation="[['matches', /^(([1-9]?\d|[12]\d\d)\.){3}([1-9]?\d|[12]\d\d)$/]]"
+        :validation-messages="{
+          matches: 'IP number must be in the format xxx.xxx.xxx.xxx',
+        }"
+        help="Gateway address in the format xxx.xxx.xxx.xxx"
+        validation-visibility="live"
+      />
+    </div>
+
     <FormKit
-      :name="formKey('ipv4_address')"
-      label="IPv4 Address"
-      placeholder="___.___.___.___"
+      :name="formKey('ipv4_auto_dns')"
+      label="Evaluate IPv4 DNS servers via DHCP"
+      type="checkbox"
+      :value=true
+      validation-behavior="live"
+      help="DNS server settings are evalutated automatically."
+    />
+    <FormKit
+      :name="formKey('ipv4_dns')"
+      label="IPv4 DNS servers"
       type="text"
-      :validation="[['required'],['matches', /^(([1-9]?\d|[12]\d\d)\.){3}([1-9]?\d|[12]\d\d)$/]]"
-      :validation-messages="{
-         matches: 'IP number must be in the format xxx.xxx.xxx.xxx',
-      }"
-      help="IPv4 address in the format xxx.xxx.xxx.xxx"
-      validation-visibility="live"
+      validation-behavior="live"
+      help="Additional DNS servers separated by a semicolon (;)."
     />
-    <FormKit
-      :name="formKey('ipv4_netmask')"
-      label="IPv4-Netmask"
-      type="number"
-      value="24"
-      validation="between:0,32"
-      validation-visibility="live"
-      help="Values between 0 and 32"
-    />
-    <FormKit
-      :name="formKey('ipv4_gateway')"
-      label="IPv4-Gateway"
-      placeholder="___.___.___.___"
-      type="text"
-      :validation="[['matches', /^(([1-9]?\d|[12]\d\d)\.){3}([1-9]?\d|[12]\d\d)$/]]"	
-      :validation-messages="{
-         matches: 'IP number must be in the format xxx.xxx.xxx.xxx',
-      }"
-      help="Gateway address in the format xxx.xxx.xxx.xxx"
-      validation-visibility="live"
-    />
+    <hr class="divider divider-long"/>
   </div>
 
   <FormKit
@@ -76,6 +94,7 @@
   />
 
   <div v-if="ipv6enabled === true">
+    <hr class="divider divider-long"/>
     <FormKit
       type="select"
       :name="formKey('ipv6_network_type')"
@@ -87,42 +106,59 @@
         'fixed IPv6 Address',
       ]"
     />
-  </div>
 
-  <div v-if="ipv6networkType === 'fixed IPv6 Address' && ipv6enabled === true">
+    <div v-if="ipv6networkType === 'fixed IPv6 Address'">
+      <FormKit
+        :name="formKey('ipv6_address')"
+        label="IPv6 Address"
+        placeholder="____:____:____:____:____:____:____:____"
+        type="text"
+        :validation="[['required'],['matches', /^[0-9a-fA-F]{1,4}(:[0-9a-fA-F]{1,4}){7}$/]]"
+        :validation-messages="{
+           matches: 'IP number must be in the format ____:____:____:____:____:____:____:____',
+        }"
+        help="IPv6 address in the format ____:____:____:____:____:____:____:____"
+        validation-visibility="live"
+      />
+      <FormKit
+        :name="formKey('ipv6_netmask')"
+        label="IPv6-Netmask"
+        type="number"
+        value="64"
+        validation="between:0,128"
+        validation-visibility="live"
+        help="Values between 0 and 128"
+      />
+      <FormKit
+        :name="formKey('ipv6_gateway')"
+        label="IPv6-Gateway"
+        placeholder="____:____:____:____:____:____:____:____"
+        type="text"
+        :validation="[['matches', /^[0-9a-fA-F]{1,4}(:[0-9a-fA-F]{1,4}){7}$/]]"
+        :validation-messages="{
+           matches: 'IP number must be in the format ____:____:____:____:____:____:____:____',
+        }"
+        help="Gateway address in the format ____:____:____:____:____:____:____:____"
+        validation-visibility="live"
+      />
+    </div>
+
     <FormKit
-      :name="formKey('ipv6_address')"
-      label="IPv6 Address"
-      placeholder="____:____:____:____:____:____:____:____"
+      :name="formKey('ipv6_auto_dns')"
+      label="Evaluate IPv6 DNS servers via DHCP"
+      type="checkbox"
+      :value=true
+      validation-behavior="live"
+      help="DNS server settings are evalutated automatically."
+    />
+    <FormKit
+      :name="formKey('ipv6_dns')"
+      label="IPv6 DNS servers"
       type="text"
-      :validation="[['required'],['matches', /^[0-9a-fA-F]{1,4}(:[0-9a-fA-F]{1,4}){7}$/]]"
-      :validation-messages="{
-         matches: 'IP number must be in the format ____:____:____:____:____:____:____:____',
-      }"
-      help="IPv6 address in the format ____:____:____:____:____:____:____:____"
-      validation-visibility="live"
+      validation-behavior="live"
+      help="Additional DNS servers separated by a semicolon (;)."
     />
-    <FormKit
-      :name="formKey('ipv6_netmask')"
-      label="IPv6-Netmask"
-      type="number"
-      value="64"
-      validation="between:0,128"
-      validation-visibility="live"
-      help="Values between 0 and 128"
-    />
-    <FormKit
-      :name="formKey('ipv6_gateway')"
-      label="IPv6-Gateway"
-      placeholder="____:____:____:____:____:____:____:____"
-      type="text"
-      :validation="[['matches', /^[0-9a-fA-F]{1,4}(:[0-9a-fA-F]{1,4}){7}$/]]"
-      :validation-messages="{
-         matches: 'IP number must be in the format ____:____:____:____:____:____:____:____',
-      }"
-      help="Gateway address in the format ____:____:____:____:____:____:____:____"
-      validation-visibility="live"
-    />
+    <hr class="divider divider-long" />
   </div>
 
   <FormKit
@@ -231,7 +267,9 @@ export default {
           let fileObject = {}
 	  const wifi_enabled = formValue("wifi_enabled", id)
           const ipv4_enabled = formValue("ipv4_enabled", id)
+          const ipv4_auto_dns_enabled = formValue("ipv4_auto_dns", id)
           const ipv6_enabled = formValue("ipv6_enabled", id)
+          const ipv6_auto_dns_enabled = formValue("ipv6_auto_dns", id)
 	  const ipv4_dhcp_enabled = formValue("ipv4_network_type", id) === "DHCP"
 	  const ipv6_dhcp_enabled = formValue("ipv6_network_type", id) === "DHCP"
 	  const key_mgmt = formValue("key_mgmt", id)
@@ -258,6 +296,12 @@ export default {
 	      }
               content = content.concat( "\n" )
             }
+	    if (formValue("ipv4_dns", id)) {
+	      content = content.concat( "dns=", formValue("ipv4_dns", id), "\n")
+	    }
+	    if (ipv4_auto_dns_enabled == false) {
+	      content = content.concat( "ignore_auto_dns=true\n" )
+	    }
           } else {
             content = content.concat( "method=disabled", "\n" )
           }
@@ -276,6 +320,12 @@ export default {
 	      }
               content = content.concat( "\n" )
             }
+	    if (formValue("ipv6_dns", id)) {
+	      content = content.concat( "dns=", formValue("ipv6_dns", id), "\n")
+	    }
+	    if (ipv6_auto_dns_enabled == false) {
+	      content = content.concat( "ignore_auto_dns=true\n" )
+	    }
           } else {
             content = content.concat( "method=ignore", "\n" )
           }
@@ -298,7 +348,8 @@ export default {
                 mode: 600,
                 overwrite: true,
                 contents: {
-                  source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content)
+                  source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
+		  visible: content
                 },
               },
               fileObject
