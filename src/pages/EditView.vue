@@ -14,6 +14,7 @@ import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 import DebugAddBytesForm from "@/components/forms/DebugAddBytesForm.vue";
 import DebugAnalyzeImgForm from "@/components/forms/DebugAnalyzeImgForm.vue";
 import CombRegistrationForm from "@/components/forms/combustion/CombRegistrationForm.vue";
+import CombSaltForm from "@/components/forms/combustion/CombSaltForm.vue";
 import CombInstallPackageForm from "@/components/forms/combustion/CombInstallPackageForm.vue";
 import CombAddRawBash from "../components/forms/combustion/CombAddRawBash.vue";
 
@@ -25,6 +26,7 @@ const formComponents = [
   StartServiceForm,
   ModifyServiceForm,
   CombRegistrationForm,
+  CombSaltForm,
   CombInstallPackageForm,
   CombAddRawBash,
 
@@ -190,10 +192,18 @@ const toCombustionScript = (formData) => {
             <div class="form-floating mb-3">
               <FormKit type="group" v-model="formData">
                 <ExpandableComponent
-                  title="Product Registration"
+                  title="Register Product"
                   :displayAtLeastOne="false"
                 >
                   <CombRegistrationForm></CombRegistrationForm>
+                </ExpandableComponent>
+
+                <ExpandableComponent
+                  title="Connect to Salt Master"
+                  :maxComponents="1"
+                  :displayAtLeastOne="false"
+                >
+                  <CombSaltForm></CombSaltForm>
                 </ExpandableComponent>
 
                 <ExpandableComponent
@@ -306,7 +316,7 @@ const toCombustionScript = (formData) => {
             </h2>
 
             <pre class="form-data">
-# mkisofs -o ignition.iso -V ignition config.ign</pre
+# mkisofs -full-iso9660-filenames -o ignition.iso -V ignition config.ign</pre
             >
           </div>
         </div>

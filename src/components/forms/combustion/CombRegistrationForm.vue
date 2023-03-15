@@ -1,37 +1,35 @@
 <!-- Adds product registrations to combustion bash script -->
 
 <template>
-  <div class="combregistration">
-    <FormKit
-      :name="formKey('registrationserver')"
-      label="Registration server"
-      type="text"
-      value="https://scc.suse.com"
-      help="URL of the registration server"
-    />
-    <FormKit
-      :name="formKey('product')"
-      label="Product name"
-      type="text"
-      value="Base Product"
-      help="Product or extension name"
-    />
-    <FormKit
-      :name="formKey('regcode')"
-      label="Registration code"
-      type="text"
-      value=""
-      help="Subscription registration code for the product to be registered."
-    />
-    <FormKit
-      :name="formKey('email')"
-      label="Email"
-      type="email"
-      validation="required|email"
-      validation-visibility="live"
-      help="Email address for which the registration will be done."
-    />
-  </div>
+  <FormKit
+    :name="formKey('registrationserver')"
+    label="Registration server"
+    type="text"
+    value="https://scc.suse.com"
+    help="URL of the registration server"
+  />
+  <FormKit
+    :name="formKey('product')"
+    label="Product name"
+    type="text"
+    value="Base Product"
+    help="Product or extension name"
+  />
+  <FormKit
+    :name="formKey('regcode')"
+    label="Registration code"
+    type="text"
+    value=""
+    help="Subscription registration code for the product to be registered."
+  />
+  <FormKit
+    :name="formKey('email')"
+    label="Email"
+    type="email"
+    validation="required|email"
+    validation-visibility="live"
+    help="Email address for which the registration will be done."
+  />
 </template>
 
 <script>
