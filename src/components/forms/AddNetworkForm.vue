@@ -18,12 +18,15 @@
   />
 
   <div v-if="ipv4enabled === true">
-    <hr class="divider divider-long" />
+    <div class="container-fluid">
+    <div class="row">
+    <div class="col-1"></div>
+    <div class="col-12">
     <FormKit
       type="select"
       :name="formKey('ipv4_network_type')"
       v-model="ipv4networkType"
-      label="IPv4 Network Address via"
+      label="Network Address via"
       help="Select how the network address of the interface will be set/evaluated."
       :options="[
         'DHCP',
@@ -34,7 +37,7 @@
     <div v-if="ipv4networkType === 'fixed IPv4 Address'">
       <FormKit
         :name="formKey('ipv4_address')"
-        label="IPv4 Address"
+        label="IP Address"
         placeholder="___.___.___.___"
         type="text"
         :validation="[['required'],['matches', /^(([1-9]?\d|[12]\d\d)\.){3}([1-9]?\d|[12]\d\d)$/]]"
@@ -46,7 +49,7 @@
       />
       <FormKit
         :name="formKey('ipv4_netmask')"
-        label="IPv4-Netmask"
+        label="Netmask"
         type="number"
         value="24"
         validation="between:0,32"
@@ -55,7 +58,7 @@
       />
       <FormKit
         :name="formKey('ipv4_gateway')"
-        label="IPv4-Gateway"
+        label="Gateway"
         placeholder="___.___.___.___"
         type="text"
         :validation="[['matches', /^(([1-9]?\d|[12]\d\d)\.){3}([1-9]?\d|[12]\d\d)$/]]"
@@ -69,7 +72,7 @@
 
     <FormKit
       :name="formKey('ipv4_auto_dns')"
-      label="Evaluate IPv4 DNS servers via DHCP"
+      label="Evaluate DNS servers via DHCP"
       type="checkbox"
       :value=true
       validation-behavior="live"
@@ -77,12 +80,14 @@
     />
     <FormKit
       :name="formKey('ipv4_dns')"
-      label="IPv4 DNS servers"
+      label="DNS servers"
       type="text"
       validation-behavior="live"
       help="Additional DNS servers separated by a semicolon (;)."
     />
-    <hr class="divider divider-long"/>
+  </div>
+  </div>
+  </div>
   </div>
 
   <FormKit
@@ -94,12 +99,15 @@
   />
 
   <div v-if="ipv6enabled === true">
-    <hr class="divider divider-long"/>
+    <div class="container-fluid">
+    <div class="row">
+    <div class="col-1"></div>
+    <div class="col-12">
     <FormKit
       type="select"
       :name="formKey('ipv6_network_type')"
       v-model="ipv6networkType"
-      label="IPv6 Network Address via"
+      label="Network Address via"
       help="Select how the network address of the interface will be set/evaluated."
       :options="[
         'DHCP',
@@ -110,7 +118,7 @@
     <div v-if="ipv6networkType === 'fixed IPv6 Address'">
       <FormKit
         :name="formKey('ipv6_address')"
-        label="IPv6 Address"
+        label="IP Address"
         placeholder="____:____:____:____:____:____:____:____"
         type="text"
         :validation="[['required'],['matches', /^[0-9a-fA-F]{1,4}(:[0-9a-fA-F]{1,4}){7}$/]]"
@@ -122,7 +130,7 @@
       />
       <FormKit
         :name="formKey('ipv6_netmask')"
-        label="IPv6-Netmask"
+        label="Netmask"
         type="number"
         value="64"
         validation="between:0,128"
@@ -131,7 +139,7 @@
       />
       <FormKit
         :name="formKey('ipv6_gateway')"
-        label="IPv6-Gateway"
+        label="Gateway"
         placeholder="____:____:____:____:____:____:____:____"
         type="text"
         :validation="[['matches', /^[0-9a-fA-F]{1,4}(:[0-9a-fA-F]{1,4}){7}$/]]"
@@ -145,7 +153,7 @@
 
     <FormKit
       :name="formKey('ipv6_auto_dns')"
-      label="Evaluate IPv6 DNS servers via DHCP"
+      label="Evaluate DNS servers via DHCP"
       type="checkbox"
       :value=true
       validation-behavior="live"
@@ -153,12 +161,14 @@
     />
     <FormKit
       :name="formKey('ipv6_dns')"
-      label="IPv6 DNS servers"
+      label="DNS servers"
       type="text"
       validation-behavior="live"
       help="Additional DNS servers separated by a semicolon (;)."
     />
-    <hr class="divider divider-long" />
+  </div>
+  </div>
+  </div>
   </div>
 
   <FormKit
@@ -171,6 +181,10 @@
   />
 
   <div v-if="wifienabled === true">
+    <div class="container-fluid">
+    <div class="row">
+    <div class="col-1"></div>
+    <div class="col-12">
     <FormKit
       :name="formKey('wifi_ssid_content')"
       label="SSID"
@@ -201,6 +215,9 @@
         help="Password required for the WiFi connection."
       />
     </div>
+  </div>
+  </div>
+  </div>
   </div>
 </template>
 
@@ -349,7 +366,7 @@ export default {
                 overwrite: true,
                 contents: {
                   source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
-		  visible: content
+		  human_read: content
                 },
               },
               fileObject
