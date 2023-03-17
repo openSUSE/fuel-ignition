@@ -267,6 +267,7 @@ export default {
       };
 
       const keyPrefix = formPrefix + "_interface_";
+      let counter = 0;
       Object.keys(formData)
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))
@@ -372,6 +373,27 @@ export default {
               fileObject
             )
           );
+
+          if (counter == 0 ) {
+            content = "[main]\n# Do not do automatic (DHCP/SLAAC) configuration on ethernet devices\n" +
+                      "# with no other matching connections.\nno-auto-default=*\n"
+            json.storage.files.push(
+              Object.assign(
+                {
+                  path: "/etc/NetworkManager/conf.d/noauto.conf",
+                  mode: 420,
+                  overwrite: true,
+                  contents: {
+                    source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
+                    human_read: content
+                  },
+                },
+                fileObject
+              )
+	    )
+	  }
+	  counter++
+
         });
     },
   },
