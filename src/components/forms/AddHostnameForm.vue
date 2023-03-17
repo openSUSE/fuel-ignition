@@ -1,15 +1,11 @@
 <template>
-  <div class="addhostname">
-
-    <FormKit
-      :name="formKey('hostname')"
-      label="Hostname"
-      validation="required"
-      validation-behavior="live"
-      help="Leaving this empty will create an empty file"
-    />
-
-  </div>
+  <FormKit
+    :name="formKey('hostname')"
+    label="Hostname"
+    validation="required"
+    validation-behavior="live"
+    help="Leaving this empty will create an empty file"
+  />
 </template>
 
 <script>

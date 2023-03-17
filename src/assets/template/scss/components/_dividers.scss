@@ -13,3 +13,8 @@ hr.divider {
 hr.divider-light {
     background-color: $white;
 }
+
+hr.divider-long {
+    max-width: 50rem;
+    background-color: $white;
+}

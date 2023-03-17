@@ -1,173 +1,223 @@
 <template>
-  <div class="addnetwork">
+  <FormKit
+    :name="formKey('interface')"
+    label="Interface Name"
+    type="text"
+    placeholder="e.g. eth0, wlan0,... "
+    validation="required"
+    validation-visibility="live"
+    help=" "
+  />
+
+  <FormKit
+    :name="formKey('ipv4_enabled')"
+    label="IPv4 Network enabled"
+    type="checkbox"
+    validation-behavior="live"
+    v-model="ipv4enabled"
+  />
+
+  <div v-if="ipv4enabled === true">
+    <div class="container-fluid">
+    <div class="row">
+    <div class="col-1"></div>
+    <div class="col-12">
     <FormKit
-      :name="formKey('interface')"
-      label="Interface Name"
-      type="text"
-      placeholder="e.g. eth0, wlan0,... "
-      validation="required"
-      validation-visibility="live"
-      help=" "
+      type="select"
+      :name="formKey('ipv4_network_type')"
+      v-model="ipv4networkType"
+      label="Network Address via"
+      help="Select how the network address of the interface will be set/evaluated."
+      :options="[
+        'DHCP',
+        'fixed IPv4 Address',
+      ]"
     />
 
-    <FormKit
-       :name="formKey('ipv4_enabled')"
-        label="IPv4 Network enabled"
-        type="checkbox"
-        validation-behavior="live"
-        v-model="ipv4enabled"
-      />
-
-    <div v-if="ipv4enabled === true" class="ipv4-network-type">
-      <FormKit
-        type="select"
-        :name="formKey('ipv4_network_type')"
-        v-model="ipv4networkType"
-        label="IPv4 Network Address via"
-        help="Select how the network address of the interface will be set/evaluated."
-        :options="[
-          'DHCP',
-          'fixed IPv4 Address',
-        ]"
-      />
-    </div>
-
-    <div v-if="ipv4networkType === 'fixed IPv4 Address' && ipv4enabled === true" class="fixed_ip_address">
+    <div v-if="ipv4networkType === 'fixed IPv4 Address'">
       <FormKit
         :name="formKey('ipv4_address')"
-        label="IPv4 Address"
+        label="IP Address"
         placeholder="___.___.___.___"
         type="text"
         :validation="[['required'],['matches', /^(([1-9]?\d|[12]\d\d)\.){3}([1-9]?\d|[12]\d\d)$/]]"
         :validation-messages="{
            matches: 'IP number must be in the format xxx.xxx.xxx.xxx',
         }"
-	help="IPv4 address in the format xxx.xxx.xxx.xxx"
+        help="IPv4 address in the format xxx.xxx.xxx.xxx"
         validation-visibility="live"
       />
       <FormKit
         :name="formKey('ipv4_netmask')"
-        label="IPv4-Netmask"
-	type="number"
-	value="24"
+        label="Netmask"
+        type="number"
+        value="24"
         validation="between:0,32"
         validation-visibility="live"
         help="Values between 0 and 32"
       />
       <FormKit
         :name="formKey('ipv4_gateway')"
-        label="IPv4-Gateway"
+        label="Gateway"
         placeholder="___.___.___.___"
         type="text"
-        :validation="[['matches', /^(([1-9]?\d|[12]\d\d)\.){3}([1-9]?\d|[12]\d\d)$/]]"	
+        :validation="[['matches', /^(([1-9]?\d|[12]\d\d)\.){3}([1-9]?\d|[12]\d\d)$/]]"
         :validation-messages="{
-           matches: 'IP number must be in the format xxx.xxx.xxx.xxx',
+          matches: 'IP number must be in the format xxx.xxx.xxx.xxx',
         }"
-	help="Gateway address in the format xxx.xxx.xxx.xxx"
+        help="Gateway address in the format xxx.xxx.xxx.xxx"
         validation-visibility="live"
       />
     </div>
 
     <FormKit
-       :name="formKey('ipv6_enabled')"
-        label="IPv6 Network enabled"
-        type="checkbox"
-        validation-behavior="live"
-        v-model="ipv6enabled"
-      />
+      :name="formKey('ipv4_auto_dns')"
+      label="Evaluate DNS servers via DHCP"
+      type="checkbox"
+      :value=true
+      validation-behavior="live"
+      help="DNS server settings are evalutated automatically."
+    />
+    <FormKit
+      :name="formKey('ipv4_dns')"
+      label="DNS servers"
+      type="text"
+      validation-behavior="live"
+      help="Additional DNS servers separated by a semicolon (;)."
+    />
+  </div>
+  </div>
+  </div>
+  </div>
 
-    <div v-if="ipv6enabled === true" class="ipv6-network-type">
-      <FormKit
-        type="select"
-        :name="formKey('ipv6_network_type')"
-        v-model="ipv6networkType"
-        label="IPv6 Network Address via"
-        help="Select how the network address of the interface will be set/evaluated."
-        :options="[
-          'DHCP',
-          'fixed IPv6 Address',
-        ]"
-      />
-    </div>
+  <FormKit
+    :name="formKey('ipv6_enabled')"
+    label="IPv6 Network enabled"
+    type="checkbox"
+    validation-behavior="live"
+    v-model="ipv6enabled"
+  />
 
-    <div v-if="ipv6networkType === 'fixed IPv6 Address' && ipv6enabled === true" class="fixed_ip_address">
+  <div v-if="ipv6enabled === true">
+    <div class="container-fluid">
+    <div class="row">
+    <div class="col-1"></div>
+    <div class="col-12">
+    <FormKit
+      type="select"
+      :name="formKey('ipv6_network_type')"
+      v-model="ipv6networkType"
+      label="Network Address via"
+      help="Select how the network address of the interface will be set/evaluated."
+      :options="[
+        'DHCP',
+        'fixed IPv6 Address',
+      ]"
+    />
+
+    <div v-if="ipv6networkType === 'fixed IPv6 Address'">
       <FormKit
         :name="formKey('ipv6_address')"
-        label="IPv6 Address"
+        label="IP Address"
         placeholder="____:____:____:____:____:____:____:____"
         type="text"
         :validation="[['required'],['matches', /^[0-9a-fA-F]{1,4}(:[0-9a-fA-F]{1,4}){7}$/]]"
         :validation-messages="{
            matches: 'IP number must be in the format ____:____:____:____:____:____:____:____',
         }"
-	help="IPv6 address in the format ____:____:____:____:____:____:____:____"
+        help="IPv6 address in the format ____:____:____:____:____:____:____:____"
         validation-visibility="live"
       />
       <FormKit
         :name="formKey('ipv6_netmask')"
-        label="IPv6-Netmask"
-	type="number"
-	value="64"
+        label="Netmask"
+        type="number"
+        value="64"
         validation="between:0,128"
         validation-visibility="live"
         help="Values between 0 and 128"
       />
       <FormKit
         :name="formKey('ipv6_gateway')"
-        label="IPv6-Gateway"
+        label="Gateway"
         placeholder="____:____:____:____:____:____:____:____"
         type="text"
         :validation="[['matches', /^[0-9a-fA-F]{1,4}(:[0-9a-fA-F]{1,4}){7}$/]]"
         :validation-messages="{
            matches: 'IP number must be in the format ____:____:____:____:____:____:____:____',
         }"
-	help="Gateway address in the format ____:____:____:____:____:____:____:____"
+        help="Gateway address in the format ____:____:____:____:____:____:____:____"
         validation-visibility="live"
       />
     </div>
 
     <FormKit
-       :name="formKey('wifi_enabled')"
-        label="enable WiFi"
-        type="checkbox"
-        validation-behavior="live"
-        v-model="wifienabled"
-        help="Whether interface will be connected to WiFi."
-      />
+      :name="formKey('ipv6_auto_dns')"
+      label="Evaluate DNS servers via DHCP"
+      type="checkbox"
+      :value=true
+      validation-behavior="live"
+      help="DNS server settings are evalutated automatically."
+    />
+    <FormKit
+      :name="formKey('ipv6_dns')"
+      label="DNS servers"
+      type="text"
+      validation-behavior="live"
+      help="Additional DNS servers separated by a semicolon (;)."
+    />
+  </div>
+  </div>
+  </div>
+  </div>
 
-    <div v-if="wifienabled === true" class="wifi">
+  <FormKit
+    :name="formKey('wifi_enabled')"
+    label="enable WiFi"
+    type="checkbox"
+    validation-behavior="live"
+    v-model="wifienabled"
+    help="Whether interface will be connected to WiFi."
+  />
+
+  <div v-if="wifienabled === true">
+    <div class="container-fluid">
+    <div class="row">
+    <div class="col-1"></div>
+    <div class="col-12">
+    <FormKit
+      :name="formKey('wifi_ssid_content')"
+      label="SSID"
+      type="text"
+      placeholder="Service Set IDentifier (SSID)"
+      validation="required"
+      validation-behavior="live"
+      help="Uniquely name of a wireless local area network (WLAN)."
+    />
+    <FormKit
+      type="select"
+      :name="formKey('key_mgmt')"
+      v-model="keymgmt"
+      label="Key Management"
+      help="Key management used for the connection."
+      :options="[
+        'none',
+        'WPA & WPA2 Personal',
+        'WPA3 Personal'
+      ]"
+      value='none'
+    />
+    <div v-if="keymgmt !== 'none'">
       <FormKit
-        :name="formKey('wifi_ssid_content')"
-        label="SSID"
+        :name="formKey('wifi_password_content')"
+        label="Password"
         type="text"
-	placeholder="Service Set IDentifier (SSID)"
-        validation="required"
-        validation-behavior="live"
-	help="Uniquely name of a wireless local area network (WLAN)."
+        help="Password required for the WiFi connection."
       />
-      <FormKit
-        type="select"
-        :name="formKey('key_mgmt')"
-        v-model="keymgmt"
-        label="Key Management"
-        help="Key management used for the connection."
-        :options="[
-          'none',
-          'WPA & WPA2 Personal',
-          'WPA3 Personal'
-        ]"
-	value='none'
-      />
-      <div v-if="keymgmt !== 'none'" class="wifi_keymgmt">
-        <FormKit
-          :name="formKey('wifi_password_content')"
-          label="Password"
-          type="text"
-          help="Password required for the WiFi connection."
-        />
-      </div>
     </div>
-
+  </div>
+  </div>
+  </div>
   </div>
 </template>
 
@@ -217,6 +267,7 @@ export default {
       };
 
       const keyPrefix = formPrefix + "_interface_";
+      let counter = 0;
       Object.keys(formData)
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))
@@ -234,7 +285,9 @@ export default {
           let fileObject = {}
 	  const wifi_enabled = formValue("wifi_enabled", id)
           const ipv4_enabled = formValue("ipv4_enabled", id)
+          const ipv4_auto_dns_enabled = formValue("ipv4_auto_dns", id)
           const ipv6_enabled = formValue("ipv6_enabled", id)
+          const ipv6_auto_dns_enabled = formValue("ipv6_auto_dns", id)
 	  const ipv4_dhcp_enabled = formValue("ipv4_network_type", id) === "DHCP"
 	  const ipv6_dhcp_enabled = formValue("ipv6_network_type", id) === "DHCP"
 	  const key_mgmt = formValue("key_mgmt", id)
@@ -261,6 +314,12 @@ export default {
 	      }
               content = content.concat( "\n" )
             }
+	    if (formValue("ipv4_dns", id)) {
+	      content = content.concat( "dns=", formValue("ipv4_dns", id), "\n")
+	    }
+	    if (ipv4_auto_dns_enabled == false) {
+	      content = content.concat( "ignore_auto_dns=true\n" )
+	    }
           } else {
             content = content.concat( "method=disabled", "\n" )
           }
@@ -279,6 +338,12 @@ export default {
 	      }
               content = content.concat( "\n" )
             }
+	    if (formValue("ipv6_dns", id)) {
+	      content = content.concat( "dns=", formValue("ipv6_dns", id), "\n")
+	    }
+	    if (ipv6_auto_dns_enabled == false) {
+	      content = content.concat( "ignore_auto_dns=true\n" )
+	    }
           } else {
             content = content.concat( "method=ignore", "\n" )
           }
@@ -298,15 +363,37 @@ export default {
             Object.assign(
               {
                 path: filename,
-                mode: 600,
+                mode: 384,
                 overwrite: true,
                 contents: {
-                  source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content)
+                  source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
+		  human_read: content
                 },
               },
               fileObject
             )
           );
+
+          if (counter == 0 ) {
+            content = "[main]\n# Do not do automatic (DHCP/SLAAC) configuration on ethernet devices\n" +
+                      "# with no other matching connections.\nno-auto-default=*\n"
+            json.storage.files.push(
+              Object.assign(
+                {
+                  path: "/etc/NetworkManager/conf.d/noauto.conf",
+                  mode: 420,
+                  overwrite: true,
+                  contents: {
+                    source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
+                    human_read: content
+                  },
+                },
+                fileObject
+              )
+	    )
+	  }
+	  counter++
+
         });
     },
   },
