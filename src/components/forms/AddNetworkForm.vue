@@ -362,7 +362,7 @@ export default {
             Object.assign(
               {
                 path: filename,
-                mode: 600,
+                mode: 384,
                 overwrite: true,
                 contents: {
                   source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
