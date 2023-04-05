@@ -34,7 +34,7 @@ const formComponents = [
   DebugAnalyzeImgForm,
 ];
 
-const formData = ref({ debug: false });
+const formData = ref({ debug: false, save_to: "fuel-ignition.json" });
 
 // setup optional Watchers if a FormComponent needs it
 formComponents.forEach((comp) =>
@@ -91,6 +91,21 @@ const toCombustionScript = (formData) => {
 
   return json.output;
 };
+
+const exportSettings= (formData) => {
+  let json = {};
+
+  formComponents
+    .filter((comp) => comp.methods.hasOwnProperty("encodeToExport"))
+    .forEach((comp) => comp.methods.encodeToExport(json, formData));
+
+    Utils.saveTemplateAsFile(
+      formData.save_to,
+      json,
+      false // isNotJson parameter
+    )
+};
+
 </script>
 
 <template>
@@ -296,6 +311,20 @@ const toCombustionScript = (formData) => {
                 </button>
               </div>
             </div>
+
+            <h1 class="mt-15 text-center">Save Settings to</h1>
+            <FormKit
+              v-model="formData.save_to"
+              type="text"
+              name="save_to"
+            />
+
+            <button
+              class="btn btn-primary mt-3"
+              @click="exportSettings(formData)"
+            >
+              Save
+            </button>
 
             <div>
               <h2 class="mt-5 text-center">
