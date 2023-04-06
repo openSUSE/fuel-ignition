@@ -77,4 +77,11 @@ export default {
   getFormValue: function (prefix, formData, key, uid) {
     return formData[this.getFormKey(prefix, key, uid)];
   },
+
+  /* normalizeZypperPackages acceps a text representing a list of zypper packages, separated either by comma or by space, and returns a tidy string with all packages separated by a single space */
+  normalizeZypperPackages : function(txt) {
+    return txt.split(/[ ,]/) // split by space or comma
+    .filter(n => n)          // filter empty elements
+    .join(" ");              // return string of packages separated by a single space
+  },
 };
