@@ -21,7 +21,7 @@ npm run dev
 ```
 $ sudo zypper in podman
 $ make
-$ podman run --network=host fuelignition:latest
+$ podman run --rm --network=host fuelignition:latest
 
 > fuel-ignition@1.0 dev
 > vite
