@@ -4,12 +4,12 @@
   <div class="combustioninstall">
     <FormKit
       :name="formKey('package_name')"
-      label="Name of the package you want to install"
+      label="Packages you want to install (space or comma separated)"
       type="text"
       validation="required"
       validation-behavior="live"
       value="vim-small"
-      help="This will add the line 'zypper --non-interactive install {package name}' to the combustion script."
+      help="This will add a 'zypper --non-interactive install [packages]' line to the combustion script."
     />
   </div>
 </template>
@@ -35,7 +35,7 @@ export default {
         .filter((x) => x.includes(formPrefix))
         .forEach((key) => {
           json.combustion +=
-            "\nzypper --non-interactive install " + formData[key];
+            "\nzypper --non-interactive install " + Utils.normalizeZypperPackages(formData[key]);
         });
     },
   },
