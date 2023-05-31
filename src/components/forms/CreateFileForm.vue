@@ -228,6 +228,51 @@ export default {
           );
         });
     },
+    encodeToExport: function (json, formData) {
+      const formValue = (key, uid) =>
+        Utils.getFormValue(formPrefix, formData, key, uid);
+
+      const keyPrefix = formPrefix + "_path_";
+      Object.keys(formData)
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+          if (json.storage === undefined) {
+            json.storage = {};
+          }
+
+          if (json.storage.files === undefined) {
+            json.storage.files = [];
+          }
+
+          let file = {};
+	  file.source_type = formValue("source_type", id)
+          switch (file.source_type) {
+            case "data":
+              file.data_content = formValue("data_content", id);
+              break;
+            case "data-vagrant":
+              file.data_vagrant_content = formValue("data_vagrant_content", id);
+            case "https":
+              file.https_content = formValue("https_content", id);
+              break;
+            case "http":
+              file.http_content = formValue("http_content", id);
+              file.http_verification = formValue("http_verification", id);
+              break;
+            case "tftp":
+            case "s3":
+            case "gs":
+              file.tftp_s3_gs_content = formValue("tftp_s3_gs_content", id);
+              break;
+          }
+          file.path = formValue("path", id)
+	  file.mode = formValue("mode", id)
+	  file.overwrite = formValue("overwrite", id)
+          json.storage.files.push(file)
+        }
+      );
+    },
   },
 };
 </script>

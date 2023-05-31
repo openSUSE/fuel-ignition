@@ -35,6 +35,16 @@ export default {
           json.combustion += "\n" + formData[key];
         });
     },
+    encodeToExport: function (json, formData) {
+      Object.keys(formData)
+        .filter((x) => x.includes(formPrefix))
+        .forEach((key) => {
+          if (json.scripts === undefined) {
+            json.scripts = [];
+          }
+	  json.scripts.push(formData[key])
+	});
+    },
   },
 };
 </script>

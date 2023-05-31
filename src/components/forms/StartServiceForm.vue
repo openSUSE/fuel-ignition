@@ -73,6 +73,32 @@ export default {
           });
         });
     },
+    encodeToExport: function (json, formData) {
+      const formValue = (key, uid) =>
+        Utils.getFormValue(formPrefix, formData, key, uid);
+
+      const keyPrefix = formPrefix + "_name_";
+      Object.keys(formData)
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+          if (json.systemd === undefined) {
+            json.systemd = {};
+          }
+
+          if (json.systemd.units === undefined) {
+            json.systemd.units = [];
+          }
+
+	  let unit = {}
+	  unit.name = formValue("name", id)
+	  unit.enabled = formValue("enabled", id)
+	  unit.contents = formValue("contents", id)
+
+          json.systemd.units.push(unit)
+        }
+      );
+    },
   },
 };
 </script>

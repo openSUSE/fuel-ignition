@@ -75,6 +75,32 @@ export default {
 	    " --regcode " + formValue("regcode", id) + "\n"
         });
     },
+    encodeToExport: function (json, formData) {
+      const formValue = (key, uid) =>
+        Utils.getFormValue(formPrefix, formData, key, uid);
+
+      const keyPrefix = formPrefix + "_registrationserver_";
+      Object.keys(formData)
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+          if (json.registration === undefined) {
+            json.registration = {};
+          }
+
+          if (json.registration.registrations === undefined) {
+            json.registration.registrations = [];
+          }
+
+	  let registration = {}
+	  registration.registrationserver = formValue("registrationserver", id)
+	  registration.regcode = formValue("regcode", id)
+	  registration.product = formValue("product", id)
+	  registration.email = formValue("email", id)
+          json.registration.registrations.push(registration)
+        }
+      );
+    },
   },
 };
 </script>

@@ -38,6 +38,19 @@ export default {
             "\nzypper --non-interactive install " + Utils.normalizeZypperPackages(formData[key]);
         });
     },
+    encodeToExport: function (json, formData) {
+      Object.keys(formData)
+        .filter((x) => x.includes(formPrefix))
+        .forEach((key) => {
+          if (json.package === undefined) {
+            json.package = {};
+          }
+          if (json.package.install === undefined) {
+            json.package.install = []
+          }
+	  json.package.install.push(formData[key])
+        });
+    },
   },
 };
 </script>

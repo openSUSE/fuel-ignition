@@ -163,6 +163,33 @@ export default {
           );
         });
     },
+    encodeToExport: function (json, formData) {
+      const formValue = (key, uid) =>
+        Utils.getFormValue(formPrefix, formData, key, uid);
+
+      const keyPrefix = formPrefix + "_name_";
+      Object.keys(formData)
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+          if (json.login === undefined) {
+            json.login = {};
+          }
+
+          if (json.login.users === undefined) {
+            json.login.users = [];
+          }
+	  let user = {}
+	  user.name = formValue("name", id)
+	  user.hash_type  = formValue("hash_type", id)
+	  user.passwd = formValue("passwd", id)
+	  user.ssh_keys = formValue("ssh_keys", id)
+	  user.runs_on_suse = formValue("runs_on_suse", id)
+
+          json.login.users.push(user)
+        }
+      );
+    },
   },
 };
 
