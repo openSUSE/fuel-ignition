@@ -312,20 +312,6 @@ const exportSettings= (formData) => {
               </div>
             </div>
 
-            <h1 class="mt-15 text-center">Save Settings to</h1>
-            <FormKit
-              v-model="formData.save_to"
-              type="text"
-              name="save_to"
-            />
-
-            <button
-              class="btn btn-primary mt-3"
-              @click="exportSettings(formData)"
-            >
-              Save
-            </button>
-
             <div>
               <h2 class="mt-5 text-center">
                 Convert to Ignition-<span
@@ -347,6 +333,21 @@ const exportSettings= (formData) => {
             <pre class="form-data">
 # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition config.ign</pre
             >
+
+            <h2 class="mt-5 text-center">Save Settings to</h2>
+            <FormKit
+              v-model="formData.save_to"
+              type="text"
+              name="save_to"
+            />
+
+            <button
+              class="btn btn-primary mt-3"
+              @click="exportSettings(formData)"
+            >
+              Save
+            </button>
+
           </div>
         </div>
       </div>
