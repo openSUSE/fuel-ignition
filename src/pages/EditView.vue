@@ -92,6 +92,23 @@ const toCombustionScript = (formData) => {
   return json.output;
 };
 
+async function handleUpload(event) {
+  let file = event.target.files[0];
+  // parse json from file object
+  if (file !== undefined) {
+    let json = await Utils.parseJsonFile(file)
+      .catch(() => {
+        alert(jsonErrorMsg);
+        clearFile();
+      })
+      .then((json) => {
+        formComponents
+          .filter((comp) => comp.methods.hasOwnProperty("fillImport"))
+          .forEach((comp) => comp.methods.fillImport(json, formData));
+      });
+  }
+}
+
 const exportSettings= (formData) => {
   let json = {};
 
@@ -326,13 +343,23 @@ const exportSettings= (formData) => {
               ></BlobEditorComponent>
             </div>
 
-            <h2 class="mt-5 text-center">
-              Convert to ISO Filesystem with mkisofs
-            </h2>
+            <div>
+              <h2 class="mt-5 text-center">
+                Convert to ISO Filesystem with mkisofs
+              </h2>
 
-            <pre class="form-data">
-# mkisofs -full-iso9660-filenames -o ignition.iso -V ignition config.ign</pre
-            >
+              <pre class="form-data">
+# mkisofs -full-iso9660-filenames -o ignition.iso -V ignition config.ign</pre>
+              <br>
+              <hr class="divider" />
+	    </div>
+
+            <h2 class="mt-5 text-center">Load Settings from</h2>
+            <FormKit
+              name="load_from"
+              type="file"
+	      @change="handleUpload"
+            />
 
             <h2 class="mt-5 text-center">Save Settings to</h2>
             <FormKit

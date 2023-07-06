@@ -70,6 +70,24 @@ export default {
         }
       );
     },
+    fillImport: function (json, formData) {
+	    console.log("llllllllllaa")
+	    console.log(json.hostname)	    
+      const formValue = (key, uid) =>
+        Utils.getFormValue(formPrefix, formData, key, uid);
+
+      const keyPrefix = formPrefix + "_hostname_";
+      Object.keys(formData)
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+	    console.log("llllllllllkkkkk")
+	    console.log(json.hostname)
+//          let dataValue = formValue("hostname", id);
+//          json.hostname = dataValue === undefined ? "" : dataValue;
+        }
+      );
+    },
   },
 };
 </script>
