@@ -1,5 +1,6 @@
 <script setup>
-import { ref, watch } from "vue";
+
+import { ref, watch, onUpdated } from "vue";
 import Utils from "@/utils/utils.js";
 import ExpandableComponent from "@/components/ExpandableComponent.vue";
 import BlobEditorComponent from "@/components/TemplateBlobEditorComponent.vue";
@@ -35,11 +36,31 @@ const formComponents = [
 ];
 
 const formData = ref({ debug: false, save_to: "fuel-ignition.json" });
+const importedData = ref({})
 
 // setup optional Watchers if a FormComponent needs it
 formComponents.forEach((comp) =>
   Utils.setupFormComponentWatcher(comp, watch, formData)
 );
+
+let componentKey = ref(0);
+const forceRerender = () =>{
+   componentKey.value += 1;
+}
+
+const elementNumber = (section) => {
+  if (section.methods.hasOwnProperty("countImport")) {
+    return section.methods.countImport(importedData.value);
+  } else {
+    return 0
+  }
+}
+
+onUpdated(() => {
+  formComponents
+    .filter((comp) => comp.methods.hasOwnProperty("fillImport"))
+    .forEach((comp) => comp.methods.fillImport(importedData.value, formData));
+});
 
 const downloadConfigIgn = (formData) => {
   console.log("downloading..");
@@ -92,21 +113,23 @@ const toCombustionScript = (formData) => {
   return json.output;
 };
 
-async function handleUpload(event) {
+async function reloadPage(event) {
   let file = event.target.files[0];
-  // parse json from file object
-  if (file !== undefined) {
-    let json = await Utils.parseJsonFile(file)
-      .catch(() => {
-        alert(jsonErrorMsg);
-        clearFile();
-      })
-      .then((json) => {
-        formComponents
-          .filter((comp) => comp.methods.hasOwnProperty("fillImport"))
-          .forEach((comp) => comp.methods.fillImport(json, formData));
-      });
-  }
+
+  // Load settings form file and
+  // parse json from file object.
+  importedData.value = await Utils.parseJsonFile(file)
+    .catch(() => {
+      alert(jsonErrorMsg);
+      clearFile();
+    });
+  forceRerender();
+
+//    .then((json) => {
+//      formComponents
+//        .filter((comp) => comp.methods.hasOwnProperty("fillImport"))
+//   	.forEach((comp) => comp.methods.fillImport(json, formData));
+//     });
 }
 
 const exportSettings= (formData) => {
@@ -126,6 +149,7 @@ const exportSettings= (formData) => {
 </script>
 
 <template>
+  <ComponentToReRender :key="componentKey">
   <section class="page-section p-2 bg-dark" id="edit">
     <div class="container mt-5 px-0">
       <div class="row gx-4 gx-lg-5 justify-content-center">
@@ -145,20 +169,23 @@ const exportSettings= (formData) => {
         <div class="col-lg-6">
           <div class="form-floating mb-3">
             <FormKit type="group" v-model="formData">
-              <ExpandableComponent title="Add Users" :displayAtLeastOne="false">
+              <ExpandableComponent
+	        title="Add Users"
+	        :displaysAtBegin="elementNumber(AddUsersForm)"
+	      >
                 <AddUsersForm></AddUsersForm>
               </ExpandableComponent>
 
               <ExpandableComponent
                 title="Create Files"
-                :displayAtLeastOne="false"
+                :displaysAtBegin="elementNumber(CreateFileForm)"
               >
                 <CreateFileForm></CreateFileForm>
               </ExpandableComponent>
 
               <ExpandableComponent
                 title="Add Hostname"
-                :displayAtLeastOne="false"
+                :displaysAtBegin="elementNumber(AddHostnameForm)"
 		:maxComponents="1"
               >
                 <AddHostnameForm></AddHostnameForm>
@@ -166,21 +193,21 @@ const exportSettings= (formData) => {
 
               <ExpandableComponent
                 title="Add Network Interface"
-                :displayAtLeastOne="false"
+                :displaysAtBegin="elementNumber(AddNetworkForm)"
               >
                 <AddNetworkForm></AddNetworkForm>
               </ExpandableComponent>
 
               <ExpandableComponent
                 title="Enable or Create Services"
-                :displayAtLeastOne="false"
+                :displaysAtBegin="elementNumber(StartServiceForm)"
               >
                 <StartServiceForm></StartServiceForm>
               </ExpandableComponent>
 
               <ExpandableComponent
                 title="Modify Existing Services"
-                :displayAtLeastOne="false"
+                :displaysAtBegin="elementNumber(ModifyServiceForm)"
               >
                 <ModifyServiceForm></ModifyServiceForm>
               </ExpandableComponent>
@@ -189,14 +216,14 @@ const exportSettings= (formData) => {
                 <!-- rename to "Modify Services (Drop-Ins)"? -->
                 <ExpandableComponent
                   title="DEBUG: Add Bytes"
-                  :displayAtLeastOne="false"
+                  :displaysAtBegin="elementNumber(DebugAddBytesForm)"
                 >
                   <DebugAddBytesForm></DebugAddBytesForm>
                 </ExpandableComponent>
 
                 <ExpandableComponent
                   title="DEBUG: Analyze File"
-                  :displayAtLeastOne="true"
+                  :displaysAtBegin="1"
                   :maxComponents="1"
                 >
                   <DebugAnalyzeImgForm></DebugAnalyzeImgForm>
@@ -225,7 +252,7 @@ const exportSettings= (formData) => {
               <FormKit type="group" v-model="formData">
                 <ExpandableComponent
                   title="Register Product"
-                  :displayAtLeastOne="false"
+                  :displaysAtBegin="elementNumber(CombRegistrationForm)"
                 >
                   <CombRegistrationForm></CombRegistrationForm>
                 </ExpandableComponent>
@@ -233,21 +260,21 @@ const exportSettings= (formData) => {
                 <ExpandableComponent
                   title="Connect to Salt Master"
                   :maxComponents="1"
-                  :displayAtLeastOne="false"
+                  :displaysAtBegin="elementNumber(CombSaltForm)"
                 >
                   <CombSaltForm></CombSaltForm>
                 </ExpandableComponent>
 
                 <ExpandableComponent
                   title="Install Package With Combustion"
-                  :displayAtLeastOne="false"
+                  :displaysAtBegin="elementNumber(CombInstallPackageForm)"
                 >
                   <CombInstallPackageForm></CombInstallPackageForm>
                 </ExpandableComponent>
 
                 <ExpandableComponent
                   title="Add Custom Lines To Combustion Script"
-                  :displayAtLeastOne="false"
+                  :displaysAtBegin="elementNumber(CombAddRawBash)"
                 >
                   <CombAddRawBash></CombAddRawBash>
                 </ExpandableComponent>
@@ -358,7 +385,7 @@ const exportSettings= (formData) => {
             <FormKit
               name="load_from"
               type="file"
-	      @change="handleUpload"
+	      @change="reloadPage"
             />
 
             <h2 class="mt-5 text-center">Save Settings to</h2>
@@ -380,4 +407,5 @@ const exportSettings= (formData) => {
       </div>
     </div>
   </section>
+  </ComponentToReRender>
 </template>

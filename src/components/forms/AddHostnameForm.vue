@@ -71,8 +71,9 @@ export default {
       );
     },
     fillImport: function (json, formData) {
-	    console.log("llllllllllaa")
-	    console.log(json.hostname)	    
+      console.log("llllllllllaa")
+      console.log(json.hostname)
+      console.log(formData)          
       const formValue = (key, uid) =>
         Utils.getFormValue(formPrefix, formData, key, uid);
 
@@ -87,6 +88,13 @@ export default {
 //          json.hostname = dataValue === undefined ? "" : dataValue;
         }
       );
+    },
+    countImport: function (json) {
+      if (json.hostname != undefined) {
+        return 1;
+      } else {
+        return 0;
+      }
     },
   },
 };
