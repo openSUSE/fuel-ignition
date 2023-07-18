@@ -75,7 +75,10 @@ export default {
       Object.keys(formData)
           .filter((x) => x.includes(keyPrefix))
           .forEach((id) => {
-	    formData[id] = json.hostname
+	    if (json.hostname != undefined) {
+  	      formData[id] = json.hostname
+	      json.hostname = undefined
+	    }
         }
       );
     },

@@ -57,9 +57,12 @@ const elementNumber = (section) => {
 }
 
 onUpdated(() => {
-  formComponents
-    .filter((comp) => comp.methods.hasOwnProperty("fillImport"))
-    .forEach((comp) => comp.methods.fillImport(importedData.value, formData.value));
+  if (importedData.value != {}) {
+    formComponents
+      .filter((comp) => comp.methods.hasOwnProperty("fillImport"))
+      .forEach((comp) => comp.methods.fillImport(importedData.value, formData.value));
+    importedData.value = {};
+  }
 });
 
 const downloadConfigIgn = (formData) => {
@@ -113,7 +116,7 @@ const toCombustionScript = (formData) => {
   return json.output;
 };
 
-async function reloadPage(event) {
+async function importData(event) {
   let file = event.target.files[0];
 
   // Load settings form file and
@@ -123,13 +126,8 @@ async function reloadPage(event) {
       alert(jsonErrorMsg);
       clearFile();
     });
+  formData.value = {debug: formData.value.debug, save_to: formData.value.save_to}
   forceRerender();
-
-//    .then((json) => {
-//      formComponents
-//        .filter((comp) => comp.methods.hasOwnProperty("fillImport"))
-//   	.forEach((comp) => comp.methods.fillImport(json, formData));
-//     });
 }
 
 const exportSettings= (formData) => {
@@ -385,7 +383,7 @@ const exportSettings= (formData) => {
             <FormKit
               name="load_from"
               type="file"
-	      @change="reloadPage"
+	      @change="importData"
             />
 
             <h2 class="mt-5 text-center">Save Settings to</h2>
