@@ -59,8 +59,8 @@ export default {
     encodeToExport: function (json, formData) {
       const formValue = (key, uid) =>
         Utils.getFormValue(formPrefix, formData, key, uid);
-
       const keyPrefix = formPrefix + "_hostname_";
+      
       Object.keys(formData)
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))
@@ -71,21 +71,11 @@ export default {
       );
     },
     fillImport: function (json, formData) {
-      console.log("llllllllllaa")
-      console.log(json.hostname)
-      console.log(formData)          
-      const formValue = (key, uid) =>
-        Utils.getFormValue(formPrefix, formData, key, uid);
-
       const keyPrefix = formPrefix + "_hostname_";
       Object.keys(formData)
-        .filter((x) => x.includes(keyPrefix))
-        .map((key) => key.replace(keyPrefix, ""))
-        .forEach((id) => {
-	    console.log("llllllllllkkkkk")
-	    console.log(json.hostname)
-//          let dataValue = formValue("hostname", id);
-//          json.hostname = dataValue === undefined ? "" : dataValue;
+          .filter((x) => x.includes(keyPrefix))
+          .forEach((id) => {
+	    formData[id] = json.hostname
         }
       );
     },

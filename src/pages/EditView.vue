@@ -59,7 +59,7 @@ const elementNumber = (section) => {
 onUpdated(() => {
   formComponents
     .filter((comp) => comp.methods.hasOwnProperty("fillImport"))
-    .forEach((comp) => comp.methods.fillImport(importedData.value, formData));
+    .forEach((comp) => comp.methods.fillImport(importedData.value, formData.value));
 });
 
 const downloadConfigIgn = (formData) => {
