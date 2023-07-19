@@ -71,14 +71,17 @@ export default {
       );
     },
     fillImport: function (json, formData) {
+      const setValue = (key, uid, value) =>
+        Utils.setFormValue(formPrefix, formData, key, uid, value);
       const keyPrefix = formPrefix + "_hostname_";
       Object.keys(formData)
-          .filter((x) => x.includes(keyPrefix))
-          .forEach((id) => {
-	    if (json.hostname != undefined) {
-  	      formData[id] = json.hostname
-	      json.hostname = undefined
-	    }
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+          if (json.hostname != undefined) {
+	    setValue("hostname", id, json.hostname);
+	    json.hostname = undefined
+	  }
         }
       );
     },

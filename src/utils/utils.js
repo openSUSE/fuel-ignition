@@ -84,4 +84,9 @@ export default {
     .filter(n => n)          // filter empty elements
     .join(" ");              // return string of packages separated by a single space
   },
+
+  setFormValue: function (prefix, formData, key, uid, value) {
+    formData[this.getFormKey(prefix, key, uid)] = value;
+  },
+
 };

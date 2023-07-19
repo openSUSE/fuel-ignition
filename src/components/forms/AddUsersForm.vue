@@ -190,6 +190,32 @@ export default {
         }
       );
     },
+    fillImport: function (json, formData) {
+      const setValue = (key, uid, value) =>
+        Utils.setFormValue(formPrefix, formData, key, uid, value);
+      const keyPrefix = formPrefix + "_name_";
+
+      if (json.login.users == undefined) return;
+      Object.keys(formData)
+          .filter((x) => x.includes(keyPrefix))
+          .map((key) => key.replace(keyPrefix, ""))
+          .forEach((id) => {
+	  let user = json.login.users.shift();
+	  setValue("name", id, user.name)
+	  setValue("hash_type", id, user.hash_type)
+	  setValue("passwd", id, user.passwd)
+	  setValue("ssh_keys", id, user.ssh_keys)
+	  setValue("runs_on_suse", id, user.runs_on_suse)
+        }
+      );
+    },
+    countImport: function (json) {
+      if (json.login != undefined && json.login.users != undefined) {
+        return json.login.users.length;
+      } else {
+        return 0;
+      }
+    },
   },
 };
 

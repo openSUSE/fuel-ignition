@@ -23,10 +23,10 @@
       </button>
 
       <button
-        v-if="compCount > 1"
+        v-if="compCount >= 1"
         class="btn btn-danger ml-5 mr-5 mb-5"
         @click="
-          compCount > 1 ? compCount-- : compCount
+          compCount >= 1 ? compCount-- : compCount
         "
       >
         Remove

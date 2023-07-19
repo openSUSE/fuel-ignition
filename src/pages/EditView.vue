@@ -57,7 +57,7 @@ const elementNumber = (section) => {
 }
 
 onUpdated(() => {
-  if (importedData.value != {}) {
+  if (Object.keys(importedData.value).length > 0) {
     formComponents
       .filter((comp) => comp.methods.hasOwnProperty("fillImport"))
       .forEach((comp) => comp.methods.fillImport(importedData.value, formData.value));
