@@ -273,6 +273,49 @@ export default {
         }
       );
     },
+    fillImport: function (json, formData) {
+      const setValue = (key, uid, value) =>
+        Utils.setFormValue(formPrefix, formData, key, uid, value);
+      const keyPrefix = formPrefix + "_path_";
+
+      if (json.storage.files == undefined) return;
+      Object.keys(formData)
+          .filter((x) => x.includes(keyPrefix))
+          .map((key) => key.replace(keyPrefix, ""))
+          .forEach((id) => {
+  	    let file = json.storage.files.shift();
+  	    setValue("source_type", id, file.source_type)
+            switch (file.source_type) {
+              case "data":
+                setValue("data_content", id, file.data_content);
+                break;
+              case "data-vagrant":
+                setValue("data_vagrant_content", id, file.data_vagrant_content)
+              case "https":
+                setValue("https_content", id, file.https_content);
+                break;
+              case "http":
+                setValue("http_content", id, file.http_content);
+                setValue("http_verification", id, file.http_verification)
+                break;
+              case "tftp":
+              case "s3":
+              case "gs":
+                setValue("tftp_s3_gs_content", id, file.tftp_s3_gs_content)
+                break;
+            }
+            setValue("path", id, file.path);
+	    setValue("mode", id, file.mode);
+	    setValue("overwrite", id, file.overwrite);
+          });
+    },
+    countImport: function (json) {
+      if (json.storage != undefined && json.storage.files != undefined) {
+        return json.storage.files.length;
+      } else {
+        return 0;
+      }
+    },
   },
 };
 </script>
