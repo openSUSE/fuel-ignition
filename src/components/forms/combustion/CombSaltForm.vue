@@ -189,6 +189,34 @@ export default {
         }
       );
     },
+    fillImport: function (json, formData) {
+      const setValue = (key, uid, value) =>
+        Utils.setFormValue(formPrefix, formData, key, uid, value);
+      const keyPrefix = formPrefix + "_master_";
+
+      if (json.salt == undefined) return;
+      Object.keys(formData)
+          .filter((x) => x.includes(keyPrefix))
+          .map((key) => key.replace(keyPrefix, ""))
+          .forEach((id) => {
+	    setValue("master", id, json.salt.master);
+	    setValue("preseed_key_via", id, json.salt.preseed_key_via);
+	    setValue("minion_pem_key", id, json.salt.minion_pem_key);
+	    setValue("minion_pub_key", id, json.salt.minion_pub_key);
+	    setValue("url_login_name", id, json.salt.url_login_name);
+	    setValue("url_login_password", id, json.salt.url_login_password);
+	    setValue("key_url", id, json.salt.key_url);
+	    setValue("key_name", id, json.salt.key_name);
+	    setValue("enableservice", id, json.salt.enableservice);
+          });
+    },
+    countImport: function (json) {
+      if (json.salt != undefined) {
+        return 1;
+      } else {
+        return 0;
+      }
+    },
   },
 };
 </script>
