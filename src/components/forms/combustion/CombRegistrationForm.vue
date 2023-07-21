@@ -101,6 +101,30 @@ export default {
         }
       );
     },
+    fillImport: function (json, formData) {
+      const setValue = (key, uid, value) =>
+        Utils.setFormValue(formPrefix, formData, key, uid, value);
+      const keyPrefix = formPrefix + "_registrationserver_";
+
+      if (json.registration == undefined || json.registration.registrations == undefined) return;
+      Object.keys(formData)
+          .filter((x) => x.includes(keyPrefix))
+          .map((key) => key.replace(keyPrefix, ""))
+          .forEach((id) => {
+	    let registration = json.registration.registrations.shift();
+	    setValue("registrationserver", id, registration.registrationserver);
+	    setValue("regcode", id, registration.regcode);
+	    setValue("product", id, registration.product);
+	    setValue("email", id, registration.email);
+          });
+    },
+    countImport: function (json) {
+      if (json.registration != undefined && json.registration.registrations != undefined) {
+        return json.registration.registrations.length;
+      } else {
+        return 0;
+      }
+    },
   },
 };
 </script>
