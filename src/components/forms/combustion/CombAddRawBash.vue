@@ -45,6 +45,21 @@ export default {
 	  json.scripts.push(formData[key])
 	});
     },
+    fillImport: function (json, formData) {
+      if (json.scripts == undefined) return;
+      Object.keys(formData)
+          .filter((x) => x.includes(formPrefix) )
+          .forEach((key) => {
+	    formData[key] = json.scripts.shift();
+          });
+    },
+    countImport: function (json) {
+      if (json.scripts != undefined) {
+        return json.scripts.length;
+      } else {
+        return 0;
+      }
+    },
   },
 };
 </script>

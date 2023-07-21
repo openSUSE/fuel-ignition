@@ -42,14 +42,29 @@ export default {
       Object.keys(formData)
         .filter((x) => x.includes(formPrefix))
         .forEach((key) => {
-          if (json.package === undefined) {
+          if (json.package === undefined)   {
             json.package = {};
           }
           if (json.package.install === undefined) {
             json.package.install = []
           }
 	  json.package.install.push(formData[key])
-        });
+        }); 
+    },
+    fillImport: function (json, formData) {
+      if (json.package == undefined || json.package.install == undefined) return;
+      Object.keys(formData)
+          .filter((x) => x.includes(formPrefix) )
+          .forEach((key) => {
+	    formData[key] = json.package.install.shift();
+          });
+    },
+    countImport: function (json) {
+      if (json.package != undefined && json.package.install != undefined) {
+        return json.package.install.length;
+      } else {
+        return 0;
+      }
     },
   },
 };
