@@ -451,7 +451,7 @@ export default {
         Utils.setFormValue(formPrefix, formData, key, uid, value);
       const keyPrefix = formPrefix + "_interface_";
 
-      if (json.network.interfaces == undefined) return;
+      if (json.network == undefined || json.network.interfaces == undefined) return;
       Object.keys(formData)
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))

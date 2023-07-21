@@ -99,6 +99,29 @@ export default {
         }
       );
     },
+    fillImport: function (json, formData) {
+      const setValue = (key, uid, value) =>
+        Utils.setFormValue(formPrefix, formData, key, uid, value);
+      const keyPrefix = formPrefix + "_name_";
+
+      if (json.systemd == undefined || json.systemd.units == undefined) return;
+      Object.keys(formData)
+          .filter((x) => x.includes(keyPrefix))
+          .map((key) => key.replace(keyPrefix, ""))
+          .forEach((id) => {
+  	    let unit = json.systemd.units.shift();
+	    setValue("name", id, unit.name);
+	    setValue("enabled", id, unit.enabled);
+	    setValue("contents", id, unit.contents);
+          });
+    },
+    countImport: function (json) {
+      if (json.systemd != undefined && json.systemd.units != undefined) {
+        return json.systemd.units.length;
+      } else {
+        return 0;
+      }
+    },
   },
 };
 </script>
