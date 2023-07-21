@@ -205,7 +205,7 @@
         'WPA & WPA2 Personal',
         'WPA3 Personal'
       ]"
-      value='none'
+      value='WPA & WPA2 Personal'
     />
     <div v-if="keymgmt !== 'none'">
       <FormKit
@@ -233,8 +233,8 @@ export default {
     const ipv6networkType = ref("DHCP");
     const wifienabled = ref(false);
     const ipv4enabled = ref(true);
-    const ipv6enabled = ref(false);
-    const keymgmt = ref("none");
+    const ipv6enabled = ref(true);
+    const keymgmt = ref("WPA & WPA2 Personal");
 
     return {
       ipv4enabled,
@@ -421,11 +421,11 @@ export default {
             interf.ipv4 = {}
             interf.ipv4.network_type = formValue("ipv4_network_type", id)
             interf.ipv4.auto_dns_enabled = formValue("ipv4_auto_dns", id)
+            interf.ipv4.dns = formValue("ipv4_dns", id)
             if (interf.ipv4.network_type === "fixed IPv4 Address") {
               interf.ipv4.address = formValue("ipv4_address", id)
               interf.ipv4.netmask = formValue("ipv4_netmask", id)
               interf.ipv4.gateway = formValue("ipv4_gateway", id)
-              interf.ipv4.dns = formValue("ipv4_dns", id)
             }
           }
 
@@ -433,11 +433,11 @@ export default {
             interf.ipv6 = {}
             interf.ipv6.network_type = formValue("ipv6_network_type", id)
             interf.ipv6.auto_dns_enabled = formValue("ipv6_auto_dns", id)
+            interf.ipv6.dns = formValue("ipv6_dns", id)
             if (interf.ipv6.network_type === "fixed IPv6 Address") {
               interf.ipv6.address = formValue("ipv6_address", id)
               interf.ipv6.netmask = formValue("ipv6_netmask", id)
               interf.ipv6.gateway = formValue("ipv6_gateway", id)
-              interf.ipv6.dns = formValue("ipv6_dns", id)
             }
           }
 
@@ -462,7 +462,6 @@ export default {
           if (interf.wifi != undefined) {
             setValue("wifi_enabled", id, true)
 	    setValue("key_mgmt", id, interf.wifi.key_mgmt);
-            this.keymgmt = interf.wifi.key_mgmt;
             setValue("wifi_ssid_content", id, interf.wifi.ssid);
             setValue("wifi_password_content", id, interf.wifi.password)
           } else {
@@ -473,11 +472,11 @@ export default {
             setValue("ipv4_enabled", id, true)
             setValue("ipv4_network_type", id, interf.ipv4.network_type);
             setValue("ipv4_auto_dns", id, interf.ipv4.auto_dns_enabled)
+            setValue("ipv4_dns", id, interf.ipv4.dns)
             if (interf.ipv4.network_type === "fixed IPv4 Address") {
               setValue("ipv4_address", id, interf.ipv4.address)
               setValue("ipv4_netmask", id, interf.ipv4.netmask)
               setValue("ipv4_gateway", id, interf.ipv4.gateway)
-              setValue("ipv4_dns", id, interf.ipv4.dns)
             }
           } else {
             setValue("ipv4_enabled", id, false)
@@ -486,11 +485,11 @@ export default {
             setValue("ipv6_enabled", id, true)
             setValue("ipv6_network_type", id, interf.ipv6.network_type);
             setValue("ipv6_auto_dns", id, interf.ipv6.auto_dns_enabled)
+            setValue("ipv6_dns", id, interf.ipv6.dns)
             if (interf.ipv6.network_type === "fixed IPv6 Address") {
               setValue("ipv6_address", id, interf.ipv6.address)
               setValue("ipv6_netmask", id, interf.ipv6.netmask)
               setValue("ipv6_gateway", id, interf.ipv6.gateway)
-              setValue("ipv6_dns", id, interf.ipv6.dns)
             }
           } else {
             setValue("ipv6_enabled", id, false)
