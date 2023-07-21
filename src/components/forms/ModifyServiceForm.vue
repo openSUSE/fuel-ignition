@@ -113,6 +113,29 @@ export default {
         }
       );
     },
+    fillImport: function (json, formData) {
+      const setValue = (key, uid, value) =>
+        Utils.setFormValue(formPrefix, formData, key, uid, value);
+      const keyPrefix = formPrefix + "_name_";
+
+      if (json.systemd == undefined || json.systemd.dropins == undefined) return;
+      Object.keys(formData)
+          .filter((x) => x.includes(keyPrefix))
+          .map((key) => key.replace(keyPrefix, ""))
+          .forEach((id) => {
+	    let dropin = json.systemd.dropins.shift();
+	    setValue("name", id, dropin.name);
+            setValue("dropin_name", id, dropin.dropin_name);
+            setValue("contents", id, dropin.contents);
+          });
+    },
+    countImport: function (json) {
+      if (json.systemd != undefined && json.systemd.dropins != undefined) {
+        return json.systemd.dropins.length;
+      } else {
+        return 0;
+      }
+    },
   },
 };
 </script>

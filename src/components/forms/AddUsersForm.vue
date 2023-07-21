@@ -200,7 +200,7 @@ export default {
           .filter((x) => x.includes(keyPrefix))
           .map((key) => key.replace(keyPrefix, ""))
           .forEach((id) => {
-  	    let user = json.login.users.shift();
+	    let user = json.login.users.shift();
 	    setValue("name", id, user.name)
 	    setValue("hash_type", id, user.hash_type)
 	    setValue("passwd", id, user.passwd)
