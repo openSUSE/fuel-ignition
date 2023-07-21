@@ -445,6 +445,66 @@ export default {
         }
       );
     },
+
+    fillImport: function (json, formData) {
+      const setValue = (key, uid, value) =>
+        Utils.setFormValue(formPrefix, formData, key, uid, value);
+      const keyPrefix = formPrefix + "_interface_";
+
+      if (json.network.interfaces == undefined) return;
+      Object.keys(formData)
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+	  let interf = json.network.interfaces.shift();
+	  setValue("interface", id, interf.name);
+
+          if (interf.wifi != undefined) {
+            setValue("wifi_enabled", id, true)
+	    setValue("key_mgmt", id, interf.wifi.key_mgmt);
+            this.keymgmt = interf.wifi.key_mgmt;
+            setValue("wifi_ssid_content", id, interf.wifi.ssid);
+            setValue("wifi_password_content", id, interf.wifi.password)
+          } else {
+	    setValue("wifi_enabled", id, false)
+	  }
+
+          if (interf.ipv4 != undefined) {
+            setValue("ipv4_enabled", id, true)
+            setValue("ipv4_network_type", id, interf.ipv4.network_type);
+            setValue("ipv4_auto_dns", id, interf.ipv4.auto_dns_enabled)
+            if (interf.ipv4.network_type === "fixed IPv4 Address") {
+              setValue("ipv4_address", id, interf.ipv4.address)
+              setValue("ipv4_netmask", id, interf.ipv4.netmask)
+              setValue("ipv4_gateway", id, interf.ipv4.gateway)
+              setValue("ipv4_dns", id, interf.ipv4.dns)
+            }
+          } else {
+            setValue("ipv4_enabled", id, false)
+	  }
+          if (interf.ipv6 != undefined) {
+            setValue("ipv6_enabled", id, true)
+            setValue("ipv6_network_type", id, interf.ipv6.network_type);
+            setValue("ipv6_auto_dns", id, interf.ipv6.auto_dns_enabled)
+            if (interf.ipv6.network_type === "fixed IPv6 Address") {
+              setValue("ipv6_address", id, interf.ipv6.address)
+              setValue("ipv6_netmask", id, interf.ipv6.netmask)
+              setValue("ipv6_gateway", id, interf.ipv6.gateway)
+              setValue("ipv6_dns", id, interf.ipv6.dns)
+            }
+          } else {
+            setValue("ipv6_enabled", id, false)
+	  }
+        });
+    },
+    countImport: function (json) {
+      if (json.network != undefined && json.network.interfaces != undefined) {
+        return json.network.interfaces.length;
+      } else {
+        return 0;
+      }
+    },
+
   },
 };
 </script>
