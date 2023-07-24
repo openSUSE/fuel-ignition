@@ -148,262 +148,262 @@ const exportSettings= (formData) => {
 
 <template>
   <div :key="componentKey">
-  <section class="page-section p-2 bg-dark" id="edit">
-    <div class="container mt-5 px-0">
-      <div class="row gx-4 gx-lg-5 justify-content-center">
-        <div class="col-lg-8 col-xl-6 text-white text-center">
-          <h1 class="mt-5">Ignition Config Generator</h1>
-          <hr class="divider" />
-          <div class="d-grid mb-5">
-            <img
-              class="text-center mx-auto w-50"
-              src="@/assets/template/img/undraw_programming_re_kg9v.svg"
-            />
+    <section class="page-section p-2 bg-dark" id="edit">
+      <div class="container mt-5 px-0">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+          <div class="col-lg-8 col-xl-6 text-white text-center">
+            <h1 class="mt-5">Ignition Config Generator</h1>
+            <hr class="divider" />
+            <div class="d-grid mb-5">
+              <img
+                class="text-center mx-auto w-50"
+                src="@/assets/template/img/undraw_programming_re_kg9v.svg"
+              />
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="row gx-4 gx-lg-5 justify-content-center mb-5">
-        <div class="col-lg-6">
-          <div class="form-floating mb-3">
-            <FormKit type="group" v-model="formData">
-              <ExpandableComponent
-	        title="Add Users"
-	        :displaysAtBegin="elementNumber(AddUsersForm)"
-	      >
-                <AddUsersForm></AddUsersForm>
-              </ExpandableComponent>
-
-              <ExpandableComponent
-                title="Create Files"
-                :displaysAtBegin="elementNumber(CreateFileForm)"
-              >
-                <CreateFileForm></CreateFileForm>
-              </ExpandableComponent>
-
-              <ExpandableComponent
-                title="Add Hostname"
-                :displaysAtBegin="elementNumber(AddHostnameForm)"
-		:maxComponents="1"
-              >
-                <AddHostnameForm></AddHostnameForm>
-              </ExpandableComponent>
-
-              <ExpandableComponent
-                title="Add Network Interface"
-                :displaysAtBegin="elementNumber(AddNetworkForm)"
-              >
-                <AddNetworkForm></AddNetworkForm>
-              </ExpandableComponent>
-
-              <ExpandableComponent
-                title="Enable or Create Services"
-                :displaysAtBegin="elementNumber(StartServiceForm)"
-              >
-                <StartServiceForm></StartServiceForm>
-              </ExpandableComponent>
-
-              <ExpandableComponent
-                title="Modify Existing Services"
-                :displaysAtBegin="elementNumber(ModifyServiceForm)"
-              >
-                <ModifyServiceForm></ModifyServiceForm>
-              </ExpandableComponent>
-
-              <div v-if="formData.debug">
-                <!-- rename to "Modify Services (Drop-Ins)"? -->
-                <ExpandableComponent
-                  title="DEBUG: Add Bytes"
-                  :displaysAtBegin="elementNumber(DebugAddBytesForm)"
-                >
-                  <DebugAddBytesForm></DebugAddBytesForm>
-                </ExpandableComponent>
-
-                <ExpandableComponent
-                  title="DEBUG: Analyze File"
-                  :displaysAtBegin="1"
-                  :maxComponents="1"
-                >
-                  <DebugAnalyzeImgForm></DebugAnalyzeImgForm>
-                </ExpandableComponent>
-              </div>
-            </FormKit>
-          </div>
-        </div>
-      </div>
-
-      <div class="row gx-4 gx-lg-5 justify-content-center">
-        <div class="col-lg-8 col-xl-6 text-white text-center">
-          <h1 class="mt-5">Add Combustion Scripts</h1>
-          <hr class="divider" />
-          <div class="d-grid mb-5">
-            <img
-              class="text-center mx-auto w-50"
-              src="@/assets/template/img/undraw_building_blocks_re_5ahy.svg"
-            />
-          </div>
-        </div>
-
+  
         <div class="row gx-4 gx-lg-5 justify-content-center mb-5">
           <div class="col-lg-6">
             <div class="form-floating mb-3">
               <FormKit type="group" v-model="formData">
                 <ExpandableComponent
-                  title="Register Product"
-                  :displaysAtBegin="elementNumber(CombRegistrationForm)"
-                >
-                  <CombRegistrationForm></CombRegistrationForm>
+  	        title="Add Users"
+  	        :displaysAtBegin="elementNumber(AddUsersForm)"
+  	      >
+                  <AddUsersForm></AddUsersForm>
                 </ExpandableComponent>
-
+  
                 <ExpandableComponent
-                  title="Connect to Salt Master"
-                  :maxComponents="1"
-                  :displaysAtBegin="elementNumber(CombSaltForm)"
+                  title="Create Files"
+                  :displaysAtBegin="elementNumber(CreateFileForm)"
                 >
-                  <CombSaltForm></CombSaltForm>
+                  <CreateFileForm></CreateFileForm>
                 </ExpandableComponent>
-
+  
                 <ExpandableComponent
-                  title="Install Package With Combustion"
-                  :displaysAtBegin="elementNumber(CombInstallPackageForm)"
+                  title="Add Hostname"
+                  :displaysAtBegin="elementNumber(AddHostnameForm)"
+  		:maxComponents="1"
                 >
-                  <CombInstallPackageForm></CombInstallPackageForm>
+                  <AddHostnameForm></AddHostnameForm>
                 </ExpandableComponent>
-
+  
                 <ExpandableComponent
-                  title="Add Custom Lines To Combustion Script"
-                  :displaysAtBegin="elementNumber(CombAddRawBash)"
+                  title="Add Network Interface"
+                  :displaysAtBegin="elementNumber(AddNetworkForm)"
                 >
-                  <CombAddRawBash></CombAddRawBash>
+                  <AddNetworkForm></AddNetworkForm>
                 </ExpandableComponent>
+  
+                <ExpandableComponent
+                  title="Enable or Create Services"
+                  :displaysAtBegin="elementNumber(StartServiceForm)"
+                >
+                  <StartServiceForm></StartServiceForm>
+                </ExpandableComponent>
+  
+                <ExpandableComponent
+                  title="Modify Existing Services"
+                  :displaysAtBegin="elementNumber(ModifyServiceForm)"
+                >
+                  <ModifyServiceForm></ModifyServiceForm>
+                </ExpandableComponent>
+  
+                <div v-if="formData.debug">
+                  <!-- rename to "Modify Services (Drop-Ins)"? -->
+                  <ExpandableComponent
+                    title="DEBUG: Add Bytes"
+                    :displaysAtBegin="elementNumber(DebugAddBytesForm)"
+                  >
+                    <DebugAddBytesForm></DebugAddBytesForm>
+                  </ExpandableComponent>
+  
+                  <ExpandableComponent
+                    title="DEBUG: Analyze File"
+                    :displaysAtBegin="1"
+                    :maxComponents="1"
+                  >
+                    <DebugAnalyzeImgForm></DebugAnalyzeImgForm>
+                  </ExpandableComponent>
+                </div>
               </FormKit>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <hr class="divider" />
-  </section>
-
-  <section class="page-section p-2" id="export">
-    <div class="container mt-5 px-0">
-      <div class="row gx-4 gx-lg-5 justify-content-center">
-        <div class="col-lg-8 col-xl-6">
-          <h1 class="mt-5 text-center">config.ign</h1>
-          <hr class="divider" />
-          <div class="d-grid mb-5">
-            <pre class="form-data">{{ toIgnitionConfig(formData) }}</pre>
-
-            <div class="double">
-              <FormKit
-                v-model="formData.debug"
-                type="checkbox"
-                label="Debug"
-                name="debug"
+  
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+          <div class="col-lg-8 col-xl-6 text-white text-center">
+            <h1 class="mt-5">Add Combustion Scripts</h1>
+            <hr class="divider" />
+            <div class="d-grid mb-5">
+              <img
+                class="text-center mx-auto w-50"
+                src="@/assets/template/img/undraw_building_blocks_re_5ahy.svg"
               />
-
-              <button
-                class="btn btn-outline-secondary mb-2"
-                @click="copyConfigToClipboard(formData)"
-              >
-                Copy
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  class="bi bi-clipboard"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"
-                  />
-                  <path
-                    d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"
-                  />
-                </svg>
-              </button>
             </div>
-
-            <button
-              class="btn btn-primary mb-4"
-              @click="downloadConfigIgn(formData)"
-            >
-              Download
-            </button>
-
-            <div v-if="toCombustionScript(formData) !== undefined">
-              <h1 class="mt-5 text-center">combustion script</h1>
-              <hr class="divider" />
-              <div class="d-grid mb-5">
-                <pre class="form-data">{{ toCombustionScript(formData) }}</pre>
-
-                <button
-                  class="btn btn-primary mb-4"
-                  @click="
-                    Utils.saveTemplateAsFile(
-                      'script',
-                      toCombustionScript(formData),
-                      true // isNotJson parameter
-                    )
-                  "
-                >
-                  Download
-                </button>
+          </div>
+  
+          <div class="row gx-4 gx-lg-5 justify-content-center mb-5">
+            <div class="col-lg-6">
+              <div class="form-floating mb-3">
+                <FormKit type="group" v-model="formData">
+                  <ExpandableComponent
+                    title="Register Product"
+                    :displaysAtBegin="elementNumber(CombRegistrationForm)"
+                  >
+                    <CombRegistrationForm></CombRegistrationForm>
+                  </ExpandableComponent>
+  
+                  <ExpandableComponent
+                    title="Connect to Salt Master"
+                    :maxComponents="1"
+                    :displaysAtBegin="elementNumber(CombSaltForm)"
+                  >
+                    <CombSaltForm></CombSaltForm>
+                  </ExpandableComponent>
+  
+                  <ExpandableComponent
+                    title="Install Package With Combustion"
+                    :displaysAtBegin="elementNumber(CombInstallPackageForm)"
+                  >
+                    <CombInstallPackageForm></CombInstallPackageForm>
+                  </ExpandableComponent>
+  
+                  <ExpandableComponent
+                    title="Add Custom Lines To Combustion Script"
+                    :displaysAtBegin="elementNumber(CombAddRawBash)"
+                  >
+                    <CombAddRawBash></CombAddRawBash>
+                  </ExpandableComponent>
+                </FormKit>
               </div>
             </div>
-
-            <div>
-              <h2 class="mt-5 text-center">
-                Convert to Ignition-<span
-                  v-if="toCombustionScript(formData) !== undefined"
-                  >Combustion-</span
-                >Ready Filesystem IMG in the Browser
-              </h2>
-
-              <BlobEditorComponent
-                :ignJson="toIgnitionConfig(formData)"
-                :combustionScript="toCombustionScript(formData)"
-              ></BlobEditorComponent>
-            </div>
-
-            <div>
-              <h2 class="mt-5 text-center">
-                Convert to ISO Filesystem with mkisofs
-              </h2>
-
-              <pre class="form-data">
-# mkisofs -full-iso9660-filenames -o ignition.iso -V ignition config.ign</pre>
-              <br>
-              <hr class="divider" />
-	    </div>
-
-            <h2 class="mt-5 text-center">Load Settings from</h2>
-            <FormKit
-              name="load_from"
-              type="file"
-	      @change="importData"
-            />
-
-            <h2 class="mt-5 text-center">Save Settings to</h2>
-            <FormKit
-              v-model="formData.save_to"
-              type="text"
-              name="save_to"
-            />
-
-            <button
-              class="btn btn-primary mt-3"
-              @click="exportSettings(formData)"
-            >
-              Save
-            </button>
-
           </div>
         </div>
       </div>
-    </div>
-  </section>
+  
+      <hr class="divider" />
+    </section>
+  
+    <section class="page-section p-2" id="export">
+      <div class="container mt-5 px-0">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+          <div class="col-lg-8 col-xl-6">
+            <h1 class="mt-5 text-center">config.ign</h1>
+            <hr class="divider" />
+            <div class="d-grid mb-5">
+              <pre class="form-data">{{ toIgnitionConfig(formData) }}</pre>
+  
+              <div class="double">
+                <FormKit
+                  v-model="formData.debug"
+                  type="checkbox"
+                  label="Debug"
+                  name="debug"
+                />
+  
+                <button
+                  class="btn btn-outline-secondary mb-2"
+                  @click="copyConfigToClipboard(formData)"
+                >
+                  Copy
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-clipboard"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"
+                    />
+                    <path
+                      d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"
+                    />
+                  </svg>
+                </button>
+              </div>
+  
+              <button
+                class="btn btn-primary mb-4"
+                @click="downloadConfigIgn(formData)"
+              >
+                Download
+              </button>
+  
+              <div v-if="toCombustionScript(formData) !== undefined">
+                <h1 class="mt-5 text-center">combustion script</h1>
+                <hr class="divider" />
+                <div class="d-grid mb-5">
+                  <pre class="form-data">{{ toCombustionScript(formData) }}</pre>
+  
+                  <button
+                    class="btn btn-primary mb-4"
+                    @click="
+                      Utils.saveTemplateAsFile(
+                        'script',
+                        toCombustionScript(formData),
+                        true // isNotJson parameter
+                      )
+                    "
+                  >
+                    Download
+                  </button>
+                </div>
+              </div>
+  
+              <div>
+                <h2 class="mt-5 text-center">
+                  Convert to Ignition-<span
+                    v-if="toCombustionScript(formData) !== undefined"
+                    >Combustion-</span
+                  >Ready Filesystem IMG in the Browser
+                </h2>
+  
+                <BlobEditorComponent
+                  :ignJson="toIgnitionConfig(formData)"
+                  :combustionScript="toCombustionScript(formData)"
+                ></BlobEditorComponent>
+              </div>
+  
+              <div>
+                <h2 class="mt-5 text-center">
+                  Convert to ISO Filesystem with mkisofs
+                </h2>
+  
+                <pre class="form-data">
+  # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition config.ign</pre>
+                <br>
+                <hr class="divider" />
+  	    </div>
+  
+              <h2 class="mt-5 text-center">Load Settings from</h2>
+              <FormKit
+                name="load_from"
+                type="file"
+  	      @change="importData"
+              />
+  
+              <h2 class="mt-5 text-center">Save Settings to</h2>
+              <FormKit
+                v-model="formData.save_to"
+                type="text"
+                name="save_to"
+              />
+  
+              <button
+                class="btn btn-primary mt-3"
+                @click="exportSettings(formData)"
+              >
+                Save
+              </button>
+  
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
