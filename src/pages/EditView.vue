@@ -147,7 +147,7 @@ const exportSettings= (formData) => {
 </script>
 
 <template>
-  <ComponentToReRender :key="componentKey">
+  <div :key="componentKey">
   <section class="page-section p-2 bg-dark" id="edit">
     <div class="container mt-5 px-0">
       <div class="row gx-4 gx-lg-5 justify-content-center">
@@ -405,5 +405,5 @@ const exportSettings= (formData) => {
       </div>
     </div>
   </section>
-  </ComponentToReRender>
+  </div>
 </template>
