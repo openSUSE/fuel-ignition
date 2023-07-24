@@ -205,7 +205,7 @@
         'WPA & WPA2 Personal',
         'WPA3 Personal'
       ]"
-      value='none'
+      value='WPA & WPA2 Personal'
     />
     <div v-if="keymgmt !== 'none'">
       <FormKit
@@ -233,8 +233,8 @@ export default {
     const ipv6networkType = ref("DHCP");
     const wifienabled = ref(false);
     const ipv4enabled = ref(true);
-    const ipv6enabled = ref(false);
-    const keymgmt = ref("none");
+    const ipv6enabled = ref(true);
+    const keymgmt = ref("WPA & WPA2 Personal");
 
     return {
       ipv4enabled,
@@ -282,7 +282,7 @@ export default {
 
           let filename = "/etc/NetworkManager/system-connections/"
           let content = ""
-          let fileObject = {}
+
 	  const wifi_enabled = formValue("wifi_enabled", id)
           const ipv4_enabled = formValue("ipv4_enabled", id)
           const ipv4_auto_dns_enabled = formValue("ipv4_auto_dns", id)
@@ -358,44 +358,152 @@ export default {
 	    }
 	  }
 
-          // merging the two objects, in case verification was written to fileObject
           json.storage.files.push(
-            Object.assign(
-              {
-                path: filename,
-                mode: 384,
-                overwrite: true,
-                contents: {
-                  source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
-		  human_read: content
-                },
+            {
+              path: filename,
+              mode: 384,
+              overwrite: true,
+              contents: {
+                source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
+	        human_read: content
               },
-              fileObject
-            )
+            }
           );
 
           if (counter == 0 ) {
             content = "[main]\n# Do not do automatic (DHCP/SLAAC) configuration on ethernet devices\n" +
                       "# with no other matching connections.\nno-auto-default=*\n"
             json.storage.files.push(
-              Object.assign(
-                {
-                  path: "/etc/NetworkManager/conf.d/noauto.conf",
-                  mode: 420,
-                  overwrite: true,
-                  contents: {
-                    source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
-                    human_read: content
-                  },
+              {
+                path: "/etc/NetworkManager/conf.d/noauto.conf",
+                mode: 420,
+                overwrite: true,
+                contents: {
+                  source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
+                  human_read: content
                 },
-                fileObject
-              )
+              },
 	    )
 	  }
 	  counter++
+        }
+      );
+    },
+    encodeToExport: function (json, formData) {
+      const formValue = (key, uid) =>
+        Utils.getFormValue(formPrefix, formData, key, uid);
 
+      const keyPrefix = formPrefix + "_interface_";
+      Object.keys(formData)
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+
+          if (json.network === undefined) {
+            json.network = {};
+          }
+
+          if (json.network.interfaces === undefined) {
+            json.network.interfaces = [];
+          }
+
+	  let interf = {}
+	  interf.name = formValue("interface", id)
+
+          if (formValue("wifi_enabled", id)) {
+            interf.wifi = {}
+            interf.wifi.key_mgmt = formValue("key_mgmt", id)
+            interf.wifi.ssid = formValue("wifi_ssid_content", id)
+            interf.wifi.password = formValue("wifi_password_content", id)
+          }
+
+          if (formValue("ipv4_enabled", id)) {
+            interf.ipv4 = {}
+            interf.ipv4.network_type = formValue("ipv4_network_type", id)
+            interf.ipv4.auto_dns_enabled = formValue("ipv4_auto_dns", id)
+            interf.ipv4.dns = formValue("ipv4_dns", id)
+            if (interf.ipv4.network_type === "fixed IPv4 Address") {
+              interf.ipv4.address = formValue("ipv4_address", id)
+              interf.ipv4.netmask = formValue("ipv4_netmask", id)
+              interf.ipv4.gateway = formValue("ipv4_gateway", id)
+            }
+          }
+
+          if (formValue("ipv6_enabled", id)) {
+            interf.ipv6 = {}
+            interf.ipv6.network_type = formValue("ipv6_network_type", id)
+            interf.ipv6.auto_dns_enabled = formValue("ipv6_auto_dns", id)
+            interf.ipv6.dns = formValue("ipv6_dns", id)
+            if (interf.ipv6.network_type === "fixed IPv6 Address") {
+              interf.ipv6.address = formValue("ipv6_address", id)
+              interf.ipv6.netmask = formValue("ipv6_netmask", id)
+              interf.ipv6.gateway = formValue("ipv6_gateway", id)
+            }
+          }
+
+          json.network.interfaces.push(interf)
+        }
+      );
+    },
+
+    fillImport: function (json, formData) {
+      const setValue = (key, uid, value) =>
+        Utils.setFormValue(formPrefix, formData, key, uid, value);
+      const keyPrefix = formPrefix + "_interface_";
+
+      if (json.network == undefined || json.network.interfaces == undefined) return;
+      Object.keys(formData)
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+	  let interf = json.network.interfaces.shift();
+	  setValue("interface", id, interf.name);
+
+          if (interf.wifi != undefined) {
+            setValue("wifi_enabled", id, true)
+	    setValue("key_mgmt", id, interf.wifi.key_mgmt);
+            setValue("wifi_ssid_content", id, interf.wifi.ssid);
+            setValue("wifi_password_content", id, interf.wifi.password)
+          } else {
+	    setValue("wifi_enabled", id, false)
+	  }
+
+          if (interf.ipv4 != undefined) {
+            setValue("ipv4_enabled", id, true)
+            setValue("ipv4_network_type", id, interf.ipv4.network_type);
+            setValue("ipv4_auto_dns", id, interf.ipv4.auto_dns_enabled)
+            setValue("ipv4_dns", id, interf.ipv4.dns)
+            if (interf.ipv4.network_type === "fixed IPv4 Address") {
+              setValue("ipv4_address", id, interf.ipv4.address)
+              setValue("ipv4_netmask", id, interf.ipv4.netmask)
+              setValue("ipv4_gateway", id, interf.ipv4.gateway)
+            }
+          } else {
+            setValue("ipv4_enabled", id, false)
+	  }
+          if (interf.ipv6 != undefined) {
+            setValue("ipv6_enabled", id, true)
+            setValue("ipv6_network_type", id, interf.ipv6.network_type);
+            setValue("ipv6_auto_dns", id, interf.ipv6.auto_dns_enabled)
+            setValue("ipv6_dns", id, interf.ipv6.dns)
+            if (interf.ipv6.network_type === "fixed IPv6 Address") {
+              setValue("ipv6_address", id, interf.ipv6.address)
+              setValue("ipv6_netmask", id, interf.ipv6.netmask)
+              setValue("ipv6_gateway", id, interf.ipv6.gateway)
+            }
+          } else {
+            setValue("ipv6_enabled", id, false)
+	  }
         });
     },
+    countImport: function (json) {
+      if (json.network != undefined && json.network.interfaces != undefined) {
+        return json.network.interfaces.length;
+      } else {
+        return 0;
+      }
+    },
+
   },
 };
 </script>

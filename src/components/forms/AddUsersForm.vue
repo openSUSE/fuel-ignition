@@ -163,6 +163,59 @@ export default {
           );
         });
     },
+    encodeToExport: function (json, formData) {
+      const formValue = (key, uid) =>
+        Utils.getFormValue(formPrefix, formData, key, uid);
+
+      const keyPrefix = formPrefix + "_name_";
+      Object.keys(formData)
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+          if (json.login === undefined) {
+            json.login = {};
+          }
+
+          if (json.login.users === undefined) {
+            json.login.users = [];
+          }
+	  let user = {}
+	  user.name = formValue("name", id)
+	  user.hash_type  = formValue("hash_type", id)
+	  user.passwd = formValue("passwd", id)
+	  user.ssh_keys = formValue("ssh_keys", id)
+	  user.runs_on_suse = formValue("runs_on_suse", id)
+
+          json.login.users.push(user)
+        }
+      );
+    },
+    fillImport: function (json, formData) {
+      const setValue = (key, uid, value) =>
+        Utils.setFormValue(formPrefix, formData, key, uid, value);
+      const keyPrefix = formPrefix + "_name_";
+
+      if (json.login == undefined || json.login.users == undefined) return;
+      Object.keys(formData)
+          .filter((x) => x.includes(keyPrefix))
+          .map((key) => key.replace(keyPrefix, ""))
+          .forEach((id) => {
+	    let user = json.login.users.shift();
+	    setValue("name", id, user.name)
+	    setValue("hash_type", id, user.hash_type)
+	    setValue("passwd", id, user.passwd)
+            Utils.PasswordHashes.hashes[id] = Bcrypt.hashSync( user.passwd, 8);
+	    setValue("ssh_keys", id, user.ssh_keys)
+	    setValue("runs_on_suse", id, user.runs_on_suse)
+          });
+    },
+    countImport: function (json) {
+      if (json.login != undefined && json.login.users != undefined) {
+        return json.login.users.length;
+      } else {
+        return 0;
+      }
+    },
   },
 };
 

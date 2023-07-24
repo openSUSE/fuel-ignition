@@ -23,10 +23,10 @@
       </button>
 
       <button
-        v-if="compCount > 1 || (!props.displayAtLeastOne && compCount > 0)"
+        v-if="compCount >= 1"
         class="btn btn-danger ml-5 mr-5 mb-5"
         @click="
-          compCount > 1 || !props.displayAtLeastOne ? compCount-- : compCount
+          compCount >= 1 ? compCount-- : compCount
         "
       >
         Remove
@@ -39,9 +39,9 @@
 import { ref } from "vue";
 
 const props = defineProps({
-  displayAtLeastOne: {
-    type: Boolean,
-    default: true,
+  displaysAtBegin: {
+    type: Number,
+    default: 0,
   },
 
   maxComponents: {
@@ -53,5 +53,5 @@ const props = defineProps({
   title: String,
 });
 
-const compCount = ref(props.displayAtLeastOne ? 1 : 0);
+const compCount = ref(props.displaysAtBegin);
 </script>

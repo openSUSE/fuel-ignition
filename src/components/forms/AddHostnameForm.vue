@@ -39,15 +39,11 @@ export default {
             json.storage.files = [];
           }
 
-          let fileObject = {};
           let dataValue = formValue("hostname", id);
-
           let content =
             "data:," + (dataValue === undefined ? "" : dataValue);
 
-          // merging the two objects, in case verification was written to fileObject
           json.storage.files.push(
-            Object.assign(
               {
                 path: "/etc/hostname",
                 mode: 420,
@@ -55,11 +51,46 @@ export default {
                 contents: {
                   source: content,
                 },
-              },
-              fileObject
-            )
+              }
           );
-        });
+        }
+      );
+    },
+    encodeToExport: function (json, formData) {
+      const formValue = (key, uid) =>
+        Utils.getFormValue(formPrefix, formData, key, uid);
+      const keyPrefix = formPrefix + "_hostname_";
+      
+      Object.keys(formData)
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+          let dataValue = formValue("hostname", id);
+          json.hostname = dataValue === undefined ? "" : dataValue;
+        }
+      );
+    },
+    fillImport: function (json, formData) {
+      const setValue = (key, uid, value) =>
+        Utils.setFormValue(formPrefix, formData, key, uid, value);
+      const keyPrefix = formPrefix + "_hostname_";
+      Object.keys(formData)
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+          if (json.hostname != undefined) {
+	    setValue("hostname", id, json.hostname);
+	    json.hostname = undefined
+	  }
+        }
+      );
+    },
+    countImport: function (json) {
+      if (json.hostname != undefined) {
+        return 1;
+      } else {
+        return 0;
+      }
     },
   },
 };
