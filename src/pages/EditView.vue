@@ -329,6 +329,7 @@ const exportSettings= (formData) => {
               <button
                 class="btn btn-primary mb-4"
                 @click="downloadConfigIgn(formData)"
+		data-testid=download_ignition
               >
                 Download
               </button>
@@ -341,6 +342,7 @@ const exportSettings= (formData) => {
   
                   <button
                     class="btn btn-primary mb-4"
+		    data-testid=download_combustion
                     @click="
                       Utils.saveTemplateAsFile(
                         'script',
