@@ -6,3 +6,4 @@ dist/
 /.vscode
 public/templates/backup.img
 public/templates/combustion.img
+cypress/downloads

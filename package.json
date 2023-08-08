@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "cy": "cypress open"
   },
   "dependencies": {
     "@formkit/themes": "^1.0.0-beta.6",
@@ -19,7 +20,9 @@
     "vue-router": "^4.0.15"
   },
   "devDependencies": {
+    "@testing-library/cypress": "^9.0.0",
     "@vitejs/plugin-vue": "^1.9.3",
+    "cypress": "^12.17.3",
     "sass": "^1.51.0",
     "vite": "^2.6.4"
   }
