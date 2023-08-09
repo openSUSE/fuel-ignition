@@ -100,6 +100,11 @@ Running all tests:
 npm run cy:run
 ```
 
+In order to start the tests, the fuel-ignition server has to be started
+before:
+```bash
+npm run dev
+```
 
 ## Notice
 
