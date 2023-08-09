@@ -4,7 +4,7 @@ describe('Creating users', () => {
   })
 
   it('creates ignition settings', () => {
-    // load all fixtures
+    // load fixtures
     cy.get('input[type=file]').selectFile('cypress/fixtures/AddUsers.json')
     cy.get('[data-testid=download_ignition]').click()
     

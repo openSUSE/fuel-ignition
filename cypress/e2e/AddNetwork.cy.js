@@ -4,7 +4,7 @@ describe('Creating notwork devices', () => {
   })
 
   it('creates ignition settings', () => {
-    // load all fixtures
+    // load fixtures
     cy.get('input[type=file]').selectFile('cypress/fixtures/AddNetwork.json')
     cy.get('[data-testid=download_ignition]').click()
     
