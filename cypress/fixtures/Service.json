@@ -1,0 +1,18 @@
+{
+  "systemd": {
+    "units": [
+      {
+        "name": "testservice",
+        "enabled": "yes",
+        "contents": "testservice_unit_content"
+      }
+    ],
+    "dropins": [
+      {
+        "name": "modified_service",
+        "dropin_name": "drop_file_name",
+        "contents": "dropunit"
+      }
+    ]
+  }
+}
