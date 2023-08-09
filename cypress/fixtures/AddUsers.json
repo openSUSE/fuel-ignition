@@ -1,0 +1,13 @@
+{
+  "login": {
+    "users": [
+      {
+        "name": "schubi",
+        "hash_type": "Hash Yourself",
+        "passwd": "linux",
+        "ssh_keys": "ssh_pubilic_keys",
+        "runs_on_suse": true
+      }
+    ]
+  }
+}
