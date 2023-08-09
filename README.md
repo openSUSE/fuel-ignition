@@ -83,6 +83,24 @@ npm run build
 ```
 dist/ contains a minified and cleaned up production build
 
+## Testing
+
+We are using Cypress (https://www.cypress.io/) for e2e tests (End-to-end tests). So we are
+simulating the user input and checking the results.
+
+Interactive testing:
+
+```bash
+npm run cy
+```
+
+Running all tests:
+
+```bash
+npm run cy:run
+```
+
+
 ## Notice
 
 Fuel-ignition is still in early development and will most likely undergo massive changes.
