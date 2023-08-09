@@ -1,0 +1,90 @@
+{
+  "login": {
+    "users": [
+      {
+        "name": "schubi",
+        "passwd": "linux",
+        "runs_on_suse": true
+      },
+      {
+        "name": "root",
+        "passwd": "linux"
+      }
+    ]
+  },
+  "storage": {
+    "files": [
+      {
+        "source_type": "data",
+        "data_content": "This is the file content",
+        "path": "/tmp/tmp/added_file",
+        "mode": "420",
+        "overwrite": true
+      }
+    ]
+  },
+  "hostname": "testhost",
+  "network": {
+    "interfaces": [
+      {
+        "name": "eth0",
+        "ipv4": {
+          "network_type": "fixed IPv4 Address",
+          "auto_dns_enabled": true,
+          "dns": "testserver.suse.com",
+          "address": "192.1.1.1",
+          "netmask": "32"
+        }
+      },
+      {
+        "name": "wlan0",
+        "ipv6": {
+          "network_type": "DHCP"
+        }
+      }
+    ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "name": "testservice",
+        "enabled": "yes",
+        "contents": "testservice_unit_content"
+      }
+    ],
+    "dropins": [
+      {
+        "name": "modified_service",
+        "dropin_name": "drop_file_name",
+        "contents": "dropunit"
+      }
+    ]
+  },
+  "registration": {
+    "registrations": [
+      {
+        "registrationserver": "scc.suse.com",
+        "regcode": "1234567890",
+        "product": "testproduct",
+        "email": "test@suse.com"
+      }
+    ]
+  },
+  "salt": {
+    "master": "salter_master_name",
+    "preseed_key_via": "defining keys manually",
+    "minion_pem_key": "minion_pem_key",
+    "minion_pub_key": "minion_pub_key",
+    "enableservice": true
+  },
+  "package": {
+    "install": [
+      "testpackage1",
+      "testpackage2"
+    ]
+  },
+  "scripts": [
+    "first line",
+    "second line"
+  ]
+}

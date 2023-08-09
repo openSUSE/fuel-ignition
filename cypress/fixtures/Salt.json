@@ -1,0 +1,9 @@
+{
+  "salt": {
+    "master": "salter_master_name",
+    "preseed_key_via": "defining keys manually",
+    "minion_pem_key": "minion_pem_key",
+    "minion_pub_key": "minion_pub_key",
+    "enableservice": true
+  }
+}

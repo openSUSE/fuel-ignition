@@ -1,0 +1,28 @@
+{
+  "network": {
+    "interfaces": [
+      {
+        "name": "eth0",
+        "ipv4": {
+          "network_type": "fixed IPv4 Address",
+          "auto_dns_enabled": true,
+          "dns": "testserver.suse.com",
+          "address": "192.1.1.1",
+          "netmask": "32",
+          "gateway": "192.2.2.2"
+        }
+      },
+      {
+        "name": "wlan0",
+        "wifi": {
+          "key_mgmt": "WPA & WPA2 Personal",
+          "ssid": "SSSID",
+          "password": "linux"
+        },
+        "ipv6": {
+          "network_type": "DHCP"
+        }
+      }
+    ]
+  }
+}
