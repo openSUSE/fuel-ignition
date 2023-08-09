@@ -1,0 +1,8 @@
+{
+  "package": {
+    "install": [
+      "testpackage1",
+      "testpackage2"
+    ]
+  }
+}

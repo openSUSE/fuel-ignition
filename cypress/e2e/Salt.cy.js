@@ -3,7 +3,7 @@ describe('Connecting to Salt Master', () => {
     cy.visit('/edit')
   })
 
-  it('creates ignition settings', () => {
+  it('creates combustion settings', () => {
     // load fixtures
     cy.get('input[type=file]').selectFile('cypress/fixtures/Salt.json')
     cy.get('[data-testid=download_combustion]').click()

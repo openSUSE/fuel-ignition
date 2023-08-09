@@ -1,20 +1,20 @@
-describe('Registering system', () => {
+describe('Adding individual lines to combustion script', () => {
   beforeEach(() => {
     cy.visit('/edit')
   })
 
   it('creates combustion settings', () => {
     // load fixtures
-    cy.get('input[type=file]').selectFile('cypress/fixtures/Registration.json')
+    cy.get('input[type=file]').selectFile('cypress/fixtures/CombustionScript.json')
     cy.get('[data-testid=download_combustion]').click()
     
     // checking generated combustion file
     cy.readFile('cypress/downloads/script').then((content) => {
       cy.log(content)
       expect(content).to.have.string(
-        'zypper --non-interactive install suseconnect-ng')
+        'first line')
       expect(content).to.have.string(
-        'SUSEConnect --product testproduct --email test@suse.com --url scc.suse.com --regcode 1234567890')
+        'second line')
     });
   })
 })
