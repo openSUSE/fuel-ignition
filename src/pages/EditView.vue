@@ -376,7 +376,7 @@ const exportSettings= (formData) => {
                 </h2>
   
                 <pre class="form-data">
-  # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition config.ign</pre>
+  # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition -root ignition config.ign</pre>
                 <br>
                 <hr class="divider" />
   	    </div>
