@@ -34,15 +34,6 @@
           <li class="nav-item">
             <a
               class="nav-link"
-              href="https://kubic.opensuse.org/"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Kubic</a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link"
               href="https://coreos.github.io/ignition/"
               target="_blank"
               rel="noopener noreferrer"

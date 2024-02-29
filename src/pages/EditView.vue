@@ -227,57 +227,37 @@ const exportSettings= (formData) => {
                     <DebugAnalyzeImgForm></DebugAnalyzeImgForm>
                   </ExpandableComponent>
                 </div>
+
+		<ExpandableComponent
+                  title="Register Product"
+                  :displaysAtBegin="elementNumber(CombRegistrationForm)"
+                >
+                  <CombRegistrationForm></CombRegistrationForm>
+                </ExpandableComponent>
+  
+                <ExpandableComponent
+                  title="Connect to Salt Master"
+                  :maxComponents="1"
+                  :displaysAtBegin="elementNumber(CombSaltForm)"
+                >
+                  <CombSaltForm></CombSaltForm>
+                </ExpandableComponent>
+  
+                <ExpandableComponent
+                  title="Install Package With Combustion"
+                  :displaysAtBegin="elementNumber(CombInstallPackageForm)"
+                >
+                  <CombInstallPackageForm></CombInstallPackageForm>
+                </ExpandableComponent>
+  
+                <ExpandableComponent
+                  title="Add Custom Lines To Combustion Script"
+                  :displaysAtBegin="elementNumber(CombAddRawBash)"
+                >
+                  <CombAddRawBash></CombAddRawBash>
+                </ExpandableComponent>
+
               </FormKit>
-            </div>
-          </div>
-        </div>
-  
-        <div class="row gx-4 gx-lg-5 justify-content-center">
-          <div class="col-lg-8 col-xl-6 text-white text-center">
-            <h1 class="mt-5">Add Combustion Scripts</h1>
-            <hr class="divider" />
-            <div class="d-grid mb-5">
-              <img
-                class="text-center mx-auto w-50"
-                src="@/assets/template/img/undraw_building_blocks_re_5ahy.svg"
-              />
-            </div>
-          </div>
-  
-          <div class="row gx-4 gx-lg-5 justify-content-center mb-5">
-            <div class="col-lg-6">
-              <div class="form-floating mb-3">
-                <FormKit type="group" v-model="formData">
-                  <ExpandableComponent
-                    title="Register Product"
-                    :displaysAtBegin="elementNumber(CombRegistrationForm)"
-                  >
-                    <CombRegistrationForm></CombRegistrationForm>
-                  </ExpandableComponent>
-  
-                  <ExpandableComponent
-                    title="Connect to Salt Master"
-                    :maxComponents="1"
-                    :displaysAtBegin="elementNumber(CombSaltForm)"
-                  >
-                    <CombSaltForm></CombSaltForm>
-                  </ExpandableComponent>
-  
-                  <ExpandableComponent
-                    title="Install Package With Combustion"
-                    :displaysAtBegin="elementNumber(CombInstallPackageForm)"
-                  >
-                    <CombInstallPackageForm></CombInstallPackageForm>
-                  </ExpandableComponent>
-  
-                  <ExpandableComponent
-                    title="Add Custom Lines To Combustion Script"
-                    :displaysAtBegin="elementNumber(CombAddRawBash)"
-                  >
-                    <CombAddRawBash></CombAddRawBash>
-                  </ExpandableComponent>
-                </FormKit>
-              </div>
             </div>
           </div>
         </div>
