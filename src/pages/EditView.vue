@@ -152,8 +152,7 @@ const exportSettings= (formData) => {
       <div class="container mt-5 px-0">
         <div class="row gx-4 gx-lg-5 justify-content-center">
           <div class="col-lg-8 col-xl-6 text-white text-center">
-            <h1 class="mt-5">Ignition Config Generator</h1>
-            <hr class="divider" />
+            <h1 class="mt-5">Config Generator</h1>
             <div class="d-grid mb-5">
               <img
                 class="text-center mx-auto w-50"
@@ -262,8 +261,6 @@ const exportSettings= (formData) => {
           </div>
         </div>
       </div>
-  
-      <hr class="divider" />
     </section>
   
     <section class="page-section p-2" id="export">
@@ -271,7 +268,6 @@ const exportSettings= (formData) => {
         <div class="row gx-4 gx-lg-5 justify-content-center">
           <div class="col-lg-8 col-xl-6">
             <h1 class="mt-5 text-center">config.ign</h1>
-            <hr class="divider" />
             <div class="d-grid mb-5">
               <pre class="form-data">{{ toIgnitionConfig(formData) }}</pre>
   
