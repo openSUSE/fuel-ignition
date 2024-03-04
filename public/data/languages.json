@@ -1,0 +1,297 @@
+{
+   "Afrikaans": {
+      "lang_code": "af_ZA",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Arabic": {
+      "lang_code": "ar_EG",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Asturian": {
+      "lang_code": "ast_ES",
+      "utf8": ".UTF-8",
+      "none_utf8": "@euro"
+   },
+   "Bengali": {
+      "lang_code": "bn_BD",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Bosnian": {
+      "lang_code": "bs_BA",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Bulgarian": {
+      "lang_code": "bg_BG",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },   
+   "Catalan": {
+      "lang_code": "ca_ES",
+      "utf8": ".UTF-8",
+      "none_utf8": "@euro"
+   },
+   "Chinese Simplified": {
+      "lang_code": "zh_CN",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Chinese Traditional": {
+      "lang_code": "zh_TW",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },   
+   "Croatian": {
+      "lang_code": "hr_HR",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },   
+   "Czech": {
+      "lang_code": "cs_CZ",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Danish": {
+      "lang_code": "da_DK",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Dutch": {
+      "lang_code": "nl_NL",
+      "utf8": ".UTF-8",
+      "none_utf8": "@euro"
+   },   
+   "English (UK)": {
+      "lang_code": "en_GB",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "English (US)": {
+      "lang_code": "en_US",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Estonian": {
+      "lang_code": "et_EE",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Finnish": {
+      "lang_code": "fi_FI",
+      "utf8": ".UTF-8",
+      "none_utf8": "@euro"
+   },
+   "French": {
+      "lang_code": "fr_FR",
+      "utf8": ".UTF-8",
+      "none_utf8": "@euro"
+   },
+   "Galician": {
+      "lang_code": "gl_ES",
+      "utf8": ".UTF-8",
+      "none_utf8": "@euro"
+   },
+   "Georgian": {
+      "lang_code": "ka_GE",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },   
+   "German": {
+      "lang_code": "de_DE",
+      "utf8": ".UTF-8",
+      "none_utf8": "@euro"
+   },
+   "Greek": {
+      "lang_code": "el_GR",
+      "utf8": ".UTF-8",
+      "none_utf8": ".ISO-8859-7"
+   },   
+   "Gujarati": {
+      "lang_code": "gu_IN",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Hebrew": {
+      "lang_code": "he_IL",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Hindi": {
+      "lang_code": "hi_IN",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Hungarian": {
+      "lang_code": "hu_HU",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Indonesian": {
+      "lang_code": "id_ID",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Italian": {
+      "lang_code": "it_IT",
+      "utf8": ".UTF-8",
+      "none_utf8": "@euro"
+   },
+   "Japanese": {
+      "lang_code": "ja_JP",
+      "utf8": ".UTF-8",
+      "none_utf8": ".eucJP"
+   },
+   "Khmer": {
+      "lang_code": "km_KH",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Korean": {
+      "lang_code": "ko_KR",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Lithuanian": {
+      "lang_code": "lt_LT",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Macedonian": {
+      "lang_code": "mk_MK",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Marathi": {
+      "lang_code": "",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Norwegian": {
+      "lang_code": "nb_NO",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Nynorsk": {
+      "lang_code": "nn_NO",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Persian": {
+      "lang_code": "fa_IR",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },   
+   "Polish": {
+      "lang_code": "pl_PL",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Portuguese (Brazilian)": {
+      "lang_code": "pt_BR",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Portuguese": {
+      "lang_code": "pt_PT",
+      "utf8": ".UTF-8",
+      "none_utf8": "@euro"
+   },
+   "Punjabi": {
+      "lang_code": "pa_IN",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },   
+   "Romanian": {
+      "lang_code": "ro_RO",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Russian": {
+      "lang_code": "ru_RU",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Serbian": {
+      "lang_code": "sr_RS",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },   
+   "Sinhala": {
+      "lang_code": "si_LK",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Slovak": {
+      "lang_code": "sk_SK",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Slovenian": {
+      "lang_code": "sl_SI",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Spanish": {
+      "lang_code": "es_ES",
+      "utf8": ".UTF-8",
+      "none_utf8": "@euro"
+   },   
+   "Swedish": {
+      "lang_code": "sv_SE",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Tajik": {
+      "lang_code": "",
+      "utf8": ".UTF-8",
+      "none_utf8": "tg_TJ"
+   },   
+   "Tamil": {
+      "lang_code": "ta_IN",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Thai": {
+      "lang_code": "th_TH",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },   
+   "Turkish": {
+      "lang_code": "tr_TR",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Ukrainian": {
+      "lang_code": "uk_UA",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Vietnamese": {
+      "lang_code": "vi_VN",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Walloon": {
+      "lang_code": "wa_BE",
+      "utf8": ".UTF-8",
+      "none_utf8": "@euro"
+   },
+   "Welsh": {
+      "lang_code": "cy_GB",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },   
+   "Xhosa": {
+      "lang_code": "xh_ZA",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   },
+   "Zulu": {
+      "lang_code": "zu_ZA",
+      "utf8": ".UTF-8",
+      "none_utf8": ""
+   }
+}

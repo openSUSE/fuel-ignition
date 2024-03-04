@@ -8,6 +8,7 @@ import BlobEditorComponent from "@/components/TemplateBlobEditorComponent.vue";
 import AddUsersForm from "@/components/forms/AddUsersForm.vue";
 import CreateFileForm from "@/components/forms/CreateFileForm.vue";
 import AddHostnameForm from "@/components/forms/AddHostnameForm.vue";
+import AddLanguageForm from "@/components/forms/AddLanguageForm.vue";
 import AddNetworkForm from "@/components/forms/AddNetworkForm.vue";
 import StartServiceForm from "@/components/forms/StartServiceForm.vue";
 import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
@@ -23,6 +24,7 @@ const formComponents = [
   AddUsersForm,
   CreateFileForm,
   AddHostnameForm,
+  AddLanguageForm,
   AddNetworkForm,
   StartServiceForm,
   ModifyServiceForm,
@@ -179,7 +181,15 @@ const exportSettings= (formData) => {
                 >
                   <CreateFileForm></CreateFileForm>
                 </ExpandableComponent>
-  
+
+                <ExpandableComponent
+                  title="Add Language"
+                  :displaysAtBegin="elementNumber(AddLanguageForm)"
+  		:maxComponents="1"
+                >
+                  <AddLanguageForm></AddLanguageForm>
+                </ExpandableComponent>
+
                 <ExpandableComponent
                   title="Add Hostname"
                   :displaysAtBegin="elementNumber(AddHostnameForm)"
