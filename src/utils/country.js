@@ -185,15 +185,15 @@ export default {
     return Array.from(languages.entries()).map(e=>e[0])
   },
 
-  langConde: (language) => {
-    console.log(languages.get(language).get("lang_code"))  
+  langCode: (language) => {
+    return languages.get(language).get("lang_code")
   },
   
   utf8Encoding: (language) => {
-    console.log(languages.get(language).get("utf8"))
+    return languages.get(language).get("utf8")
   },
 
   noneUtf8Encoding: (language) => {
-    console.log(languages.get(language).get("none_utf8"))
+    return languages.get(language).get("none_utf8")
   },
 };  

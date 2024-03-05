@@ -8,6 +8,15 @@
     :options="languages()"
     help="select primary language"
   />
+
+  <FormKit
+    :name="formKey('language_utf8')"
+    label="Use UTF-8 Encoding"
+    type="checkbox"
+    validation-behavior="live"
+    :value=true
+    help="enable UTF8-Code"
+  />
 </template>
 
 <script>
@@ -36,6 +45,9 @@ export default {
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))
         .forEach((id) => {
+          const language_utf8 = formValue("language_utf8", id)
+	  const lang = formValue("language_name", id)
+
           if (json.storage === undefined) {
             json.storage = {};
           }
@@ -44,9 +56,14 @@ export default {
             json.storage.files = [];
           }
 
-          let dataValue = formValue("language_name", id);
+          let code = Country.langCode(lang);
+	  if (language_utf8 === true) {
+	    code = code + Country.utf8Encoding(lang);
+	  } else {
+	    code = code + Country.noneUtf8Encoding(lang);
+	  }
           let content =
-            "data:," + (dataValue === undefined ? "" : dataValue);
+            "data:,LANG=" + code;
 
           json.storage.files.push(
               {
@@ -70,8 +87,8 @@ export default {
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))
         .forEach((id) => {
-          let dataValue = formValue("language_name", id);
-          json.language_name = dataValue === undefined ? "" : dataValue;
+          json.language_name = formValue("language_name", id)
+          json.language_utf8 = formValue("language_utf8", id)
         }
       );
     },
@@ -86,6 +103,9 @@ export default {
           if (json.language_name != undefined) {
 	    setValue("language_name", id, json.language_name);
 	    json.language_name = undefined
+	  }
+	  if (json.language_utf8 != undefined) {
+	    setValue("language_utf8", id, json.language_utf8);
 	  }
         }
       );
