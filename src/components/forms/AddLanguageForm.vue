@@ -5,29 +5,24 @@
     label="Language"
     validation="required"
     validation-behavior="live"
-    :options="[
-          'data',
-          'data-vagrant',
-          'https',
-          'http',
-          'tftp',
-          's3',
-          'gs',
-          'omit',
-        ]"    
+    :options="languages()"
+    help="select primary language"
   />
 </template>
 
 <script>
 import Utils from "../../utils/utils.js";
+import Country from "../../utils/country.js";
 import { ref } from "vue";
 const formPrefix = "add_language";
+
 
 export default {
   setup: () => {
     const uid = Utils.uid();
     return {
       formKey: (key) => Utils.getFormKey(formPrefix, key, uid),
+      languages: () => Country.availableLanguages(),
     };
   },
 
