@@ -242,6 +242,7 @@ const exportSettings= (formData) => {
 		<ExpandableComponent
                   title="Set Keyboard"
                   :displaysAtBegin="elementNumber(CombKeyboardForm)"
+		  :maxComponents="1"
                 >
                   <CombKeyboardForm></CombKeyboardForm>
                 </ExpandableComponent>
