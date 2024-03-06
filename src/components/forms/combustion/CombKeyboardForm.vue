@@ -44,7 +44,7 @@ export default {
       Object.keys(formData)
         .filter((x) => x.includes(formPrefix))
         .forEach((key) => {
-	  json.keyboard(formData[key])
+	  json.keyboard = formData[key]
         }); 
     },
     fillImport: function (json, formData) {
