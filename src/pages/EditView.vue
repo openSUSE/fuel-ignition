@@ -15,6 +15,7 @@ import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 
 import DebugAddBytesForm from "@/components/forms/DebugAddBytesForm.vue";
 import DebugAnalyzeImgForm from "@/components/forms/DebugAnalyzeImgForm.vue";
+import CombKeyboardForm from "@/components/forms/combustion/CombKeyboardForm.vue";
 import CombRegistrationForm from "@/components/forms/combustion/CombRegistrationForm.vue";
 import CombSaltForm from "@/components/forms/combustion/CombSaltForm.vue";
 import CombInstallPackageForm from "@/components/forms/combustion/CombInstallPackageForm.vue";
@@ -28,6 +29,7 @@ const formComponents = [
   AddNetworkForm,
   StartServiceForm,
   ModifyServiceForm,
+  CombKeyboardForm,
   CombRegistrationForm,
   CombSaltForm,
   CombInstallPackageForm,
@@ -183,7 +185,7 @@ const exportSettings= (formData) => {
                 </ExpandableComponent>
 
                 <ExpandableComponent
-                  title="Add Language"
+                  title="Set Language"
                   :displaysAtBegin="elementNumber(AddLanguageForm)"
   		:maxComponents="1"
                 >
@@ -236,6 +238,13 @@ const exportSettings= (formData) => {
                     <DebugAnalyzeImgForm></DebugAnalyzeImgForm>
                   </ExpandableComponent>
                 </div>
+
+		<ExpandableComponent
+                  title="Set Keyboard"
+                  :displaysAtBegin="elementNumber(CombKeyboardForm)"
+                >
+                  <CombKeyboardForm></CombKeyboardForm>
+                </ExpandableComponent>
 
 		<ExpandableComponent
                   title="Register Product"
