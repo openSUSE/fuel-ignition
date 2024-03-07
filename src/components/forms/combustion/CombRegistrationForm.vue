@@ -26,7 +26,7 @@
     :name="formKey('email')"
     label="Email"
     type="email"
-    validation="required|email"
+    validation="email"
     validation-visibility="live"
     help="Email address for which the registration will be done."
   />
