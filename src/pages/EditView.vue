@@ -192,6 +192,14 @@ const exportSettings= (formData) => {
                   <AddLanguageForm></AddLanguageForm>
                 </ExpandableComponent>
 
+		<ExpandableComponent
+                  title="Set Keyboard"
+                  :displaysAtBegin="elementNumber(CombKeyboardForm)"
+		  :maxComponents="1"
+                >
+                  <CombKeyboardForm></CombKeyboardForm>
+                </ExpandableComponent>
+
                 <ExpandableComponent
                   title="Add Hostname"
                   :displaysAtBegin="elementNumber(AddHostnameForm)"
@@ -238,14 +246,6 @@ const exportSettings= (formData) => {
                     <DebugAnalyzeImgForm></DebugAnalyzeImgForm>
                   </ExpandableComponent>
                 </div>
-
-		<ExpandableComponent
-                  title="Set Keyboard"
-                  :displaysAtBegin="elementNumber(CombKeyboardForm)"
-		  :maxComponents="1"
-                >
-                  <CombKeyboardForm></CombKeyboardForm>
-                </ExpandableComponent>
 
 		<ExpandableComponent
                   title="Register Product"
