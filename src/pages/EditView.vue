@@ -171,14 +171,14 @@ const exportSettings= (formData) => {
             <div class="form-floating mb-3">
               <FormKit type="group" v-model="formData">
                 <ExpandableComponent
-  	        title="Add Users"
+	        title="Add User"
   	        :displaysAtBegin="elementNumber(AddUsersForm)"
   	      >
                   <AddUsersForm></AddUsersForm>
                 </ExpandableComponent>
 
                 <ExpandableComponent
-                  title="Add Hostname"
+                  title="Set Hostname"
                   :displaysAtBegin="elementNumber(AddHostnameForm)"
 		  :maxComponents="1"
                 >
@@ -230,14 +230,14 @@ const exportSettings= (formData) => {
 		<hr class="divider-long" />
   
                 <ExpandableComponent
-                  title="Enable or Create Services"
+                  title="Enable or Create Service"
                   :displaysAtBegin="elementNumber(StartServiceForm)"
                 >
                   <StartServiceForm></StartServiceForm>
                 </ExpandableComponent>
   
                 <ExpandableComponent
-                  title="Modify Existing Services"
+                  title="Modify Existing Service"
                   :displaysAtBegin="elementNumber(ModifyServiceForm)"
                 >
                   <ModifyServiceForm></ModifyServiceForm>
@@ -246,14 +246,14 @@ const exportSettings= (formData) => {
 		<hr class="divider-long" />
 
                 <ExpandableComponent
-                  title="Install Package With Combustion"
+                  title="Install Additional Package"
                   :displaysAtBegin="elementNumber(CombInstallPackageForm)"
                 >
                   <CombInstallPackageForm></CombInstallPackageForm>
                 </ExpandableComponent>
 
                 <ExpandableComponent
-                  title="Add Files To System"
+                  title="Add File To System"
                   :displaysAtBegin="elementNumber(CreateFileForm)"
                 >
                   <CreateFileForm></CreateFileForm>
