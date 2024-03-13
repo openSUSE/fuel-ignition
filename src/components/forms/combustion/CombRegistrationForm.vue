@@ -131,8 +131,6 @@ export default {
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))
         .forEach((id) => {
-	  const usb_regcode = formValue("usb_regcode", id)
-
           if (json.registration === undefined) {
             json.registration = {};
           }
@@ -146,6 +144,7 @@ export default {
 	  registration.regcode = formValue("regcode", id)
 	  registration.product = formValue("product", id)
 	  registration.email = formValue("email", id)
+	  registration.usb_regcode = formValue("usb_regcode", id)
           json.registration.registrations.push(registration)
         }
       );
@@ -162,6 +161,7 @@ export default {
           .forEach((id) => {
 	    let registration = json.registration.registrations.shift();
 	    setValue("registrationserver", id, registration.registrationserver);
+	    setValue("usb_regcode", id, registration.usb_regcode);
 	    setValue("regcode", id, registration.regcode);
 	    setValue("product", id, registration.product);
 	    setValue("email", id, registration.email);
