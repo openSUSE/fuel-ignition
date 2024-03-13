@@ -14,7 +14,9 @@ describe('Registering system', () => {
       expect(content).to.have.string(
         'zypper --non-interactive install suseconnect-ng')
       expect(content).to.have.string(
-        'SUSEConnect --product testproduct --email test@suse.com --url scc.suse.com --regcode 1234567890')
+        'zypper --non-interactive install xmlstarlet')
+      expect(content).to.have.string(
+        'SUSEConnect --product $product/$version/$architecture --email test@suse.com --url scc.suse.com --regcode $regcode')
     });
   })
 })
