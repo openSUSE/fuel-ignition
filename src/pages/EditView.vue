@@ -176,13 +176,16 @@ const exportSettings= (formData) => {
   	      >
                   <AddUsersForm></AddUsersForm>
                 </ExpandableComponent>
-  
+
                 <ExpandableComponent
-                  title="Create Files"
-                  :displaysAtBegin="elementNumber(CreateFileForm)"
+                  title="Add Hostname"
+                  :displaysAtBegin="elementNumber(AddHostnameForm)"
+		  :maxComponents="1"
                 >
-                  <CreateFileForm></CreateFileForm>
+                  <AddHostnameForm></AddHostnameForm>
                 </ExpandableComponent>
+
+		<hr class="divider-long" />
 
                 <ExpandableComponent
                   title="Set Language"
@@ -200,20 +203,31 @@ const exportSettings= (formData) => {
                   <CombKeyboardForm></CombKeyboardForm>
                 </ExpandableComponent>
 
-                <ExpandableComponent
-                  title="Add Hostname"
-                  :displaysAtBegin="elementNumber(AddHostnameForm)"
-  		:maxComponents="1"
-                >
-                  <AddHostnameForm></AddHostnameForm>
-                </ExpandableComponent>
-  
+		<hr class="divider-long" />
+
                 <ExpandableComponent
                   title="Add Network Interface"
                   :displaysAtBegin="elementNumber(AddNetworkForm)"
                 >
                   <AddNetworkForm></AddNetworkForm>
                 </ExpandableComponent>
+
+		<ExpandableComponent
+                  title="Register Product"
+                  :displaysAtBegin="elementNumber(CombRegistrationForm)"
+                >
+                  <CombRegistrationForm></CombRegistrationForm>
+                </ExpandableComponent>
+  
+                <ExpandableComponent
+                  title="Connect to Salt Master"
+                  :maxComponents="1"
+                  :displaysAtBegin="elementNumber(CombSaltForm)"
+                >
+                  <CombSaltForm></CombSaltForm>
+                </ExpandableComponent>
+
+		<hr class="divider-long" />
   
                 <ExpandableComponent
                   title="Enable or Create Services"
@@ -229,6 +243,29 @@ const exportSettings= (formData) => {
                   <ModifyServiceForm></ModifyServiceForm>
                 </ExpandableComponent>
   
+		<hr class="divider-long" />
+
+                <ExpandableComponent
+                  title="Install Package With Combustion"
+                  :displaysAtBegin="elementNumber(CombInstallPackageForm)"
+                >
+                  <CombInstallPackageForm></CombInstallPackageForm>
+                </ExpandableComponent>
+
+                <ExpandableComponent
+                  title="Add Files To System"
+                  :displaysAtBegin="elementNumber(CreateFileForm)"
+                >
+                  <CreateFileForm></CreateFileForm>
+                </ExpandableComponent>
+
+                <ExpandableComponent
+                  title="Add Custom Lines To Combustion Script"
+                  :displaysAtBegin="elementNumber(CombAddRawBash)"
+                >
+                  <CombAddRawBash></CombAddRawBash>
+                </ExpandableComponent>
+
                 <div v-if="formData.debug">
                   <!-- rename to "Modify Services (Drop-Ins)"? -->
                   <ExpandableComponent
@@ -246,36 +283,6 @@ const exportSettings= (formData) => {
                     <DebugAnalyzeImgForm></DebugAnalyzeImgForm>
                   </ExpandableComponent>
                 </div>
-
-		<ExpandableComponent
-                  title="Register Product"
-                  :displaysAtBegin="elementNumber(CombRegistrationForm)"
-                >
-                  <CombRegistrationForm></CombRegistrationForm>
-                </ExpandableComponent>
-  
-                <ExpandableComponent
-                  title="Connect to Salt Master"
-                  :maxComponents="1"
-                  :displaysAtBegin="elementNumber(CombSaltForm)"
-                >
-                  <CombSaltForm></CombSaltForm>
-                </ExpandableComponent>
-  
-                <ExpandableComponent
-                  title="Install Package With Combustion"
-                  :displaysAtBegin="elementNumber(CombInstallPackageForm)"
-                >
-                  <CombInstallPackageForm></CombInstallPackageForm>
-                </ExpandableComponent>
-  
-                <ExpandableComponent
-                  title="Add Custom Lines To Combustion Script"
-                  :displaysAtBegin="elementNumber(CombAddRawBash)"
-                >
-                  <CombAddRawBash></CombAddRawBash>
-                </ExpandableComponent>
-
               </FormKit>
             </div>
           </div>
