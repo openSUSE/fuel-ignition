@@ -74,11 +74,6 @@ export default {
 	      "if ! which SUSEConnect > /dev/null 2>&1; then\n" +
 	      "    zypper --non-interactive install suseconnect-ng\n" +
               "fi\n"
- 	    if ((formValue("product", id) !== "Base_Product") || (formValue("usb_regcode", id) === true)) {
-	      json.combustion += "if ! which xmlstarlet > /dev/null 2>&1; then\n" +
-	        "    zypper --non-interactive install xmlstarlet\n" +
-                "fi\n"
-	    }
 	  }
 	  entries++;
 
@@ -90,7 +85,7 @@ export default {
 	         "  if ! findmnt $I > /dev/null; then\n" +
 	         "    if mount $I /mnt; then\n" +
 		 "      if  [ -f /mnt/regcode.xml ]; then\n" +
-		 "        regcode=`xmlstarlet sel -t -m \"//_:profile/_:suse_register/_:addons/_:addon[_:name='$product']\" -v '_:reg_code' -n /mnt/regcode.xml`\n" +
+		 "        regcode=`cat /mnt/regcode.xml|sed '2 s/xmlns=\".*\"//g'|xmllint --xpath \"//addon[name='$product']/reg_code/text()\" -`\n" +
 		 "        umount /mnt\n" +
 		 "        break\n" +
 		 "      fi\n" +
@@ -109,7 +104,7 @@ export default {
 
 	  if (formValue("product", id) !== "Base_Product") {
               json.combustion += "architecture=`arch`\n"
-	      json.combustion += "version=`xmlstarlet sel -t -v '//version' /etc/products.d/baseproduct`\n"
+	      json.combustion += "version=`xmllint --xpath \"//version/text()\" /etc/products.d/baseproduct`\n"
 	      json.combustion += "SUSEConnect " + "--product $product/$version/$architecture "
 	  } else {
               json.combustion += "SUSEConnect "

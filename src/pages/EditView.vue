@@ -213,7 +213,7 @@ const exportSettings= (formData) => {
                 </ExpandableComponent>
 
 		<ExpandableComponent
-                  title="Register Product"
+                  title="Register Products"
                   :displaysAtBegin="elementNumber(CombRegistrationForm)"
                 >
                   <CombRegistrationForm></CombRegistrationForm>
@@ -246,14 +246,14 @@ const exportSettings= (formData) => {
 		<hr class="divider-long" />
 
                 <ExpandableComponent
-                  title="Install Additional Package"
+                  title="Install Additional Packages"
                   :displaysAtBegin="elementNumber(CombInstallPackageForm)"
                 >
                   <CombInstallPackageForm></CombInstallPackageForm>
                 </ExpandableComponent>
 
                 <ExpandableComponent
-                  title="Add File To System"
+                  title="Add Files To System"
                   :displaysAtBegin="elementNumber(CreateFileForm)"
                 >
                   <CreateFileForm></CreateFileForm>
