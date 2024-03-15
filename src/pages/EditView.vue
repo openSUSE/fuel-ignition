@@ -360,6 +360,7 @@ const exportSettings= (formData) => {
               </div>
   
               <div>
+                <hr class="divider" />
                 <h2 class="mt-5 text-center">
                   Convert to Ignition-<span
                     v-if="toCombustionScript(formData) !== undefined"
@@ -380,9 +381,11 @@ const exportSettings= (formData) => {
   
                 <pre class="form-data">
   # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition -root ignition config.ign</pre>
-                <br>
+                <p>
+                  How to use the generated data with <a href="https://documentation.suse.com/sle-micro/5.5/html/SLE-Micro-all/cha-images-ignition.html" target="_blank">ignition</a> and <a href="https://documentation.suse.com/sle-micro/5.5/html/SLE-Micro-all/cha-images-combustion.html" target="_blank">combustion</a> .
+                </p>
                 <hr class="divider" />
-  	    </div>
+	      </div>
   
               <h2 class="mt-5 text-center">Load Settings from</h2>
               <FormKit
