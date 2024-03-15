@@ -8,12 +8,14 @@ import BlobEditorComponent from "@/components/TemplateBlobEditorComponent.vue";
 import AddUsersForm from "@/components/forms/AddUsersForm.vue";
 import CreateFileForm from "@/components/forms/CreateFileForm.vue";
 import AddHostnameForm from "@/components/forms/AddHostnameForm.vue";
+import AddLanguageForm from "@/components/forms/AddLanguageForm.vue";
 import AddNetworkForm from "@/components/forms/AddNetworkForm.vue";
 import StartServiceForm from "@/components/forms/StartServiceForm.vue";
 import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 
 import DebugAddBytesForm from "@/components/forms/DebugAddBytesForm.vue";
 import DebugAnalyzeImgForm from "@/components/forms/DebugAnalyzeImgForm.vue";
+import CombKeyboardForm from "@/components/forms/combustion/CombKeyboardForm.vue";
 import CombRegistrationForm from "@/components/forms/combustion/CombRegistrationForm.vue";
 import CombSaltForm from "@/components/forms/combustion/CombSaltForm.vue";
 import CombInstallPackageForm from "@/components/forms/combustion/CombInstallPackageForm.vue";
@@ -23,9 +25,11 @@ const formComponents = [
   AddUsersForm,
   CreateFileForm,
   AddHostnameForm,
+  AddLanguageForm,
   AddNetworkForm,
   StartServiceForm,
   ModifyServiceForm,
+  CombKeyboardForm,
   CombRegistrationForm,
   CombSaltForm,
   CombInstallPackageForm,
@@ -152,8 +156,7 @@ const exportSettings= (formData) => {
       <div class="container mt-5 px-0">
         <div class="row gx-4 gx-lg-5 justify-content-center">
           <div class="col-lg-8 col-xl-6 text-white text-center">
-            <h1 class="mt-5">Ignition Config Generator</h1>
-            <hr class="divider" />
+            <h1 class="mt-5">Config Generator</h1>
             <div class="d-grid mb-5">
               <img
                 class="text-center mx-auto w-50"
@@ -168,48 +171,101 @@ const exportSettings= (formData) => {
             <div class="form-floating mb-3">
               <FormKit type="group" v-model="formData">
                 <ExpandableComponent
-  	        title="Add Users"
+	        title="Add User"
   	        :displaysAtBegin="elementNumber(AddUsersForm)"
   	      >
                   <AddUsersForm></AddUsersForm>
                 </ExpandableComponent>
-  
+
                 <ExpandableComponent
-                  title="Create Files"
-                  :displaysAtBegin="elementNumber(CreateFileForm)"
-                >
-                  <CreateFileForm></CreateFileForm>
-                </ExpandableComponent>
-  
-                <ExpandableComponent
-                  title="Add Hostname"
+                  title="Set Hostname"
                   :displaysAtBegin="elementNumber(AddHostnameForm)"
-  		:maxComponents="1"
+		  :maxComponents="1"
                 >
                   <AddHostnameForm></AddHostnameForm>
                 </ExpandableComponent>
-  
+
+		<hr class="divider-long" />
+
+                <ExpandableComponent
+                  title="Set Language"
+                  :displaysAtBegin="elementNumber(AddLanguageForm)"
+  		:maxComponents="1"
+                >
+                  <AddLanguageForm></AddLanguageForm>
+                </ExpandableComponent>
+
+		<ExpandableComponent
+                  title="Set Keyboard"
+                  :displaysAtBegin="elementNumber(CombKeyboardForm)"
+		  :maxComponents="1"
+                >
+                  <CombKeyboardForm></CombKeyboardForm>
+                </ExpandableComponent>
+
+		<hr class="divider-long" />
+
                 <ExpandableComponent
                   title="Add Network Interface"
                   :displaysAtBegin="elementNumber(AddNetworkForm)"
                 >
                   <AddNetworkForm></AddNetworkForm>
                 </ExpandableComponent>
+
+		<ExpandableComponent
+                  title="Register Products"
+                  :displaysAtBegin="elementNumber(CombRegistrationForm)"
+                >
+                  <CombRegistrationForm></CombRegistrationForm>
+                </ExpandableComponent>
   
                 <ExpandableComponent
-                  title="Enable or Create Services"
+                  title="Connect to Salt Master"
+                  :maxComponents="1"
+                  :displaysAtBegin="elementNumber(CombSaltForm)"
+                >
+                  <CombSaltForm></CombSaltForm>
+                </ExpandableComponent>
+
+		<hr class="divider-long" />
+  
+                <ExpandableComponent
+                  title="Enable or Create Service"
                   :displaysAtBegin="elementNumber(StartServiceForm)"
                 >
                   <StartServiceForm></StartServiceForm>
                 </ExpandableComponent>
   
                 <ExpandableComponent
-                  title="Modify Existing Services"
+                  title="Modify Existing Service"
                   :displaysAtBegin="elementNumber(ModifyServiceForm)"
                 >
                   <ModifyServiceForm></ModifyServiceForm>
                 </ExpandableComponent>
   
+		<hr class="divider-long" />
+
+                <ExpandableComponent
+                  title="Install Additional Packages"
+                  :displaysAtBegin="elementNumber(CombInstallPackageForm)"
+                >
+                  <CombInstallPackageForm></CombInstallPackageForm>
+                </ExpandableComponent>
+
+                <ExpandableComponent
+                  title="Add Files To System"
+                  :displaysAtBegin="elementNumber(CreateFileForm)"
+                >
+                  <CreateFileForm></CreateFileForm>
+                </ExpandableComponent>
+
+                <ExpandableComponent
+                  title="Add Custom Lines To Combustion Script"
+                  :displaysAtBegin="elementNumber(CombAddRawBash)"
+                >
+                  <CombAddRawBash></CombAddRawBash>
+                </ExpandableComponent>
+
                 <div v-if="formData.debug">
                   <!-- rename to "Modify Services (Drop-Ins)"? -->
                   <ExpandableComponent
@@ -231,59 +287,7 @@ const exportSettings= (formData) => {
             </div>
           </div>
         </div>
-  
-        <div class="row gx-4 gx-lg-5 justify-content-center">
-          <div class="col-lg-8 col-xl-6 text-white text-center">
-            <h1 class="mt-5">Add Combustion Scripts</h1>
-            <hr class="divider" />
-            <div class="d-grid mb-5">
-              <img
-                class="text-center mx-auto w-50"
-                src="@/assets/template/img/undraw_building_blocks_re_5ahy.svg"
-              />
-            </div>
-          </div>
-  
-          <div class="row gx-4 gx-lg-5 justify-content-center mb-5">
-            <div class="col-lg-6">
-              <div class="form-floating mb-3">
-                <FormKit type="group" v-model="formData">
-                  <ExpandableComponent
-                    title="Register Product"
-                    :displaysAtBegin="elementNumber(CombRegistrationForm)"
-                  >
-                    <CombRegistrationForm></CombRegistrationForm>
-                  </ExpandableComponent>
-  
-                  <ExpandableComponent
-                    title="Connect to Salt Master"
-                    :maxComponents="1"
-                    :displaysAtBegin="elementNumber(CombSaltForm)"
-                  >
-                    <CombSaltForm></CombSaltForm>
-                  </ExpandableComponent>
-  
-                  <ExpandableComponent
-                    title="Install Package With Combustion"
-                    :displaysAtBegin="elementNumber(CombInstallPackageForm)"
-                  >
-                    <CombInstallPackageForm></CombInstallPackageForm>
-                  </ExpandableComponent>
-  
-                  <ExpandableComponent
-                    title="Add Custom Lines To Combustion Script"
-                    :displaysAtBegin="elementNumber(CombAddRawBash)"
-                  >
-                    <CombAddRawBash></CombAddRawBash>
-                  </ExpandableComponent>
-                </FormKit>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
-  
-      <hr class="divider" />
     </section>
   
     <section class="page-section p-2" id="export">
@@ -291,7 +295,6 @@ const exportSettings= (formData) => {
         <div class="row gx-4 gx-lg-5 justify-content-center">
           <div class="col-lg-8 col-xl-6">
             <h1 class="mt-5 text-center">config.ign</h1>
-            <hr class="divider" />
             <div class="d-grid mb-5">
               <pre class="form-data">{{ toIgnitionConfig(formData) }}</pre>
   
@@ -357,6 +360,7 @@ const exportSettings= (formData) => {
               </div>
   
               <div>
+                <hr class="divider" />
                 <h2 class="mt-5 text-center">
                   Convert to Ignition-<span
                     v-if="toCombustionScript(formData) !== undefined"
@@ -377,9 +381,11 @@ const exportSettings= (formData) => {
   
                 <pre class="form-data">
   # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition -root ignition config.ign</pre>
-                <br>
+                <p>
+                  How to use the generated data with <a href="https://documentation.suse.com/sle-micro/5.5/html/SLE-Micro-all/cha-images-ignition.html" target="_blank">ignition</a> and <a href="https://documentation.suse.com/sle-micro/5.5/html/SLE-Micro-all/cha-images-combustion.html" target="_blank">combustion</a> .
+                </p>
                 <hr class="divider" />
-  	    </div>
+	      </div>
   
               <h2 class="mt-5 text-center">Load Settings from</h2>
               <FormKit

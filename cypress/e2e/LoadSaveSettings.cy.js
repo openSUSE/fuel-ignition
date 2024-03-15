@@ -1,7 +1,7 @@
 describe('Read-Save Settings', () => {
   beforeEach(() => {
     cy.visit('/edit')
-    cy.contains('Ignition Config Generator')
+    cy.contains('Config Generator')
   })
 
   it('loads settings from fixtures', () => {

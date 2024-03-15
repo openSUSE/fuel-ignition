@@ -5,7 +5,7 @@ describe('showing fuel-ignition', () => {
 
   it('goes to page -Create New Config-', () => {
     cy.contains('Create New Config').click()
-    cy.contains('Ignition Config Generator')
+    cy.contains('Config Generator')
   })
 
   it('goes to page -JSON to Ignition IMG-', () => {
