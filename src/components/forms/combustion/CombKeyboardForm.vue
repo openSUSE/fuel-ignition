@@ -37,7 +37,7 @@ export default {
         .forEach((key) => {
           json.combustion +=
 	    "\n# Keyboard\n" +
-            "localectl set-keymap " + Country.keyboardCode(formData[key]) + "\n";
+            "systemd-firstboot --force --keymap=" + Country.keyboardCode(formData[key]) + "\n";
         });
     },
     encodeToExport: function (json, formData) {
