@@ -12,7 +12,7 @@ describe('Setting keyboard', () => {
     cy.readFile('cypress/downloads/script').then((content) => {
       cy.log(content)
       expect(content).to.have.string(
-        'localectl set-keymap arabic')
+        'systemd-firstboot --force --keymap=arabic')
     });
   })
 })
