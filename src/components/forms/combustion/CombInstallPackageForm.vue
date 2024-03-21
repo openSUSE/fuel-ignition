@@ -29,8 +29,7 @@ export default {
   },
 
   methods: {
-    // thinking about creating a new encodeToCombustion method, but it doesn't seem necessary, just more logical to separate the two
-    encodeToIgn: function (json, formData) {
+    encodeToInstallation: function (json, formData) {
       Object.keys(formData)
         .filter((x) => x.includes(formPrefix))
         .forEach((key) => {

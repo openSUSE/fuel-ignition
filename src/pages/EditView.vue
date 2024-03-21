@@ -88,8 +88,8 @@ const toIgnitionConfig = (formData) => {
   };
 
   formComponents
-    .filter((comp) => comp.methods.hasOwnProperty("encodeToIgn"))
-    .forEach((comp) => comp.methods.encodeToIgn(json, formData));
+    .filter((comp) => comp.methods.hasOwnProperty("encodeToInstallation"))
+    .forEach((comp) => comp.methods.encodeToInstallation(json, formData));
 
   if (formData.debug) {
     json["debug:form"] = formData;
@@ -104,8 +104,8 @@ const toCombustionScript = (formData) => {
   let json = { combustion: "" };
 
   formComponents
-    .filter((comp) => comp.methods.hasOwnProperty("encodeToIgn"))
-    .forEach((comp) => comp.methods.encodeToIgn(json, formData));
+    .filter((comp) => comp.methods.hasOwnProperty("encodeToInstallation"))
+    .forEach((comp) => comp.methods.encodeToInstallation(json, formData));
 
   if (json.combustion !== "") {
     console.log(json.combustion);

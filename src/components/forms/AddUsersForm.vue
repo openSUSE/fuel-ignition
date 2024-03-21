@@ -73,7 +73,7 @@ export default {
   },
 
   methods: {
-    encodeToIgn: function (json, formData) {
+    encodeToInstallation: function (json, formData) {
       Utils.GlobalStorage.store.addUsers.amount = 0;
 
       const formValue = (key, uid) =>

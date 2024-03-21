@@ -31,7 +31,7 @@ export default {
   },
 
   methods: {
-    encodeToIgn: function (json, formData) {
+    encodeToInstallation: function (json, formData) {
       Object.keys(formData)
         .filter((x) => x.includes(formPrefix))
         .forEach((key) => {
