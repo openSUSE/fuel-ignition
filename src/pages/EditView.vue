@@ -15,10 +15,10 @@ import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 
 import DebugAddBytesForm from "@/components/forms/DebugAddBytesForm.vue";
 import DebugAnalyzeImgForm from "@/components/forms/DebugAnalyzeImgForm.vue";
-import CombKeyboardForm from "@/components/forms/CombKeyboardForm.vue";
-import CombRegistrationForm from "@/components/forms/CombRegistrationForm.vue";
-import CombSaltForm from "@/components/forms/CombSaltForm.vue";
-import CombInstallPackageForm from "@/components/forms/CombInstallPackageForm.vue";
+import AddKeyboardForm from "@/components/forms/AddKeyboardForm.vue";
+import RegistrationForm from "@/components/forms/RegistrationForm.vue";
+import SaltForm from "@/components/forms/SaltForm.vue";
+import InstallPackageForm from "@/components/forms/InstallPackageForm.vue";
 import CombAddRawBash from "../components/forms/CombAddRawBash.vue";
 
 const formComponents = [
@@ -29,10 +29,10 @@ const formComponents = [
   AddNetworkForm,
   StartServiceForm,
   ModifyServiceForm,
-  CombKeyboardForm,
-  CombRegistrationForm,
-  CombSaltForm,
-  CombInstallPackageForm,
+  AddKeyboardForm,
+  RegistrationForm,
+  SaltForm,
+  InstallPackageForm,
   CombAddRawBash,
 
   DebugAddBytesForm,
@@ -197,10 +197,10 @@ const exportSettings= (formData) => {
 
 		<ExpandableComponent
                   title="Set Keyboard"
-                  :displaysAtBegin="elementNumber(CombKeyboardForm)"
+                  :displaysAtBegin="elementNumber(AddKeyboardForm)"
 		  :maxComponents="1"
                 >
-                  <CombKeyboardForm></CombKeyboardForm>
+                  <AddKeyboardForm></AddKeyboardForm>
                 </ExpandableComponent>
 
 		<hr class="divider-long" />
@@ -214,17 +214,17 @@ const exportSettings= (formData) => {
 
 		<ExpandableComponent
                   title="Register Products"
-                  :displaysAtBegin="elementNumber(CombRegistrationForm)"
+                  :displaysAtBegin="elementNumber(RegistrationForm)"
                 >
-                  <CombRegistrationForm></CombRegistrationForm>
+                  <RegistrationForm></RegistrationForm>
                 </ExpandableComponent>
   
                 <ExpandableComponent
                   title="Connect to Salt Master"
                   :maxComponents="1"
-                  :displaysAtBegin="elementNumber(CombSaltForm)"
+                  :displaysAtBegin="elementNumber(SaltForm)"
                 >
-                  <CombSaltForm></CombSaltForm>
+                  <SaltForm></SaltForm>
                 </ExpandableComponent>
 
 		<hr class="divider-long" />
@@ -247,9 +247,9 @@ const exportSettings= (formData) => {
 
                 <ExpandableComponent
                   title="Install Additional Packages"
-                  :displaysAtBegin="elementNumber(CombInstallPackageForm)"
+                  :displaysAtBegin="elementNumber(InstallPackageForm)"
                 >
-                  <CombInstallPackageForm></CombInstallPackageForm>
+                  <InstallPackageForm></InstallPackageForm>
                 </ExpandableComponent>
 
                 <ExpandableComponent
