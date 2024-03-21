@@ -15,11 +15,11 @@ import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 
 import DebugAddBytesForm from "@/components/forms/DebugAddBytesForm.vue";
 import DebugAnalyzeImgForm from "@/components/forms/DebugAnalyzeImgForm.vue";
-import CombKeyboardForm from "@/components/forms/combustion/CombKeyboardForm.vue";
-import CombRegistrationForm from "@/components/forms/combustion/CombRegistrationForm.vue";
-import CombSaltForm from "@/components/forms/combustion/CombSaltForm.vue";
-import CombInstallPackageForm from "@/components/forms/combustion/CombInstallPackageForm.vue";
-import CombAddRawBash from "../components/forms/combustion/CombAddRawBash.vue";
+import CombKeyboardForm from "@/components/forms/CombKeyboardForm.vue";
+import CombRegistrationForm from "@/components/forms/CombRegistrationForm.vue";
+import CombSaltForm from "@/components/forms/CombSaltForm.vue";
+import CombInstallPackageForm from "@/components/forms/CombInstallPackageForm.vue";
+import CombAddRawBash from "../components/forms/CombAddRawBash.vue";
 
 const formComponents = [
   AddUsersForm,
