@@ -90,7 +90,7 @@ export default {
         Utils.setFormValue(formPrefix, formData, key, uid, value);
       const keyPrefix = formPrefix + "_read_channel_";
 
-      if (json.salt == undefined) return;
+      if (json.s390_channels == undefined) return;
       Object.keys(formData)
           .filter((x) => x.includes(keyPrefix))
           .map((key) => key.replace(keyPrefix, ""))
