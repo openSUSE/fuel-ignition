@@ -18,6 +18,7 @@ import DebugAnalyzeImgForm from "@/components/forms/DebugAnalyzeImgForm.vue";
 import AddKeyboardForm from "@/components/forms/AddKeyboardForm.vue";
 import RegistrationForm from "@/components/forms/RegistrationForm.vue";
 import SaltForm from "@/components/forms/SaltForm.vue";
+import S390ChannelForm from "@/components/forms/S390ChannelForm.vue";
 import InstallPackageForm from "@/components/forms/InstallPackageForm.vue";
 import CombAddRawBash from "../components/forms/CombAddRawBash.vue";
 
@@ -32,6 +33,7 @@ const formComponents = [
   AddKeyboardForm,
   RegistrationForm,
   SaltForm,
+  S390ChannelForm,
   InstallPackageForm,
   CombAddRawBash,
 
@@ -96,26 +98,53 @@ const toIgnitionConfig = (formData) => {
   }
 
   json.combustion = undefined;
+  json.combustion_prepare = undefined;
 
   return json;
 };
 
 const toCombustionScript = (formData) => {
-  let json = { combustion: "" };
+  let json = { combustion: "", combustion_prepare: "", output: "" };
 
+  formComponents
+    .filter((comp) => comp.methods.hasOwnProperty("encodeToInstallation"))
+    .forEach((comp) => comp.methods.encodeToInstallation(json, formData));
+
+  if (json.combustion_prepare != "") {
+    console.log("prepare: " + json.combustion_prepare);
+    if (json.output == "") {
+      json.output =
+        "#!/bin/bash\n# combustion: network prepare\n# script generated with https://opensuse.github.io/fuel-ignition/\n" +
+	"prepare_installation() {\n"
+    }
+    json.output += json.combustion_prepare + "\n"
+  }
+  if (json.output != "") {
+    json.output += "}\n\n"
+    json.output += "if [ \"${1-}\" = \"--prepare\" ]; then\n" +
+      "  prepare_installation\n" +    
+      "  exit 0\n" +
+      "fi\n"
+  } else {
+    json.output = "#!/bin/bash\n# combustion: network\n# script generated with https://opensuse.github.io/fuel-ignition/\n"
+  }
+
+  json.output +=
+    "\n# Redirect output to the console\n" +
+    "exec > >(exec tee -a /dev/tty0) 2>&1\n"
+
+  json.combustion = ""
+  json.combustion_prepare = ""
   formComponents
     .filter((comp) => comp.methods.hasOwnProperty("encodeToInstallation"))
     .forEach((comp) => comp.methods.encodeToInstallation(json, formData));
 
   if (json.combustion !== "") {
     console.log(json.combustion);
-    json.output =
-      "#!/bin/bash\n# combustion: network\n# script generated with https://opensuse.github.io/fuel-ignition/\n" +
-      "\n# Redirect output to the console\n" +
-      "exec > >(exec tee -a /dev/tty0) 2>&1\n" +
-      json.combustion +
-      '\n# Leave a marker\necho "Configured with combustion" > /etc/issue.d/combustion';
+    json.output += json.combustion
   }
+
+  json.output += '\n# Leave a marker\necho "Configured with combustion" > /etc/issue.d/combustion';
 
   return json.output;
 };
@@ -225,6 +254,14 @@ const exportSettings= (formData) => {
                   :displaysAtBegin="elementNumber(SaltForm)"
                 >
                   <SaltForm></SaltForm>
+                </ExpandableComponent>
+
+                <ExpandableComponent
+                  title="Set S390 Channels"
+                  :maxComponents="1"
+                  :displaysAtBegin="elementNumber(S390ChannelForm)"
+                >
+                  <S390ChannelForm></S390ChannelForm>
                 </ExpandableComponent>
 
 		<hr class="divider-long" />
