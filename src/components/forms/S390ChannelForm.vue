@@ -63,9 +63,10 @@ export default {
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))
         .forEach((id) => {
-        json.combustion_prepare +=
+          json.combustion_prepare +=
+	    "# S390 Channels Setup\n" +
             "chzdev qeth " + formValue("read_channel", id) + "," + formValue("write_channel", id) +
-	    "," + formValue("data_channel", id) + "\n"
+	    "," + formValue("data_channel", id) + " -e\n"
 	});
     },
     encodeToExport: function (json, formData) {

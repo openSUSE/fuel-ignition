@@ -114,15 +114,12 @@ const toCombustionScript = (formData) => {
     console.log("prepare: " + json.combustion_prepare);
     if (json.output == "") {
       json.output =
-        "#!/bin/bash\n# combustion: network prepare\n# script generated with https://opensuse.github.io/fuel-ignition/\n" +
-	"prepare_installation() {\n"
+        "#!/bin/bash\n# combustion: network prepare\n# script generated with https://opensuse.github.io/fuel-ignition/\n\n"
     }
     json.output += json.combustion_prepare + "\n"
   }
   if (json.output != "") {
-    json.output += "}\n\n"
     json.output += "if [ \"${1-}\" = \"--prepare\" ]; then\n" +
-      "  prepare_installation\n" +    
       "  exit 0\n" +
       "fi\n"
   } else {

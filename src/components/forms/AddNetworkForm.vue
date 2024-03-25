@@ -173,7 +173,7 @@
 
   <FormKit
     :name="formKey('wifi_enabled')"
-    label="enable WiFi"
+    label="Enable WiFi"
     type="checkbox"
     validation-behavior="live"
     v-model="wifienabled"
@@ -215,10 +215,19 @@
         help="Password required for the WiFi connection."
       />
     </div>
+    </div>
+    </div>
+    </div>
   </div>
-  </div>
-  </div>
-  </div>
+
+  <FormKit
+    :name="formKey('available_in_initrd')"
+    label="Also enabled during installation process"
+    type="checkbox"
+    validation-behavior="live"
+    help="Whether interface will also be available during the installation process."
+  />
+
 </template>
 
 <script>
@@ -284,6 +293,8 @@ export default {
           let content = ""
 
 	  const wifi_enabled = formValue("wifi_enabled", id)
+	  const available_in_initrd = formValue("available_in_initrd", id)
+
           const ipv4_enabled = formValue("ipv4_enabled", id)
           const ipv4_auto_dns_enabled = formValue("ipv4_auto_dns", id)
           const ipv6_enabled = formValue("ipv6_enabled", id)
@@ -358,17 +369,28 @@ export default {
 	    }
 	  }
 
-          json.storage.files.push(
-            {
-              path: filename,
-              mode: 384,
-              overwrite: true,
-              contents: {
-                source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
-	        human_read: content
-              },
-            }
-          );
+	  if (available_in_initrd) {
+	    // writing with combustion
+            json.combustion_prepare +=
+	      "umask 077 # Required for NM config\n" +
+              "mkdir -p /etc/NetworkManager/system-connections/\n" +
+              "cat >" + filename + " <<-EOF\n" +
+	      content +
+              "EOF\n\n"
+	  } else {
+	    // writing with ignition
+            json.storage.files.push(
+              {
+                path: filename,
+                mode: 384,
+                overwrite: true,
+                contents: {
+                  source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
+	          human_read: content
+                },
+              }
+            );
+	  }
 
           if (counter == 0 ) {
             content = "[main]\n# Do not do automatic (DHCP/SLAAC) configuration on ethernet devices\n" +
@@ -416,6 +438,8 @@ export default {
             interf.wifi.ssid = formValue("wifi_ssid_content", id)
             interf.wifi.password = formValue("wifi_password_content", id)
           }
+
+          interf.available_in_initrd = formValue("available_in_initrd", id)
 
           if (formValue("ipv4_enabled", id)) {
             interf.ipv4 = {}
@@ -466,6 +490,10 @@ export default {
             setValue("wifi_password_content", id, interf.wifi.password)
           } else {
 	    setValue("wifi_enabled", id, false)
+	  }
+
+          if (interf.available_in_initrd != undefined) {
+	    setValue("available_in_initrd", id, interf.available_in_initrd)
 	  }
 
           if (interf.ipv4 != undefined) {
