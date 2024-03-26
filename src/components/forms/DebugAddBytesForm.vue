@@ -27,7 +27,7 @@ export default {
   },
 
   methods: {
-    encodeToIgn: function (json, formData) {
+    encodeToInstallation: function (json, formData) {
       const formValue = (key, uid) =>
         Utils.getFormValue(formPrefix, formData, key, uid);
 

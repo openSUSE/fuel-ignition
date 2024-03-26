@@ -1,0 +1,22 @@
+{
+  "network": {
+    "interfaces": [
+      {
+        "name": "eth0",
+        "available_in_initrd": true,
+        "ipv4": {
+          "network_type": "fixed IPv4 Address",
+          "auto_dns_enabled": true,
+          "address": "10.144.136.50",
+          "netmask": "24",
+          "gateway": "10.144.136.254"
+        }
+      }
+    ]
+  },
+  "s390_channels": {
+    "read": "0.0.800",
+    "write": "0.0.801",
+    "data": "0.0.802"
+  }
+}

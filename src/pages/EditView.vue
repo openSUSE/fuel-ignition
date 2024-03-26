@@ -15,11 +15,12 @@ import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 
 import DebugAddBytesForm from "@/components/forms/DebugAddBytesForm.vue";
 import DebugAnalyzeImgForm from "@/components/forms/DebugAnalyzeImgForm.vue";
-import CombKeyboardForm from "@/components/forms/combustion/CombKeyboardForm.vue";
-import CombRegistrationForm from "@/components/forms/combustion/CombRegistrationForm.vue";
-import CombSaltForm from "@/components/forms/combustion/CombSaltForm.vue";
-import CombInstallPackageForm from "@/components/forms/combustion/CombInstallPackageForm.vue";
-import CombAddRawBash from "../components/forms/combustion/CombAddRawBash.vue";
+import AddKeyboardForm from "@/components/forms/AddKeyboardForm.vue";
+import RegistrationForm from "@/components/forms/RegistrationForm.vue";
+import SaltForm from "@/components/forms/SaltForm.vue";
+import S390ChannelForm from "@/components/forms/S390ChannelForm.vue";
+import InstallPackageForm from "@/components/forms/InstallPackageForm.vue";
+import CombAddRawBash from "../components/forms/CombAddRawBash.vue";
 
 const formComponents = [
   AddUsersForm,
@@ -29,10 +30,11 @@ const formComponents = [
   AddNetworkForm,
   StartServiceForm,
   ModifyServiceForm,
-  CombKeyboardForm,
-  CombRegistrationForm,
-  CombSaltForm,
-  CombInstallPackageForm,
+  AddKeyboardForm,
+  RegistrationForm,
+  SaltForm,
+  S390ChannelForm,
+  InstallPackageForm,
   CombAddRawBash,
 
   DebugAddBytesForm,
@@ -88,34 +90,58 @@ const toIgnitionConfig = (formData) => {
   };
 
   formComponents
-    .filter((comp) => comp.methods.hasOwnProperty("encodeToIgn"))
-    .forEach((comp) => comp.methods.encodeToIgn(json, formData));
+    .filter((comp) => comp.methods.hasOwnProperty("encodeToInstallation"))
+    .forEach((comp) => comp.methods.encodeToInstallation(json, formData));
 
   if (formData.debug) {
     json["debug:form"] = formData;
   }
 
   json.combustion = undefined;
+  json.combustion_prepare = undefined;
 
   return json;
 };
 
 const toCombustionScript = (formData) => {
-  let json = { combustion: "" };
+  let json = { combustion: "", combustion_prepare: "", output: "" };
 
   formComponents
-    .filter((comp) => comp.methods.hasOwnProperty("encodeToIgn"))
-    .forEach((comp) => comp.methods.encodeToIgn(json, formData));
+    .filter((comp) => comp.methods.hasOwnProperty("encodeToInstallation"))
+    .forEach((comp) => comp.methods.encodeToInstallation(json, formData));
+
+  if (json.combustion_prepare != "") {
+    console.log("prepare: " + json.combustion_prepare);
+    if (json.output == "") {
+      json.output =
+        "#!/bin/bash\n# combustion: network prepare\n# script generated with https://opensuse.github.io/fuel-ignition/\n\n"
+    }
+    json.output += json.combustion_prepare + "\n"
+  }
+  if (json.output != "") {
+    json.output += "if [ \"${1-}\" = \"--prepare\" ]; then\n" +
+      "  exit 0\n" +
+      "fi\n"
+  } else {
+    json.output = "#!/bin/bash\n# combustion: network\n# script generated with https://opensuse.github.io/fuel-ignition/\n"
+  }
+
+  json.output +=
+    "\n# Redirect output to the console\n" +
+    "exec > >(exec tee -a /dev/tty0) 2>&1\n"
+
+  json.combustion = ""
+  json.combustion_prepare = ""
+  formComponents
+    .filter((comp) => comp.methods.hasOwnProperty("encodeToInstallation"))
+    .forEach((comp) => comp.methods.encodeToInstallation(json, formData));
 
   if (json.combustion !== "") {
     console.log(json.combustion);
-    json.output =
-      "#!/bin/bash\n# combustion: network\n# script generated with https://opensuse.github.io/fuel-ignition/\n" +
-      "\n# Redirect output to the console\n" +
-      "exec > >(exec tee -a /dev/tty0) 2>&1\n" +
-      json.combustion +
-      '\n# Leave a marker\necho "Configured with combustion" > /etc/issue.d/combustion';
+    json.output += json.combustion
   }
+
+  json.output += '\n# Leave a marker\necho "Configured with combustion" > /etc/issue.d/combustion';
 
   return json.output;
 };
@@ -197,10 +223,10 @@ const exportSettings= (formData) => {
 
 		<ExpandableComponent
                   title="Set Keyboard"
-                  :displaysAtBegin="elementNumber(CombKeyboardForm)"
+                  :displaysAtBegin="elementNumber(AddKeyboardForm)"
 		  :maxComponents="1"
                 >
-                  <CombKeyboardForm></CombKeyboardForm>
+                  <AddKeyboardForm></AddKeyboardForm>
                 </ExpandableComponent>
 
 		<hr class="divider-long" />
@@ -214,17 +240,25 @@ const exportSettings= (formData) => {
 
 		<ExpandableComponent
                   title="Register Products"
-                  :displaysAtBegin="elementNumber(CombRegistrationForm)"
+                  :displaysAtBegin="elementNumber(RegistrationForm)"
                 >
-                  <CombRegistrationForm></CombRegistrationForm>
+                  <RegistrationForm></RegistrationForm>
                 </ExpandableComponent>
   
                 <ExpandableComponent
                   title="Connect to Salt Master"
                   :maxComponents="1"
-                  :displaysAtBegin="elementNumber(CombSaltForm)"
+                  :displaysAtBegin="elementNumber(SaltForm)"
                 >
-                  <CombSaltForm></CombSaltForm>
+                  <SaltForm></SaltForm>
+                </ExpandableComponent>
+
+                <ExpandableComponent
+                  title="Set S390 Channels"
+                  :maxComponents="1"
+                  :displaysAtBegin="elementNumber(S390ChannelForm)"
+                >
+                  <S390ChannelForm></S390ChannelForm>
                 </ExpandableComponent>
 
 		<hr class="divider-long" />
@@ -247,9 +281,9 @@ const exportSettings= (formData) => {
 
                 <ExpandableComponent
                   title="Install Additional Packages"
-                  :displaysAtBegin="elementNumber(CombInstallPackageForm)"
+                  :displaysAtBegin="elementNumber(InstallPackageForm)"
                 >
-                  <CombInstallPackageForm></CombInstallPackageForm>
+                  <InstallPackageForm></InstallPackageForm>
                 </ExpandableComponent>
 
                 <ExpandableComponent
