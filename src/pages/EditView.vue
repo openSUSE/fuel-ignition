@@ -143,6 +143,8 @@ const toCombustionScript = (formData) => {
 
   json.output += '\n# Leave a marker\necho "Configured with combustion" > /etc/issue.d/combustion';
 
+  json.output += '\n\n# Close outputs and wait for tee to finish.\nexec 1>&- 2>&-; wait;';
+
   return json.output;
 };
 
@@ -416,7 +418,7 @@ const exportSettings= (formData) => {
                 <pre class="form-data">
   # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition -root ignition config.ign</pre>
                 <p>
-                  How to use the generated data with <a href="https://documentation.suse.com/sle-micro/5.5/html/SLE-Micro-all/cha-images-ignition.html" target="_blank">ignition</a> and <a href="https://documentation.suse.com/sle-micro/5.5/html/SLE-Micro-all/cha-images-combustion.html" target="_blank">combustion</a> .
+                  How to use the generated data with <a href="https://documentation.suse.com/sle-micro/5.2/html/SLE-Micro-all/cha-images-ignition.html" target="_blank">ignition</a> and <a href="https://documentation.suse.com/sle-micro/5.2/html/SLE-Micro-all/cha-images-combustion.html" target="_blank">combustion</a> .
                 </p>
                 <hr class="divider" />
 	      </div>
