@@ -257,7 +257,6 @@ const exportSettings= (formData) => {
 
                 <ExpandableComponent
                   title="Set S390 Channels"
-                  :maxComponents="1"
                   :displaysAtBegin="elementNumber(S390ChannelForm)"
                 >
                   <S390ChannelForm></S390ChannelForm>
