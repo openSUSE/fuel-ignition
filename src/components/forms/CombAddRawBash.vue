@@ -31,7 +31,9 @@ export default {
       Object.keys(formData)
         .filter((x) => x.includes(formPrefix))
         .forEach((key) => {
-          json.combustion += "\n" + formData[key];
+	  if (formData[key] != undefined) {
+            json.combustion += "\n" + formData[key];
+	  }
         });
     },
     encodeToExport: function (json, formData) {
@@ -41,7 +43,9 @@ export default {
           if (json.scripts === undefined) {
             json.scripts = [];
           }
-	  json.scripts.push(formData[key])
+	  if (formData[key] != undefined) {
+	    json.scripts.push(formData[key])
+	  }
 	});
     },
     fillImport: function (json, formData) {

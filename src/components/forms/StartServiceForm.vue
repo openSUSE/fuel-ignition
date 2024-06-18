@@ -69,7 +69,7 @@ export default {
           json.systemd.units.push({
             name: formValue("name", id),
             enabled: omitted ? undefined : enabledVal === "yes",
-            contents: formValue("contents", id),
+            contents: formValue("contents", id) ? formValue("contents", id) : undefined
           });
         });
     },
@@ -93,7 +93,9 @@ export default {
 	  let unit = {}
 	  unit.name = formValue("name", id)
 	  unit.enabled = formValue("enabled", id)
-	  unit.contents = formValue("contents", id)
+	  if (formValue("contents", id)) {
+	    unit.contents = formValue("contents", id)
+	  }
 
           json.systemd.units.push(unit)
         }
