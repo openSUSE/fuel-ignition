@@ -63,10 +63,14 @@ export default {
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))
         .forEach((id) => {
-          json.combustion_prepare +=
-	    "# S390 Channels Setup\n" +
-            "chzdev qeth " + formValue("read_channel", id) + "," + formValue("write_channel", id) +
-	    "," + formValue("data_channel", id) + " -e\n"
+	  if (formValue("read_channel", id) != undefined &&
+	      formValue("write_channel", id) != undefined &&
+	      formValue("data_channel", id)) {
+            json.combustion_prepare +=
+              "# S390 Channels Setup\n" +
+              "chzdev qeth " + formValue("read_channel", id) + "," + formValue("write_channel", id) +
+	      "," + formValue("data_channel", id) + " -e\n"
+	  }
 	});
     },
     encodeToExport: function (json, formData) {
@@ -78,12 +82,21 @@ export default {
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))
         .forEach((id) => {
-          if (json.s390_channels === undefined) {
-            json.s390_channels = {};
-          }
-	  json.s390_channels.read = formValue("read_channel", id)
-	  json.s390_channels.write = formValue("write_channel", id)
-	  json.s390_channels.data = formValue("data_channel", id)
+	  if (formValue("read_channel", id) != undefined &&
+	      formValue("write_channel", id) != undefined &&
+	      formValue("data_channel", id)) {
+            if (json.s390 === undefined) {
+              json.s390 = {};
+            }
+            if (json.s390.channels === undefined) {
+              json.s390.channels = [];
+            }
+	    let channel = {}
+	    channel.read = formValue("read_channel", id)
+	    channel.write = formValue("write_channel", id)
+	    channel.data = formValue("data_channel", id)
+	    json.s390.channels.push(channel)
+	  }
 	});
     },
     fillImport: function (json, formData) {
@@ -91,19 +104,21 @@ export default {
         Utils.setFormValue(formPrefix, formData, key, uid, value);
       const keyPrefix = formPrefix + "_read_channel_";
 
-      if (json.s390_channels == undefined) return;
+      if (json.s390 == undefined || json.s390.channels == undefined) return;
       Object.keys(formData)
           .filter((x) => x.includes(keyPrefix))
           .map((key) => key.replace(keyPrefix, ""))
           .forEach((id) => {
-	    setValue("read_channel", id, json.s390_channels.read);
-	    setValue("write_channel", id, json.s390_channels.write);
-	    setValue("data_channel", id, json.s390_channels.data);
+	    let channel = json.s390.channels.shift();
+	    console.log("test");
+	    setValue("read_channel", id, channel.read);
+	    setValue("write_channel", id, channel.write);
+	    setValue("data_channel", id, channel.data);
           });
     },
     countImport: function (json) {
-      if (json.s390_channels != undefined) {
-        return 1;
+      if (json.s390 != undefined && json.s390.channels != undefined) {
+        return json.s390.channels.length;
       } else {
         return 0;
       }
