@@ -10,6 +10,7 @@ import CreateFileForm from "@/components/forms/CreateFileForm.vue";
 import AddHostnameForm from "@/components/forms/AddHostnameForm.vue";
 import AddLanguageForm from "@/components/forms/AddLanguageForm.vue";
 import AddNetworkForm from "@/components/forms/AddNetworkForm.vue";
+import ChangeStorageForm from "@/components/forms/ChangeStorageForm.vue";
 import StartServiceForm from "@/components/forms/StartServiceForm.vue";
 import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 
@@ -27,6 +28,7 @@ const formComponents = [
   CreateFileForm,
   AddHostnameForm,
   AddLanguageForm,
+  ChangeStorageForm,
   AddNetworkForm,
   StartServiceForm,
   ModifyServiceForm,
@@ -229,6 +231,15 @@ const exportSettings= (formData) => {
 		  :maxComponents="1"
                 >
                   <AddKeyboardForm></AddKeyboardForm>
+                </ExpandableComponent>
+
+		<hr class="divider-long" />
+
+                <ExpandableComponent
+                  title="Change Storage"
+                  :displaysAtBegin="elementNumber(ChangeStorageForm)"
+                >
+                  <ChangeStorageForm></ChangeStorageForm>
                 </ExpandableComponent>
 
 		<hr class="divider-long" />
