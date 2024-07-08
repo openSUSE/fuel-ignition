@@ -102,7 +102,6 @@ export default {
     const task = ref('Growing the root partition');
     const root_full_size = ref(true);
     const swap_full_size = ref(true);
-
     return {
       task,
       root_full_size,
@@ -141,6 +140,21 @@ export default {
             const min = formValue("min_root", id)
 	    const max = formValue("max_root", id)
 	    const auto = formValue("root_full_size", id)
+            if (min > 0 && !auto) {
+	      content = content.concat("SizeMinBytes=", min, "M\n")
+	    }
+            if (max > 0 && !auto) {
+	      content = content.concat("SizeMaxBytes=", max, "M\n")
+	    }
+          }
+
+          if (task === 'Creating a swap partition, if missed') {
+            filename = filename.concat(counter+10, "-swap.conf")
+            content = content.concat( "[Partition]\n",
+                                      "Type=swap\n")
+            const min = formValue("min_swap", id)
+	    const max = formValue("max_swap", id)
+	    const auto = formValue("swap_full_size", id)
             if (min > 0 && !auto) {
 	      content = content.concat("SizeMinBytes=", min, "M\n")
 	    }
@@ -196,6 +210,18 @@ export default {
 	      task.max = max
 	    }	    	     	  
 	  }
+	  if (task.kind === 'Creating a swap partition, if missed') {
+            const min = formValue("min_swap", id)
+	    const max = formValue("max_swap", id)
+	    const auto = formValue("swap_full_size", id)
+	    task.auto = auto
+            if (min > 0 && !auto) {
+	      task.min = min
+	    }
+            if (max > 0 && !auto) {
+	      task.max = max
+	    }
+	  }
           json.storage.tasks.push(task)
         }
       );
@@ -225,6 +251,19 @@ export default {
 	      }
  	      if (task.min != undefined) {
 	        setValue("max_root", id, task.max);
+	      }
+	    }
+          }
+	  if (task.kind === 'Creating a swap partition, if missed') {
+            if (task.auto != undefined) {
+	      setValue("swap_full_size", id, false);
+	    }
+            if (!task.auto) {
+              if (task.min != undefined) {
+	        setValue("min_swap", id, task.min);
+	      }
+              if (task.min != undefined) {
+	        setValue("max_swap", id, task.max);
 	      }
 	    }
           }
