@@ -89,6 +89,124 @@
       </div>      
     </div>
   </div>
+
+  <div v-if="task === 'Indiviual storage changes'">
+    <FormKit
+      :name="formKey('type')"
+      label="Type"
+      type="select"
+      :options="[
+        'esp - EFI System Partition',
+        'xbootldr - Extended Boot Loader Partition',
+        'swap - Swap partition',
+        'home - Home (/home/) partition',
+        'srv - Server data (/srv/) partition',
+        'var - Variable data (/var/) partition',
+        'tmp - Temporary data (/var/tmp/) partition',
+        'linux-generic - Generic Linux file system partition',
+        'root - Root file system partition type appropriate for the local architecture ',
+        'root-verity - Verity data for the root file system partition for the local architecture',
+        'root-verity-sig - Verity signature data for the root file system partition for the local architecture',
+        'root-secondary - Root file system partition of the secondary architecture of the local architecture',
+        'root-secondary-verity - Verity data for the root file system partition of the secondary architecture',
+        'root-secondary-verity-sig - Verity signature data for the root file system partition of the secondary architecture',
+        'root-x86-64 - Root file system partition of the given architecture ',
+        'root-ppc - Root file system partition of the given architecture ',
+        'root-s390- Root file system partition of the given architecture ',
+        'root-s390x - Root file system partition of the given architecture ',
+        'root-ia64 - Root file system partition of the given architecture ',
+        'root-x86-64-verity - Verity data for the root file system partition of the given architecture',
+        'root-ppc-verity - Verity data for the root file system partition of the given architecture',
+        'root-s390-verity - Verity data for the root file system partition of the given architecture',
+        'root-s390x-verity - Verity data for the root file system partition of the given architecture',
+        'root-ia64-verity - Verity data for the root file system partition of the given architecture',
+        'root-x86-64-verity-sig - Verity signature data for the root file system partition of the given architecture',
+        'root-ppc-verity-sig - Verity signature data for the root file system partition of the given architecture',
+        'root-s390-verity-sig - Verity signature data for the root file system partition of the given architecture',
+        'root-s390x-verity-sig - Verity signature data for the root file system partition of the given architecture',
+        'root-ia64-verity-sig - Verity signature data for the root file system partition of the given architecture',
+        'usr - /usr/ file system partition type appropriate for the local architecture',
+        'usr-verity - Verity data for the /usr/ file system partition for the local architecture',
+        'usr-verity-sig - Verity signature data for the /usr/ file system partition for the local architecture',
+        'usr-secondary - /usr/ file system partition of the secondary architecture of the local architecture',
+        'usr-secondary-verity - Verity data for the /usr/ file system partition of the secondary architecture',
+        'usr-secondary-verity-sid - Verity signature data for the /usr/ file system partition of the secondary architecture',
+        'usr-x86-64 - /usr/ file system partition of the given architecture',
+        'usr-ppc - /usr/ file system partition of the given architecture',
+        'usr-s390 - /usr/ file system partition of the given architecture',
+        'usr-s390x - /usr/ file system partition of the given architecture',
+        'usr-ia64 - /usr/ file system partition of the given architecture',
+        'usr-x86-64-verity - Verity data for the /usr/ file system partition of the given architecture',
+        'usr-ppc-verity - Verity data for the /usr/ file system partition of the given architecture',
+        'usr-s390-verity - Verity data for the /usr/ file system partition of the given architecture',
+        'usr-s390x-verity - Verity data for the /usr/ file system partition of the given architecture',
+        'usr-ia64-verity - Verity data for the /usr/ file system partition of the given architecture',
+        'usr-x86-64-verity-sig - Verity signature data for the /usr/ file system partition of the given architecture',
+        'usr-ppc-verity-sig - Verity signature data for the /usr/ file system partition of the given architecture',
+        'usr-s390-verity-sig - Verity signature data for the /usr/ file system partition of the given architecture',
+        'usr-s390x-verity-sig - Verity signature data for the /usr/ file system partition of the given architecture',
+        'usr-ia64-verity-sig - Verity signature data for the /usr/ file system partition of the given architecture',
+      ]"
+      validation="required"
+      validation-visibility="live"
+      help="GPT partition type identifiers"
+    />
+
+    <FormKit
+      :name="formKey('label')"
+      label="Label"
+      type="text"
+      help= "The textual label to assign to the partition if none is assigned yet."
+    />
+
+    <FormKit
+      :name="formKey('format')"
+      label="Format"
+      type="select"
+      :options="[
+        'none',
+        'ext',
+        'btrfs',
+        'xfs',
+        'vfat',
+        'erofs',
+        'squashfs',
+        'swap'
+      ]"
+      validation="required"
+      validation-visibility="live"
+      help="If specified and the partition is newly created it is formatted with the specified file system (or as swap device)."
+    />
+
+    <FormKit
+      type="number"
+      :name="formKey('min_disk_space')"
+      value=0
+      label="Minimum required disk space (MByte)"
+      help="Keep it 0 if it is not required."
+    />
+
+    <FormKit
+      type="number"
+      :name="formKey('max_disk_space')"
+      value=0
+      label="Maximum required disk space (MByte)"
+      help="Keep it 0 if it is not required."
+    />
+
+    <FormKit
+      :name="formKey('individuals')"
+      label="Individual settings"
+      placeholder="e.g.
+Priority=5
+Weight=100"
+      type="textarea"
+      validation-behavior="live"
+      help="defined in https://www.freedesktop.org/software/systemd/man/latest/repart.d.html"
+    />
+
+  </div>
+
 </template>
 
 <script>
