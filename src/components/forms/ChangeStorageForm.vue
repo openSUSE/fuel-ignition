@@ -31,20 +31,16 @@
       <FormKit
         type="number"
         :name="formKey('min_root')"
-        value=0
-        validation="required"	
         validation-behavior="live"
         label="Minimum required disk space (MByte)"
-        help="Keep it 0 if it is not required."
+        help=" "
       />
       <FormKit
         type="number"
         :name="formKey('max_root')"
-        value=0
-        validation="required"
         validation-behavior="live"
         label="Maximum required disk space (MByte)"
-        help="Keep it 0 if it is not required."
+        help=" "
       />
       </div>
       </div>
@@ -69,20 +65,16 @@
       <FormKit
         type="number"
         :name="formKey('min_swap')"
-        value=0
-        validation="required"	
         validation-behavior="live"
         label="Minimum required disk space (MByte)"
-        help="Keep it 0 if it is not required."
+        help=" "
       />
       <FormKit
         type="number"
         :name="formKey('max_swap')"
-        value=0
-        validation="required"
         validation-behavior="live"
         label="Maximum required disk space (MByte)"
-        help="Keep it 0 if it is not required."
+        help=" "
       />
       </div>
       </div>
@@ -165,7 +157,7 @@
       type="select"
       :options="[
         'none',
-        'ext',
+        'ext4',
         'btrfs',
         'xfs',
         'vfat',
@@ -181,17 +173,15 @@
     <FormKit
       type="number"
       :name="formKey('min_disk_space')"
-      value=0
       label="Minimum required disk space (MByte)"
-      help="Keep it 0 if it is not required."
+      help=" "
     />
 
     <FormKit
       type="number"
       :name="formKey('max_disk_space')"
-      value=0
       label="Maximum required disk space (MByte)"
-      help="Keep it 0 if it is not required."
+      help=" "
     />
 
     <FormKit
@@ -251,6 +241,7 @@ export default {
           let filename = "/usr/lib/repart.d/"
           let content = "data:,"
           const task = formValue("task", id)
+
           if (task === 'Growing the root partition') {
             filename = filename.concat(counter+10, "-root.conf")
             content = content.concat( "[Partition]\n",
@@ -258,10 +249,10 @@ export default {
             const min = formValue("min_root", id)
 	    const max = formValue("max_root", id)
 	    const auto = formValue("root_full_size", id)
-            if (min > 0 && !auto) {
+            if (min && !auto) {
 	      content = content.concat("SizeMinBytes=", min, "M\n")
 	    }
-            if (max > 0 && !auto) {
+            if (max && !auto) {
 	      content = content.concat("SizeMaxBytes=", max, "M\n")
 	    }
           }
@@ -271,13 +262,47 @@ export default {
             content = content.concat( "[Partition]\n",
                                       "Type=swap\n")
             const min = formValue("min_swap", id)
-	    const max = formValue("max_swap", id)
-	    const auto = formValue("swap_full_size", id)
-            if (min > 0 && !auto) {
+            const max = formValue("max_swap", id)
+            const auto = formValue("swap_full_size", id)
+            if (min && !auto) {
 	      content = content.concat("SizeMinBytes=", min, "M\n")
 	    }
-            if (max > 0 && !auto) {
+            if (max && !auto) {
 	      content = content.concat("SizeMaxBytes=", max, "M\n")
+	    }
+	  }
+
+          if (task === 'Indiviual storage changes') {
+            filename = filename.concat(counter+10, "-partition.conf")
+            content = content.concat("[Partition]\n")
+
+            const type = formValue("type", id)
+	    if (type) {
+              content = content.concat("Type=", type.split(" ")[0], "\n")
+            }
+
+            const label = formValue("label", id)
+            if (label) {
+              content = content.concat("Label=", label, "\n")
+	    }
+
+            const format = formValue("format", id)
+            if (format && format !== "none") {
+              content = content.concat("Format=", format, "\n")
+	    }
+
+            const min = formValue("min_disk_space", id)
+	    const max = formValue("max_disk_space", id)
+            if (min) {
+	      content = content.concat("SizeMinBytes=", min, "M\n")
+	    }
+            if (max) {
+	      content = content.concat("SizeMaxBytes=", max, "M\n")
+	    }
+
+            const indi = formValue("individuals", id)
+            if (indi) {
+	      content = content.concat(indi)
 	    }
           }
 
