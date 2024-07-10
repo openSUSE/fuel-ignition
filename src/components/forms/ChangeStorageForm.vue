@@ -11,7 +11,7 @@
     ]"
     validation="required"
     validation-visibility="live"
-    help="Changing already created storage."
+    help="Changing already created storage. Systemd version >= 255 is needed for it."
   />
 
   <div v-if="task === 'Growing the root partition'">
@@ -360,23 +360,55 @@ export default {
 	    const max = formValue("max_root", id)
 	    const auto = formValue("root_full_size", id)
 	    task.auto = auto
-            if (min > 0 && !auto) {
+            if (min && !auto) {
 	      task.min = min
 	    }
-            if (max > 0 && !auto) {
+            if (max && !auto) {
 	      task.max = max
 	    }	    	     	  
 	  }
+
 	  if (task.kind === 'Creating a swap partition, if missed') {
             const min = formValue("min_swap", id)
 	    const max = formValue("max_swap", id)
 	    const auto = formValue("swap_full_size", id)
 	    task.auto = auto
-            if (min > 0 && !auto) {
+            if (min && !auto) {
 	      task.min = min
 	    }
-            if (max > 0 && !auto) {
+            if (max && !auto) {
 	      task.max = max
+	    }
+	  }
+
+          if (task.kind === 'Indiviual storage changes') {
+            const type = formValue("type", id)
+	    if (type) {
+              task.type = type
+            }
+
+            const label = formValue("label", id)
+            if (label) {
+              task.label = label
+	    }
+
+            const format = formValue("format", id)
+            if (format) {
+              task.format = format
+	    }
+
+            const min = formValue("min_disk_space", id)
+	    const max = formValue("max_disk_space", id)
+            if (min) {
+	      task.min = min
+	    }
+            if (max) {
+	      task.max = max
+	    }
+
+            const indi = formValue("individuals", id)
+            if (indi) {
+	      task.individuals = indi
 	    }
 	  }
           json.storage.tasks.push(task)
@@ -403,27 +435,49 @@ export default {
 	      setValue("root_full_size", id, task.auto);
 	    }
 	    if (!task.auto) {
- 	      if (task.min != undefined) {
-	        setValue("min_root", id, task.min);
+ 	      if (task.min) {
+                setValue("min_root", id, task.min);
 	      }
- 	      if (task.min != undefined) {
-	        setValue("max_root", id, task.max);
+ 	      if (task.min) {
+                setValue("max_root", id, task.max);
 	      }
 	    }
           }
+
 	  if (task.kind === 'Creating a swap partition, if missed') {
-            if (task.auto != undefined) {
+            if (task.auto) {
 	      setValue("swap_full_size", id, false);
 	    }
             if (!task.auto) {
-              if (task.min != undefined) {
+              if (task.min) {
 	        setValue("min_swap", id, task.min);
 	      }
-              if (task.min != undefined) {
+              if (task.min) {
 	        setValue("max_swap", id, task.max);
 	      }
 	    }
           }
+
+          if (task.kind === 'Indiviual storage changes') {
+            if (task.type) {
+	      setValue("type", id, task.type);
+	    }
+            if (task.label) {
+	      setValue("label", id, task.label);
+	    }
+            if (task.format) {
+	      setValue("format", id, task.format);
+	    }
+            if (task.min) {
+	      setValue("min_disk_space", id, task.min);
+	    }
+            if (task.min) {
+	      setValue("max_disk_space", id, task.max);
+	    }
+            if (task.individuals) {
+	      setValue("individuals", id, task.individuals);
+	    }
+	  }
         });
     },
     countImport: function (json) {
