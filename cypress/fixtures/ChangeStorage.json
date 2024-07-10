@@ -1,0 +1,25 @@
+{
+  "storage": {
+    "tasks": [
+      {
+        "kind": "Growing the root partition",
+        "auto": true
+      },
+      {
+        "kind": "Creating a swap partition, if missed",
+        "auto": false,
+        "min": "1000",
+        "max": "1000"
+      },
+      {
+        "kind": "Indiviual storage changes",
+        "type": "linux-generic - Generic Linux file system partition",
+        "label": "ignition",
+        "format": "ext4",
+        "min": "2000",
+        "max": "3000",
+        "individuals": "Priority=5"
+      }
+    ]
+  }
+}
