@@ -223,6 +223,19 @@ export default {
       const formValue = (key, uid) =>
         Utils.getFormValue(formPrefix, formData, key, uid);
 
+      const b64EncodeUnicode = function (str) {
+        // first we use encodeURIComponent to get percent-encoded UTF-8,
+        // then we convert the percent encodings into raw bytes which
+        // can be fed into btoa.
+        return window.btoa(
+          encodeURIComponent(str).replace(
+            /%([0-9A-F]{2})/g,
+            function toSolidBytes(match, p1) {
+              return String.fromCharCode("0x" + p1);
+            }
+          )
+        );
+      };
 
       const keyPrefix = formPrefix + "_task_";
       let counter = 0;
@@ -238,8 +251,8 @@ export default {
             json.storage.files = [];
           }
 
-          let filename = "/usr/lib/repart.d/"
-          let content = "data:,"
+          let filename = "/etc/repart.d/"
+          let content = ""
           const task = formValue("task", id)
 
           if (task === 'Growing the root partition') {
@@ -312,7 +325,8 @@ export default {
               mode: 384,
               overwrite: true,
               contents: { 
-                source: content
+                source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
+		human_read: content
               },
             }
           );

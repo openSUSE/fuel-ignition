@@ -426,7 +426,14 @@ const exportSettings= (formData) => {
                 </h2>
   
                 <pre class="form-data">
-  # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition -root ignition config.ign</pre>
+  Using ignition file only:
+  # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition -root ignition config.ign
+
+  Using ignition and combustion configuration files:
+  The files has to be stored under
+   - fuel-ignition/combustion/script
+   - fuel-ignition/ignition/config.ign
+  # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition fuel-ignition </pre>
                 <p>
                   How to use the generated data with <a href="https://documentation.suse.com/sle-micro/5.2/html/SLE-Micro-all/cha-images-ignition.html" target="_blank">ignition</a> and <a href="https://documentation.suse.com/sle-micro/5.2/html/SLE-Micro-all/cha-images-combustion.html" target="_blank">combustion</a> .
                 </p>
