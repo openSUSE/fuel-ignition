@@ -431,8 +431,8 @@ export default {
 	    setValue("task", id, task.kind);
 	  }
 	  if (task.kind === 'Growing the root partition') {	  
-  	    if (task.auto != undefined) {
-	      setValue("root_full_size", id, task.auto);
+  	    if (task.auto) {
+	      setValue("root_full_size", id, true);
 	    }
 	    if (!task.auto) {
  	      if (task.min) {
@@ -446,7 +446,7 @@ export default {
 
 	  if (task.kind === 'Creating a swap partition, if missed') {
             if (task.auto) {
-	      setValue("swap_full_size", id, false);
+	      setValue("swap_full_size", id, true);
 	    }
             if (!task.auto) {
               if (task.min) {
