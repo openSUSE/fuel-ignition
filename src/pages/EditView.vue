@@ -154,9 +154,9 @@ async function importData(event) {
   // Load settings form file and
   // parse json from file object.
   importedData.value = await Utils.parseJsonFile(file)
-    .catch(() => {
+    .catch((jsonErrorMsg) => {
       alert(jsonErrorMsg);
-      clearFile();
+      Utils.clearFile();
     });
   formData.value = {debug: formData.value.debug, save_to: formData.value.save_to}
   forceRerender();

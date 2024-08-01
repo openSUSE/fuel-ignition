@@ -19,6 +19,12 @@ export default {
       fileReader.readAsText(file);
     });
   },
+  clearFile: function() {
+    const removeAnchor = document.querySelector(".formkit-remove-files");
+    if (removeAnchor !== undefined) {
+      removeAnchor.click();
+    }
+  },
   saveTemplateAsFile: (filename, dataObjToWrite, isNotJson) => {
     const blob = new Blob(
       isNotJson ? [dataObjToWrite] : [JSON.stringify(dataObjToWrite, null, 2)],
