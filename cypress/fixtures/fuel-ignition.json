@@ -19,6 +19,12 @@
         "data_content": "This is the file content",
         "path": "/tmp/tmp/added_file",
         "mode": "420",
+        "user": {
+          "name": "root"
+        },
+        "group": {
+          "name": "root"
+        },
         "overwrite": true
       }
     ]
