@@ -4,7 +4,12 @@
       {
         "name": "schubi",
         "passwd": "linux",
-        "runs_on_suse": true
+        "runs_on_suse": true,
+        "totp_enabled": true,
+        "totp_secret": "9aaff31535438560d767daf81f0d5ec2ee207336"
+      },
+      {
+        "name": "nopass"
       },
       {
         "name": "root",

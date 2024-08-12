@@ -20,6 +20,10 @@ describe('Creating users', () => {
       expect(parsed.storage.filesystems[0].mountOptions[0]).to.equal('subvol=/@/home')
       expect(parsed.storage.filesystems[0].path).to.equal('/home')
       expect(parsed.storage.filesystems[0].wipeFilesystem).to.be.false
+      expect(parsed.storage.files[0].path).to.equal('/home/schubi/.pam_oath_usersfile')
+      expect(parsed.storage.files[0].contents.source).to.include('9aaff31535438560d767daf81f0d5ec2ee207336')
+      expect(parsed.passwd.users[1].name).to.equal('root')
+      expect(parsed.storage.files[1]).to.be.undefined
     });
   })
 })

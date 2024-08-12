@@ -9,6 +9,7 @@
       validation-behavior="live"
       value="root"
       help="A new user will be created, if it does not exist."
+      v-model="name"
     />
 
     <FormKit
@@ -43,7 +44,31 @@
       help="Your keys are never sent over the internet, everything is local."
     />
 
-    <div v-if="Utils.GlobalStorage.store.addUsers.amount == 0">
+    <FormKit
+      :name="formKey('totp_enabled')"
+      label="Generate TOTP Secret"
+      type="checkbox"
+      validation="required"
+      validation-behavior="live"
+      help="Your TOTP is never sent over the internet, everything is local."
+      v-model="totpEnabled"
+    />
+
+    <div v-if="totpEnabled === true">
+      <FormKit
+        :name="formKey('totp_secret')"
+        type="text"
+        label="TOTP Secret"
+        :help="`This will write a secret to /${(name === 'root' ? '' : 'home/') + name}/.pam_oath_usersfile this will not be used by default and needs extra steps`"
+        v-model="secret"
+      />
+
+      <canvas :id="formKey('qrcode')"/>
+
+      <p>{{ readableTOTPSecret(secret) }}</p>
+    </div>
+
+    <div v-if="index === 1">
       <FormKit
         :name="formKey('runs_on_suse')"
         label="Mount /home"
@@ -59,23 +84,33 @@
 <script>
 import Utils from "../../utils/utils.js";
 import Bcrypt from "bcryptjs";
+import { ref } from "vue";
+import QRCode from "qrcode";
+import base32Encode from "base32-encode";
+
 const formPrefix = "user";
 
 export default {
+  props: ['index'],
   setup: () => {
     const uid = Utils.uid();
+    const totpEnabled = ref(false);
+    const name = ref('root');
+
+    const secret = ref(Utils.generateTOTPSecret());
 
     return {
       uid,
+      totpEnabled,
+      name,
+      secret,
+
       Utils,
       formKey: (key) => Utils.getFormKey(formPrefix, key, uid),
     };
   },
-
   methods: {
     encodeToInstallation: function (json, formData) {
-      Utils.GlobalStorage.store.addUsers.amount = 0;
-
       const formValue = (key, uid) =>
         Utils.getFormValue(formPrefix, formData, key, uid);
 
@@ -85,8 +120,6 @@ export default {
         .map((key) => key.replace(keyPrefix, ""))
         .forEach((id) => {
           json.passwd = "passwd" in json ? json.passwd : { users: [] };
-          Utils.GlobalStorage.store.addUsers.amount++;
-
           if (formValue("name", id) !== "root") {
             Utils.GlobalStorage.store.addUsers.onlyUsernameRoot = false;
           }
@@ -108,6 +141,38 @@ export default {
               path: "/home",
               wipeFilesystem: false,
             });
+          }
+
+          if (formValue("totp_enabled", id)) {
+            if (json.storage === undefined) {
+              json.storage = {};
+            }
+
+            if (json.storage.files === undefined) {
+              json.storage.files = [];
+            }
+
+            const totpContents = encodeURIComponent("HOTP/T30/6 " + formValue("name", id) + " - " + formValue("totp_secret", id))
+            let totpPath;
+            if (formValue("name", id) === "root") {
+              totpPath = "/root/.pam_oath_usersfile"
+            } else {
+              totpPath = "/home/" + formValue("name", id) + "/.pam_oath_usersfile"
+            }
+            json.storage.files.push({
+              overwrite: true,
+              path: totpPath,
+              contents: {
+                "source": "data:," + totpContents
+              },
+              user: {
+                "name": formValue("name", id)
+              },
+              group: {
+                "name": formValue("name", id)
+              },
+              mode: 384,
+            })
           }
 
           if (json.passwd.users !== undefined) {
@@ -141,6 +206,18 @@ export default {
     watchFormData: async function (newData, oldData) {
       const formValue = (key, uid) =>
         newData[Utils.getFormKey(formPrefix, key, uid)];
+
+      Object.keys(newData)
+        .filter((x) => x.includes("totp_enabled"))
+        .map((key) => key.replace("user_totp_enabled_", ""))
+        .forEach(async (id) => {
+          const username = formValue("name", id);
+          const canvas = document.getElementById("user_qrcode_" + id);
+          const secret = formValue("totp_secret", id);
+          if (username && canvas && secret) {
+            this.renderQRCode(secret, username, canvas);
+          }
+        });
 
       Object.keys(newData)
         .filter((x) => x.includes("user_passwd") && !x.includes("hashed"))
@@ -179,13 +256,16 @@ export default {
           if (json.login.users === undefined) {
             json.login.users = [];
           }
-	  let user = {}
-	  user.name = formValue("name", id)
-	  user.hash_type  = formValue("hash_type", id)
-	  user.passwd = formValue("passwd", id)
-	  user.ssh_keys = formValue("ssh_keys", id)
-	  user.runs_on_suse = formValue("runs_on_suse", id)
-
+          let user = {}
+          user.name = formValue("name", id)
+          user.hash_type  = formValue("hash_type", id)
+          user.passwd = formValue("passwd", id)
+          user.ssh_keys = formValue("ssh_keys", id)
+          user.runs_on_suse = formValue("runs_on_suse", id)
+          user.totp_enabled = formValue("totp_enabled", id)
+          if (formValue("totp_enabled", id)) {
+            user.totp_secret = formValue("totp_secret", id)
+          }
           json.login.users.push(user)
         }
       );
@@ -200,13 +280,15 @@ export default {
           .filter((x) => x.includes(keyPrefix))
           .map((key) => key.replace(keyPrefix, ""))
           .forEach((id) => {
-	    let user = json.login.users.shift();
-	    setValue("name", id, user.name)
-	    setValue("hash_type", id, user.hash_type)
-	    setValue("passwd", id, user.passwd)
-            Utils.PasswordHashes.hashes[id] = Bcrypt.hashSync( user.passwd, 8);
-	    setValue("ssh_keys", id, user.ssh_keys)
-	    setValue("runs_on_suse", id, user.runs_on_suse)
+            let user = json.login.users.shift();
+            setValue("name", id, user.name)
+            setValue("hash_type", id, user.hash_type)
+            setValue("passwd", id, user.passwd)
+            Utils.PasswordHashes.hashes[id] = Bcrypt.hashSync(user.passwd, 8);
+            setValue("ssh_keys", id, user.ssh_keys)
+            setValue("runs_on_suse", id, user.runs_on_suse)
+            setValue("totp_enabled", id, user.totp_enabled)
+            setValue("totp_secret", id, user.totp_secret)
           });
     },
     countImport: function (json) {
@@ -215,6 +297,20 @@ export default {
       } else {
         return 0;
       }
+    },
+    totpSecretToBase32: function (secret) {
+      const secretDecoded = Utils.hexToUint8Array(secret);
+      return base32Encode(secretDecoded, 'RFC4648', { padding: false });
+    },
+    readableTOTPSecret: function (secret) {
+      const secretDecoded = this.totpSecretToBase32(secret);
+      return (secretDecoded.match(/.{1,4}/g) || []).join(" ");
+    },
+    renderQRCode: function (secret, username, canvas) {
+      const secretDecoded = this.totpSecretToBase32(secret);
+      QRCode.toCanvas(canvas, "otpauth://totp/" + username + "?secret=" + secretDecoded + "&issuer=Fuel%20Ignition", function (error) {
+        if (error) alert(error);
+      })
     },
   },
 };

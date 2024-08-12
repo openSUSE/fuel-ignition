@@ -6,7 +6,15 @@
         "hash_type": "Hash Yourself",
         "passwd": "linux",
         "ssh_keys": "ssh_pubilic_keys",
+        "totp_enabled": true,
+        "totp_secret": "9aaff31535438560d767daf81f0d5ec2ee207336",
         "runs_on_suse": true
+      },
+      {
+        "name": "root",
+        "hash_type": "Hash Yourself",
+        "passwd": "linux",
+        "totp_enabled": false
       }
     ]
   }
