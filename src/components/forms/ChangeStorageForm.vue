@@ -12,7 +12,7 @@
     ]"
     validation="required"
     validation-visibility="live"
-    help="Change/cncrypt storage volumes requires systemd >= 255."
+    help="Change/encrypt storage volumes; requires systemd >= 255."
   />
 
   <div v-if="task === 'Encrypt disk'">
@@ -37,7 +37,7 @@
       :name="formKey('fido2_enroll')"
       label="Add FIDO2 (Fast Identity Online) support"
       type="checkbox"
-      help= "Using e.g. external USB FIDO2 securitiy key. An automatic way to decrypt the storage. The key has to be inserted/available while first boot."
+      help= "Using e.g. external USB FIDO2 security key. An automatic way to decrypt the storage. The key has to be inserted/available during the first boot."
     />
   </div>
 
