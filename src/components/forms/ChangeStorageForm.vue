@@ -5,16 +5,43 @@
     type="select"
     v-model="task"
     :options="[
-      'Growing the root partition',
-      'Creating a swap partition, if missed',
-      'Indiviual storage changes'
+      'Grow root partition',
+      'Create swap partition if missing',
+      'Encrypt disk',
+      'Apply custom storage changes'
     ]"
     validation="required"
     validation-visibility="live"
-    help="Changing already created storage. Systemd version >= 255 is needed for it."
+    help="Change/cncrypt storage volumes requires systemd >= 255."
   />
 
-  <div v-if="task === 'Growing the root partition'">
+  <div v-if="task === 'Encrypt disk'">
+    <FormKit
+      :name="formKey('password')"
+      type="text"
+      label="Password"
+      placeholder="Encryption password"
+      validation="required"
+      validation-visibility="live"
+      help=" "
+    />
+
+    <FormKit
+      :name="formKey('tpm2_enroll')"
+      label="Add TPM2 (Trusted Platform Module) support"
+      type="checkbox"
+      help= "Using secure chip with integrated cryptographic keys. An automatic way to decrypt the storage."
+    />
+
+    <FormKit
+      :name="formKey('fido2_enroll')"
+      label="Add FIDO2 (Fast Identity Online) support"
+      type="checkbox"
+      help= "Using e.g. external USB FIDO2 securitiy key. An automatic way to decrypt the storage. The key has to be inserted/available while first boot."
+    />
+  </div>
+
+  <div v-if="task === 'Grow root partition'">
     <FormKit
       :name="formKey('root_full_size')"
       label="to the full disk size"
@@ -48,7 +75,7 @@
     </div>
   </div>
 
-  <div v-if="task === 'Creating a swap partition, if missed'">
+  <div v-if="task === 'Create swap partition if missing'">
     <FormKit
       :name="formKey('swap_full_size')"
       label="take all available disk space"
@@ -82,7 +109,7 @@
     </div>
   </div>
 
-  <div v-if="task === 'Indiviual storage changes'">
+  <div v-if="task === 'Apply custom storage changes'">
     <FormKit
       :name="formKey('type')"
       label="Type"
@@ -207,7 +234,7 @@ const formPrefix = "change_storage";
 export default {
   setup: () => {
     const uid = Utils.uid();
-    const task = ref('Growing the root partition');
+    const task = ref('Grow root partition');
     const root_full_size = ref(true);
     const swap_full_size = ref(true);
     return {
@@ -255,7 +282,7 @@ export default {
           let content = ""
           const task = formValue("task", id)
 
-          if (task === 'Growing the root partition') {
+          if (task === 'Grow root partition') {
             filename = filename.concat(counter+10, "-root.conf")
             content = content.concat( "[Partition]\n",
               		              "Type=root\n")
@@ -270,7 +297,7 @@ export default {
 	    }
           }
 
-          if (task === 'Creating a swap partition, if missed') {
+          if (task === 'Create swap partition if missing') {
             filename = filename.concat(counter+10, "-swap.conf")
             content = content.concat( "[Partition]\n",
                                       "Type=swap\n")
@@ -285,7 +312,7 @@ export default {
 	    }
 	  }
 
-          if (task === 'Indiviual storage changes') {
+          if (task === 'Apply custom storage changes') {
             filename = filename.concat(counter+10, "-partition.conf")
             content = content.concat("[Partition]\n")
 
@@ -319,17 +346,64 @@ export default {
 	    }
           }
 
-          json.storage.files.push(
-            {
-              path: filename,
-              mode: 384,
-              overwrite: true,
-              contents: { 
-                source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
-		human_read: content
-              },
-            }
-          );
+          if (task === 'Encrypt disk') {
+	    // encryption task
+	    json.combustion_initrd += "  # We set disk-encryption-tool-dracut.encryption credential to\n" +
+	       "  # \"force\".  This will make disk-encryption-tool-dracut force the\n" +
+	       "  # encryption, ignoring that Combusion configured the system, and\n" +
+	       "  # will skip the permission countdown\n" +
+	       "  #\n" +
+	       "  # After the encryption the recovery key is registered in the\n" +
+	       "  # kernel keyring %user:cryptenroll\n" +
+	       "  mkdir -p /run/credstore\n" +
+               "  echo \"force\" > /run/credstore/disk-encryption-tool-dracut.encrypt\n"
+
+            const password = formValue("password", id)
+            const tpm2_enroll = formValue("tpm2_enroll", id)
+            const fido2_enroll = formValue("fido2_enroll", id)
+
+            json.combustion += "\n# Disk Encryption\n#\n" +
+	      "# Create a valid machine-id, as this will be required to create later\n" +
+	      "# the host secret\n" +
+	      "systemd-machine-id-setup\n" +
+	      "# We want to persist the host secret key created via systemd-cred\n" +
+	      "# (/var/lib/systemd/credential.secret)\n" +
+	      "mount /var\n" +
+	      "mkdir -p /etc/credstore.encrypted\n" +
+	      "credential=\"$(mktemp disk-encryption-tool.XXXXXXXXXX)\"\n" +
+	      "# Enroll extra password\n" +
+	      "echo \"" + password + "\" > \"$credential\"\n" +
+	      "systemd-creds encrypt --name=disk-encryption-tool-enroll.pw \"$credential\" \\\n" +
+	      "               /etc/credstore.encrypted/disk-encryption-tool-enroll.pw\n"
+	    if (tpm2_enroll) {
+	      json.combustion += "# Enroll TPM2\n" +
+	        "echo \"1\" > \"$credential\"\n" +
+		"systemd-creds encrypt --name=disk-encryption-tool-enroll.tpm2 \"$credential\" \\\n" +
+		"             /etc/credstore.encrypted/disk-encryption-tool-enroll.tpm2\n"
+	    }
+	    if (fido2_enroll) {
+	      json.combustion += "# Enroll FIDO2. While firstboot the FIDO key has to be inserted/available.\n" +
+	        "echo \"1\" > \"$credential\"\n" +
+		"systemd-creds encrypt --name=disk-encryption-tool-enroll.fido2 \"$credential\" \\\n" +
+		"	      /etc/credstore.encrypted/disk-encryption-tool-enroll.fido2\n"
+	    }
+	    json.combustion += "shred -u \"$credential\"\n" +
+	      "# Umount back /var to not confuse tukit later\n" +
+	      "umount /var\n"
+	  } else {
+	    // repart tasks
+            json.storage.files.push(
+              {
+                path: filename,
+                mode: 384,
+                overwrite: true,
+                contents: { 
+                  source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
+  	  	  human_read: content
+                },
+              }
+            );
+	  }
 
 	  counter++
         }
@@ -355,7 +429,14 @@ export default {
 
           const task = {}
 	  task.kind = formValue("task", id)
-	  if (task.kind === 'Growing the root partition') {
+
+	  if (task.kind === 'Encrypt disk') {
+            task.password = formValue("password", id)
+	    task.tpm2_enroll = formValue("tpm2_enroll", id)
+	    task.fido2_enroll = formValue("fido2_enroll", id)
+	  }
+
+	  if (task.kind === 'Grow root partition') {
             const min = formValue("min_root", id)
 	    const max = formValue("max_root", id)
 	    const auto = formValue("root_full_size", id)
@@ -368,7 +449,7 @@ export default {
 	    }	    	     	  
 	  }
 
-	  if (task.kind === 'Creating a swap partition, if missed') {
+	  if (task.kind === 'Create swap partition if missing') {
             const min = formValue("min_swap", id)
 	    const max = formValue("max_swap", id)
 	    const auto = formValue("swap_full_size", id)
@@ -381,7 +462,7 @@ export default {
 	    }
 	  }
 
-          if (task.kind === 'Indiviual storage changes') {
+          if (task.kind === 'Apply custom storage changes') {
             const type = formValue("type", id)
 	    if (type) {
               task.type = type
@@ -430,7 +511,8 @@ export default {
 	  if (task.kind != undefined) {
 	    setValue("task", id, task.kind);
 	  }
-	  if (task.kind === 'Growing the root partition') {	  
+
+	  if (task.kind === 'Grow root partition') {
   	    if (task.auto) {
 	      setValue("root_full_size", id, true);
 	    }
@@ -444,7 +526,19 @@ export default {
 	    }
           }
 
-	  if (task.kind === 'Creating a swap partition, if missed') {
+	  if (task.kind === 'Encrypt disk') {
+            if (task.password) {
+	      setValue("password", id, task.password);
+	    }
+            if (task.tpm2_enroll) {
+	      setValue("tpm2_enroll", id, true);
+	    }
+            if (task.fido2_enroll) {
+	      setValue("fido2_enroll", id, true);
+	    }
+          }
+
+	  if (task.kind === 'Create swap partition if missing') {
             if (task.auto) {
 	      setValue("swap_full_size", id, true);
 	    }
@@ -458,7 +552,7 @@ export default {
 	    }
           }
 
-          if (task.kind === 'Indiviual storage changes') {
+          if (task.kind === 'Apply custom storage changes') {
             if (task.type) {
 	      setValue("type", id, task.type);
 	    }

@@ -371,7 +371,7 @@ export default {
 
 	  if (available_in_initrd) {
 	    // writing with combustion
-            json.combustion_prepare +=
+            json.combustion_initrd_and_running_system +=
 	      "umask 077 # Required for NM config\n" +
               "mkdir -p /etc/NetworkManager/system-connections/\n" +
               "cat >" + filename + " <<-EOF\n" +

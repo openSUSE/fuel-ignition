@@ -100,29 +100,37 @@ const toIgnitionConfig = (formData) => {
   }
 
   json.combustion = undefined;
-  json.combustion_prepare = undefined;
+  json.combustion_initrd_and_running_system = undefined;
+  json.combustion_initrd = undefined;
 
   return json;
 };
 
 const toCombustionScript = (formData) => {
-  let json = { combustion: "", combustion_prepare: "", output: "" };
+  let json = { combustion: "", combustion_initrd: "", combustion_initrd_and_running_system: "", output: "" };
 
   formComponents
     .filter((comp) => comp.methods.hasOwnProperty("encodeToInstallation"))
     .forEach((comp) => comp.methods.encodeToInstallation(json, formData));
 
-  if (json.combustion_prepare != "") {
-    console.log("prepare: " + json.combustion_prepare);
+  if (json.combustion_initrd_and_running_system != "" || json.combustion_initrd != "") {
     if (json.output == "") {
       json.output =
         "#!/bin/bash\n# combustion: network prepare\n# script generated with https://opensuse.github.io/fuel-ignition/\n\n"
     }
-    json.output += json.combustion_prepare + "\n"
-  }
-  if (json.output != "") {
-    json.output += "if [ \"${1-}\" = \"--prepare\" ]; then\n" +
-      "  exit 0\n" +
+
+    if (json.combustion_initrd_and_running_system != "") {
+      console.log("initrd and running system: " + json.combustion_initrd_and_running_system);
+      json.output += json.combustion_initrd_and_running_system + "\n"
+    }
+
+    json.output += "if [ \"${1-}\" = \"--prepare\" ]; then\n"
+    if (json.combustion_initrd != "") {
+      console.log("initrd: " + json.combustion_initrd);
+      json.output += json.combustion_initrd + "\n"
+    }
+
+    json.output += "  exit 0\n" +
       "fi\n"
   } else {
     json.output = "#!/bin/bash\n# combustion: network\n# script generated with https://opensuse.github.io/fuel-ignition/\n"
@@ -133,7 +141,8 @@ const toCombustionScript = (formData) => {
     "exec > >(exec tee -a /dev/tty0) 2>&1\n"
 
   json.combustion = ""
-  json.combustion_prepare = ""
+  json.combustion_initrd_and_running_system = ""
+  json.combustion_initrd = ""
   formComponents
     .filter((comp) => comp.methods.hasOwnProperty("encodeToInstallation"))
     .forEach((comp) => comp.methods.encodeToInstallation(json, formData));
