@@ -51,7 +51,6 @@
     />
 
     <div v-if="root_full_size === false">
-      <div class="container-fluid">
       <div class="row">
       <div class="col-1"></div>
       <div class="col-12">
@@ -71,7 +70,6 @@
       />
       </div>
       </div>
-      </div>
     </div>
   </div>
 
@@ -85,7 +83,6 @@
     />
 
     <div v-if="swap_full_size === false">
-      <div class="container-fluid">
       <div class="row">
       <div class="col-1"></div>
       <div class="col-12">
@@ -103,7 +100,6 @@
         label="Maximum required disk space (MByte)"
         help=" "
       />
-      </div>
       </div>
       </div>      
     </div>
@@ -266,6 +262,20 @@ export default {
 
       const keyPrefix = formPrefix + "_task_";
       let counter = 0;
+      let create_repart_dir = true
+      let encrypt = false
+
+      Object.keys(formData)
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+          const task = formValue("task", id)
+          if (task === 'Encrypt disk') {	  
+             encrypt = true
+          }
+	  }
+	)
+	  
       Object.keys(formData)
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))
@@ -392,17 +402,27 @@ export default {
 	      "umount /var\n"
 	  } else {
 	    // repart tasks
-            json.storage.files.push(
-              {
-                path: filename,
-                mode: 384,
-                overwrite: true,
-                contents: { 
-                  source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
-  	  	  human_read: content
-                },
-              }
-            );
+	    if (encrypt) {
+	      // repart just before encyption in d-e-t
+	      if (create_repart_dir) {
+	        create_repart_dir=false
+	        json.combustion_initrd += "   mkdir -p /etc/repart.d\n"
+	      }
+              json.combustion_initrd += "   echo -e \"" + content + "\" >" + filename + "\n"
+	    } else {
+	      // repart via service systemd-repart
+              json.storage.files.push(
+                {
+                  path: filename,
+                  mode: 384,
+                  overwrite: true,
+                  contents: { 
+                    source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
+  	  	    human_read: content
+                  },
+                }
+              );
+	    }
 	  }
 
 	  counter++
