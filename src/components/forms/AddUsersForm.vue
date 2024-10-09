@@ -283,8 +283,10 @@ export default {
             let user = json.login.users.shift();
             setValue("name", id, user.name)
             setValue("hash_type", id, user.hash_type)
-            setValue("passwd", id, user.passwd)
-            Utils.PasswordHashes.hashes[id] = Bcrypt.hashSync(user.passwd, 8);
+            if (user.passwd) {
+              setValue("passwd", id, user.passwd)
+              Utils.PasswordHashes.hashes[id] = Bcrypt.hashSync(user.passwd, 8);
+            }
             setValue("ssh_keys", id, user.ssh_keys)
             setValue("runs_on_suse", id, user.runs_on_suse)
             setValue("totp_enabled", id, user.totp_enabled)
