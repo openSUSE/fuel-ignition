@@ -444,7 +444,7 @@ const exportSettings= (formData) => {
    - fuel-ignition/ignition/config.ign
   # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition fuel-ignition </pre>
                 <p>
-                  How to use the generated data with <a href="https://documentation.suse.com/sle-micro/5.2/html/SLE-Micro-all/cha-images-ignition.html" target="_blank">ignition</a> and <a href="https://documentation.suse.com/sle-micro/5.2/html/SLE-Micro-all/cha-images-combustion.html" target="_blank">combustion</a> .
+                  How to use the generated data with <a href="https://documentation.suse.com/sle-micro/6.0/html/Micro-deployment-raw-images/index.html#deployment-configuring-with-ignition" target="_blank">ignition</a> and <a href="https://documentation.suse.com/sle-micro/6.0/html/Micro-deployment-raw-images/index.html#deployment-configuring-with-combustion" target="_blank">combustion</a> .
                 </p>
                 <hr class="divider" />
 	      </div>
