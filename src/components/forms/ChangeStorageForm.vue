@@ -12,7 +12,7 @@
     ]"
     validation="required"
     validation-visibility="live"
-    help="Change/encrypt storage volumes; requires systemd >= 255."
+    help="Increasing/Adding partitions/swaps needs free space on the medium. Otherwise it will run into an error while installaiton."
   />
 
   <div v-if="task === 'Encrypt disk'">
