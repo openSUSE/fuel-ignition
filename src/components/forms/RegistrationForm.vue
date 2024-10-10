@@ -102,7 +102,7 @@ export default {
 	      json.combustion += "regcode=\"" + formValue("regcode", id) + "\"\n"
           }
 
-	  if (formValue("product", id) !== "Base_Product") {
+	  if (formValue("product", id) && formValue("product", id)!== "Base_Product") {
               json.combustion += "architecture=`arch`\n"
 	      json.combustion += "version=`xmllint --xpath \"//version/text()\" /etc/products.d/baseproduct`\n"
 	      json.combustion += "SUSEConnect " + "--product $product/$version/$architecture "

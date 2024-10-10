@@ -66,7 +66,7 @@ export default {
 	  if (formValue("read_channel", id) != undefined &&
 	      formValue("write_channel", id) != undefined &&
 	      formValue("data_channel", id)) {
-            json.combustion_prepare +=
+            json.combustion_initrd_and_running_system +=
               "# S390 Channels Setup\n" +
               "chzdev qeth " + formValue("read_channel", id) + "," + formValue("write_channel", id) +
 	      "," + formValue("data_channel", id) + " -e\n"

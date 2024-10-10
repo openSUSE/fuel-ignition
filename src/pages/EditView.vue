@@ -10,6 +10,7 @@ import CreateFileForm from "@/components/forms/CreateFileForm.vue";
 import AddHostnameForm from "@/components/forms/AddHostnameForm.vue";
 import AddLanguageForm from "@/components/forms/AddLanguageForm.vue";
 import AddNetworkForm from "@/components/forms/AddNetworkForm.vue";
+import ChangeStorageForm from "@/components/forms/ChangeStorageForm.vue";
 import StartServiceForm from "@/components/forms/StartServiceForm.vue";
 import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 
@@ -27,6 +28,7 @@ const formComponents = [
   CreateFileForm,
   AddHostnameForm,
   AddLanguageForm,
+  ChangeStorageForm,
   AddNetworkForm,
   StartServiceForm,
   ModifyServiceForm,
@@ -98,29 +100,37 @@ const toIgnitionConfig = (formData) => {
   }
 
   json.combustion = undefined;
-  json.combustion_prepare = undefined;
+  json.combustion_initrd_and_running_system = undefined;
+  json.combustion_initrd = undefined;
 
   return json;
 };
 
 const toCombustionScript = (formData) => {
-  let json = { combustion: "", combustion_prepare: "", output: "" };
+  let json = { combustion: "", combustion_initrd: "", combustion_initrd_and_running_system: "", output: "" };
 
   formComponents
     .filter((comp) => comp.methods.hasOwnProperty("encodeToInstallation"))
     .forEach((comp) => comp.methods.encodeToInstallation(json, formData));
 
-  if (json.combustion_prepare != "") {
-    console.log("prepare: " + json.combustion_prepare);
+  if (json.combustion_initrd_and_running_system != "" || json.combustion_initrd != "") {
     if (json.output == "") {
       json.output =
         "#!/bin/bash\n# combustion: network prepare\n# script generated with https://opensuse.github.io/fuel-ignition/\n\n"
     }
-    json.output += json.combustion_prepare + "\n"
-  }
-  if (json.output != "") {
-    json.output += "if [ \"${1-}\" = \"--prepare\" ]; then\n" +
-      "  exit 0\n" +
+
+    if (json.combustion_initrd_and_running_system != "") {
+      console.log("initrd and running system: " + json.combustion_initrd_and_running_system);
+      json.output += json.combustion_initrd_and_running_system + "\n"
+    }
+
+    json.output += "if [ \"${1-}\" = \"--prepare\" ]; then\n"
+    if (json.combustion_initrd != "") {
+      console.log("initrd: " + json.combustion_initrd);
+      json.output += json.combustion_initrd + "\n"
+    }
+
+    json.output += "  exit 0\n" +
       "fi\n"
   } else {
     json.output = "#!/bin/bash\n# combustion: network\n# script generated with https://opensuse.github.io/fuel-ignition/\n"
@@ -131,7 +141,8 @@ const toCombustionScript = (formData) => {
     "exec > >(exec tee -a /dev/tty0) 2>&1\n"
 
   json.combustion = ""
-  json.combustion_prepare = ""
+  json.combustion_initrd_and_running_system = ""
+  json.combustion_initrd = ""
   formComponents
     .filter((comp) => comp.methods.hasOwnProperty("encodeToInstallation"))
     .forEach((comp) => comp.methods.encodeToInstallation(json, formData));
@@ -229,6 +240,15 @@ const exportSettings= (formData) => {
 		  :maxComponents="1"
                 >
                   <AddKeyboardForm></AddKeyboardForm>
+                </ExpandableComponent>
+
+		<hr class="divider-long" />
+
+                <ExpandableComponent
+                  title="Change Storage"
+                  :displaysAtBegin="elementNumber(ChangeStorageForm)"
+                >
+                  <ChangeStorageForm></ChangeStorageForm>
                 </ExpandableComponent>
 
 		<hr class="divider-long" />
@@ -415,7 +435,14 @@ const exportSettings= (formData) => {
                 </h2>
   
                 <pre class="form-data">
-  # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition -root ignition config.ign</pre>
+  Using ignition file only:
+  # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition -root ignition config.ign
+
+  Using ignition and combustion configuration files:
+  The files has to be stored under
+   - fuel-ignition/combustion/script
+   - fuel-ignition/ignition/config.ign
+  # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition fuel-ignition </pre>
                 <p>
                   How to use the generated data with <a href="https://documentation.suse.com/sle-micro/5.2/html/SLE-Micro-all/cha-images-ignition.html" target="_blank">ignition</a> and <a href="https://documentation.suse.com/sle-micro/5.2/html/SLE-Micro-all/cha-images-combustion.html" target="_blank">combustion</a> .
                 </p>
