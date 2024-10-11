@@ -19,6 +19,12 @@ export default {
       fileReader.readAsText(file);
     });
   },
+  clearFile: function() {
+    const removeAnchor = document.querySelector(".formkit-remove-files");
+    if (removeAnchor !== undefined) {
+      removeAnchor.click();
+    }
+  },
   saveTemplateAsFile: (filename, dataObjToWrite, isNotJson) => {
     const blob = new Blob(
       isNotJson ? [dataObjToWrite] : [JSON.stringify(dataObjToWrite, null, 2)],
@@ -62,6 +68,15 @@ export default {
         component.methods.watchFormData(newData, oldData);
       });
     }
+  },
+  isNumerical: (value) => {
+    // This will just let us parse the entire string to and return true
+    // if every part of it is a number. See the full breakdown here:
+    //
+    // ^ anchor to the start of the string
+    // \d+ match any digit 1 - infinate times
+    // $ anchor to the end of the string
+    return /^\d+$/.test(value);
   },
 
   uid: () => {
