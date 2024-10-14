@@ -31,15 +31,17 @@ export default {
       Object.keys(formData)
         .filter((x) => x.includes(formPrefix))
         .forEach((key) => {
-          json.combustion +=
-            "\nzypper --non-interactive install " + Utils.normalizeZypperPackages(formData[key]);
+	  if (formData[key]) {
+            json.combustion +=
+              "\nzypper --non-interactive install " + Utils.normalizeZypperPackages(formData[key]);
+	  }
         });
     },
     encodeToExport: function (json, formData) {
       Object.keys(formData)
         .filter((x) => x.includes(formPrefix))
         .forEach((key) => {
-          if (json.package === undefined)   {
+          if (json.package === undefined) {
             json.package = {};
           }
           if (json.package.install === undefined) {
