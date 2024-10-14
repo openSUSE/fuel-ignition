@@ -16,6 +16,10 @@ describe('Creating a file', () => {
       expect(parsed.storage.files[0].mode).to.equal(420)
       expect(parsed.storage.files[0].overwrite).to.be.true      
       expect(parsed.storage.files[0].contents.source).to.be.a('string')
+      expect(parsed.storage.files[0].user.name).to.equal('root')
+      expect(parsed.storage.files[0].group.name).to.equal('root')
+      expect(parsed.storage.files[1].user.id).to.equal(0)
+      expect(parsed.storage.files[1].group.id).to.equal(0)
     });
   })
 })

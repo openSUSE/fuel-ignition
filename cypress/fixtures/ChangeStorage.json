@@ -1,0 +1,31 @@
+{
+  "storage": {
+    "tasks": [
+      {
+        "kind": "Grow root partition",
+        "auto": true
+      },
+      {
+        "kind": "Create swap partition if missing",
+        "auto": false,
+        "min": "1000",
+        "max": "1000"
+      },
+      {
+        "kind": "Apply custom storage changes",
+        "type": "linux-generic - Generic Linux file system partition",
+        "label": "ignition",
+        "format": "ext4",
+        "min": "2000",
+        "max": "3000",
+        "individuals": "Priority=5"
+      },
+      {
+        "kind": "Encrypt disk",
+        "password": "linux",
+        "tpm2_enroll": true,
+        "fido2_enroll": true
+      }
+    ]
+  }
+}

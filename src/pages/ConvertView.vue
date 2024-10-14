@@ -71,23 +71,15 @@ function displayJson() {
   return uploadedJson;
 }
 
-function clearFile() {
-  // formData.value.convert_file = undefined;
-  let removeAnchor = document.querySelector(".formkit-remove-files");
-  if (removeAnchor !== undefined) {
-    removeAnchor.click();
-  }
-}
-
 async function handleUpload(event) {
   let file = event.target.files[0];
 
   // parse json from file object
   if (file !== undefined) {
     let json = await Utils.parseJsonFile(file)
-      .catch(() => {
+      .catch((jsonErrorMsg) => {
         alert(jsonErrorMsg);
-        clearFile();
+        Utils.clearFile();
       })
       .then((json) => {
         uploadedJson = json;
@@ -105,7 +97,7 @@ const handleText = function (event) {
       return;
     }
 
-    clearFile();
+    Utils.clearFile();
 
     try {
       let json = JSON.parse(formData.value.convert_text);

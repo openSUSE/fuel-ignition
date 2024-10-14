@@ -30,6 +30,24 @@
       help="The file's permission mode. Note that the mode must be properly specified as a decimal value (i.e. 0644 -> 420)."
     />
 
+    <FormKit
+      :name="formKey('user')"
+      label="User (required)"
+      value="root"
+      validation="required"
+      validation-behavior="live"
+      help="The file's assigned user. This can either be an ID or the users name"
+    />
+
+    <FormKit
+      :name="formKey('group')"
+      label="Group (required)"
+      value="root"
+      validation="required"
+      validation-behavior="live"
+      help="The file's assigned group. This can either be an ID or the groups name"
+    />
+
     <div class="source">
       <FormKit
         type="select"
@@ -213,12 +231,16 @@ export default {
           }
 
           // merging the two objects, in case verification was written to fileObject
+          const user = formValue("user", id);
+          const group = formValue("group", id);
           json.storage.files.push(
             Object.assign(
               {
                 path: formValue("path", id),
                 mode: parseInt(formValue("mode", id)),
                 overwrite: formValue("overwrite", id),
+                user: Utils.isNumerical(user) ? { "id": parseInt(user) } : { "name": user },
+                group: Utils.isNumerical(group) ? { "id": parseInt(group) } : { "name": group },
                 contents: {
                   source: content,
                 },
@@ -246,7 +268,7 @@ export default {
           }
 
           let file = {};
-	  file.source_type = formValue("source_type", id)
+          file.source_type = formValue("source_type", id);
           switch (file.source_type) {
             case "data":
               file.data_content = formValue("data_content", id);
@@ -266,9 +288,13 @@ export default {
               file.tftp_s3_gs_content = formValue("tftp_s3_gs_content", id);
               break;
           }
-          file.path = formValue("path", id)
-	  file.mode = formValue("mode", id)
-	  file.overwrite = formValue("overwrite", id)
+          file.path = formValue("path", id);
+          file.mode = formValue("mode", id)
+          const user = formValue("user", id);
+          const group = formValue("group", id);
+          file.user = user;
+          file.group = group;
+          file.overwrite = formValue("overwrite", id);
           json.storage.files.push(file)
         }
       );
@@ -305,8 +331,10 @@ export default {
                 break;
             }
             setValue("path", id, file.path);
-	    setValue("mode", id, file.mode);
-	    setValue("overwrite", id, file.overwrite);
+            setValue("mode", id, file.mode);
+            setValue("user", id, file.user);
+            setValue("group", id, file.group);
+            setValue("overwrite", id, file.overwrite);
           });
     },
     countImport: function (json) {
