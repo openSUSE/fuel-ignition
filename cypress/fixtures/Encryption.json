@@ -1,0 +1,12 @@
+{
+  "storage": {
+    "tasks": [
+      {
+        "kind": "Encrypt disk",
+        "password": "linux",
+        "tpm2_enroll": true,
+        "fido2_enroll": true
+      }
+    ]
+  }
+}
