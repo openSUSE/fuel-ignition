@@ -46,11 +46,11 @@
 
     <FormKit
       :name="formKey('totp_enabled')"
-      label="Generate TOTP Secret"
+      label="Generate Time-based one-time password (TOTP) Secret"
       type="checkbox"
       validation="required"
-      validation-behavior="live"
-      help="Your TOTP is never sent over the internet, everything is local."
+      validation-behavior="live "
+      help="Your secret is never sent over the internet, everything is local."
       v-model="totpEnabled"
     />
 
@@ -58,8 +58,8 @@
       <FormKit
         :name="formKey('totp_secret')"
         type="text"
-        label="TOTP Secret"
-        :help="`This will write a secret to /${(name === 'root' ? '' : 'home/') + name}/.pam_oath_usersfile this will not be used by default and needs extra steps`"
+        label="Time-based one-time password (TOTP) Secret"
+        :help="`This will write a secret to /${(name === 'root' ? '' : 'home/') + name}/.pam_oath_usersfile this by default is used with Cockpit on some platforms and allows you to use 2fa authentication via an app based authenticator`"
         v-model="secret"
       />
 
