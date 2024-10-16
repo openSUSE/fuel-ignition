@@ -215,7 +215,9 @@ const exportSettings= (formData) => {
 	        title="Add User"
   	        :displaysAtBegin="elementNumber(AddUsersForm)"
   	      >
-                  <AddUsersForm></AddUsersForm>
+                  <template #default="{index}">
+                    <AddUsersForm :index="index"></AddUsersForm>
+                  </template>
                 </ExpandableComponent>
 
                 <ExpandableComponent

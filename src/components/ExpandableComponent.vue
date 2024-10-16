@@ -3,7 +3,7 @@
     <h4 v-if="props.title !== undefined">{{ props.title }}</h4>
 
     <div v-for="n in compCount" :key="n">
-      <slot></slot>
+      <slot :index="n"></slot>
       <div class="mb-5" v-if="n < compCount">
         <hr class="divider" />
       </div>
