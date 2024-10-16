@@ -17,6 +17,7 @@ import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 import DebugAddBytesForm from "@/components/forms/DebugAddBytesForm.vue";
 import DebugAnalyzeImgForm from "@/components/forms/DebugAnalyzeImgForm.vue";
 import AddKeyboardForm from "@/components/forms/AddKeyboardForm.vue";
+import AddTimezoneForm from "@/components/forms/AddTimezoneForm.vue";
 import RegistrationForm from "@/components/forms/RegistrationForm.vue";
 import SaltForm from "@/components/forms/SaltForm.vue";
 import S390ChannelForm from "@/components/forms/S390ChannelForm.vue";
@@ -33,6 +34,7 @@ const formComponents = [
   StartServiceForm,
   ModifyServiceForm,
   AddKeyboardForm,
+  AddTimezoneForm,
   RegistrationForm,
   SaltForm,
   S390ChannelForm,
@@ -213,7 +215,9 @@ const exportSettings= (formData) => {
 	        title="Add User"
   	        :displaysAtBegin="elementNumber(AddUsersForm)"
   	      >
-                  <AddUsersForm></AddUsersForm>
+                  <template #default="{index}">
+                    <AddUsersForm :index="index"></AddUsersForm>
+                  </template>
                 </ExpandableComponent>
 
                 <ExpandableComponent
@@ -240,6 +244,14 @@ const exportSettings= (formData) => {
 		  :maxComponents="1"
                 >
                   <AddKeyboardForm></AddKeyboardForm>
+                </ExpandableComponent>
+
+		<ExpandableComponent
+                  title="Set Timezone"
+                  :displaysAtBegin="elementNumber(AddTimezoneForm)"
+		  :maxComponents="1"
+                >
+                  <AddTimezoneForm></AddTimezoneForm>
                 </ExpandableComponent>
 
 		<hr class="divider-long" />

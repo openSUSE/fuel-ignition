@@ -93,6 +93,21 @@ export default {
     return formData[this.getFormKey(prefix, key, uid)];
   },
 
+  generateTOTPSecret: function() {
+      const array = new Uint32Array(5);
+      const strings = [];
+      self.crypto.getRandomValues(array);
+      array.map(i => strings.push(i.toString(16)))
+      return strings.join("");
+  },
+
+  hexToUint8Array: function(string) {
+    var bytes = new Uint8Array(Math.ceil(string.length / 2));
+    for (var i = 0; i < bytes.length; i++) bytes[i] = parseInt(string.substr(i * 2, 2), 16);
+
+    return bytes;
+  },
+
   /* normalizeZypperPackages acceps a text representing a list of zypper packages, separated either by comma or by space, and returns a tidy string with all packages separated by a single space */
   normalizeZypperPackages : function(txt) {
     return txt.split(/[ ,]/) // split by space or comma
