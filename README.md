@@ -21,7 +21,7 @@ npm run dev
 ```
 $ sudo zypper in podman
 $ make
-$ podman run --network=host fuelignition:latest
+$ podman run --rm --network=host fuelignition:latest
 
 > fuel-ignition@1.0 dev
 > vite
@@ -82,6 +82,29 @@ The created fuelignition image(s) can be deleted via Rancher-Desktop -> Images.
 npm run build
 ```
 dist/ contains a minified and cleaned up production build
+
+## Testing
+
+We are using Cypress (https://www.cypress.io/) for e2e tests (End-to-end tests). So we are
+simulating the user input and checking the results.
+
+Interactive testing:
+
+```bash
+npm run cy
+```
+
+Running all tests:
+
+```bash
+npm run cy:run
+```
+
+In order to start the tests, the fuel-ignition server has to be started
+before:
+```bash
+npm run dev
+```
 
 ## Notice
 
