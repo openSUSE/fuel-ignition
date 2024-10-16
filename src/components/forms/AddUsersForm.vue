@@ -50,7 +50,7 @@
       type="checkbox"
       validation="required"
       validation-behavior="live "
-      help="Your secret is never sent over the internet, everything is local."
+      help="Enabling Two-Factor Authentication (2FA) via an app based authenticator."
       v-model="totpEnabled"
     />
 
@@ -59,7 +59,7 @@
         :name="formKey('totp_secret')"
         type="text"
         label="Time-based one-time password (TOTP) Secret"
-        :help="`This will write a secret to /${(name === 'root' ? '' : 'home/') + name}/.pam_oath_usersfile this by default is used with Cockpit on some platforms and allows you to use 2fa authentication via an app based authenticator`"
+        :help="`Your secret (writen to file /${(name === 'root' ? '' : 'home/') + name}/.pam_oath_users) is never sent over the internet. It will be used e.g. with Cockpit and allows a 2fa authentication via an app based authenticator. The following QR-Code defines how the app generates the code:`"
         v-model="secret"
       />
 
