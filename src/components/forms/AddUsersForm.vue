@@ -59,7 +59,7 @@
         :name="formKey('totp_secret')"
         type="text"
         label="Time-based one-time password (TOTP) Secret"
-        :help="`Your secret (writen to file /${(name === 'root' ? '' : 'home/') + name}/.pam_oath_users) is never sent over the internet. It will be used e.g. with Cockpit and allows a 2fa authentication via an app based authenticator. The following QR-Code defines how the app generates the code:`"
+        :help="`Your secret (written to file /${(name === 'root' ? '' : 'home/') + name}/.pam_oath_usersfile) is never sent over the internet. It will be used e.g. with Cockpit and allows a 2fa authentication via an app based authenticator. The following QR-Code defines how the app generates the code:`"
         v-model="secret"
       />
 
