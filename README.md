@@ -85,6 +85,7 @@ dist/ contains a minified and cleaned up production build
 
 ## Testing
 
+
 We are using Cypress (https://www.cypress.io/) for e2e tests (End-to-end tests). So we are
 simulating the user input and checking the results.
 
@@ -108,7 +109,27 @@ npm run dev
 
 ## Notice
 
-Fuel-ignition is still in early development and will most likely undergo massive changes.
-I'm always open to feedback and enjoy hearing your thoughts. Cheers!
+We are using Cypress (https://www.cypress.io/) for e2e tests (End-to-end tests). So we are
+simulating the user input and checking the results.
 
-<img alt="human sitting in a tent next to a fire" src="src/assets/template/img/readme/undraw_camping_noc8.svg" width="250">
+Interactive testing:
+
+```bash
+npm run cy
+```
+
+Running all tests:
+
+```bash
+npm run cy:run
+```
+
+In order to start the tests, the fuel-ignition server has to be started
+before:
+```bash
+npm run dev
+```
+
+## Bug reports / Feature requests
+
+Please use https://github.com/openSUSE/fuel-ignition/issues for communication.
