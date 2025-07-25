@@ -1,0 +1,10 @@
+{
+  "repository": {
+    "repositories": [
+      {
+        "name": "test_name",
+        "url": "http://test.de/url"
+      }
+    ]
+  }
+}
