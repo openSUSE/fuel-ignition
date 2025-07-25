@@ -383,19 +383,19 @@ export default {
 	      "credential=\"$(mktemp disk-encryption-tool.XXXXXXXXXX)\"\n" +
 	      "# Enroll extra password\n" +
 	      "echo \"" + password + "\" > \"$credential\"\n" +
-	      "systemd-creds encrypt --name=disk-encryption-tool-enroll.pw \"$credential\" \\\n" +
-	      "               /etc/credstore.encrypted/disk-encryption-tool-enroll.pw\n"
+	      "systemd-creds encrypt --name=sdbootutil-enroll.pw \"$credential\" \\\n" +
+	      "               /etc/credstore.encrypted/sdbootutil-enroll.pw\n"
 	    if (tpm2_enroll) {
 	      json.combustion += "# Enroll TPM2\n" +
 	        "echo \"1\" > \"$credential\"\n" +
-		"systemd-creds encrypt --name=disk-encryption-tool-enroll.tpm2 \"$credential\" \\\n" +
-		"             /etc/credstore.encrypted/disk-encryption-tool-enroll.tpm2\n"
+		"systemd-creds encrypt --name=sdbootutil-enroll.tpm2 \"$credential\" \\\n" +
+		"             /etc/credstore.encrypted/sdbootutil-enroll.tpm2\n"
 	    }
 	    if (fido2_enroll) {
 	      json.combustion += "# Enroll FIDO2. While firstboot the FIDO key has to be inserted/available.\n" +
 	        "echo \"1\" > \"$credential\"\n" +
-		"systemd-creds encrypt --name=disk-encryption-tool-enroll.fido2 \"$credential\" \\\n" +
-		"	      /etc/credstore.encrypted/disk-encryption-tool-enroll.fido2\n"
+		"systemd-creds encrypt --name=sdbootutil-enroll.fido2 \"$credential\" \\\n" +
+		"	      /etc/credstore.encrypted/sdbootutil-enroll.fido2\n"
 	    }
 	    json.combustion += "shred -u \"$credential\"\n" +
 	      "# Umount back /var to not confuse tukit later\n" +

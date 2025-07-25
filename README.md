@@ -106,9 +106,6 @@ before:
 npm run dev
 ```
 
-## Notice
+## Bug reports / Feature requests
 
-Fuel-ignition is still in early development and will most likely undergo massive changes.
-I'm always open to feedback and enjoy hearing your thoughts. Cheers!
-
-<img alt="human sitting in a tent next to a fire" src="src/assets/template/img/readme/undraw_camping_noc8.svg" width="250">
+Please use https://github.com/openSUSE/fuel-ignition/issues for communication.

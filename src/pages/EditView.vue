@@ -22,6 +22,7 @@ import RegistrationForm from "@/components/forms/RegistrationForm.vue";
 import SaltForm from "@/components/forms/SaltForm.vue";
 import S390ChannelForm from "@/components/forms/S390ChannelForm.vue";
 import InstallPackageForm from "@/components/forms/InstallPackageForm.vue";
+import AddRepositoryForm from "@/components/forms/AddRepositoryForm.vue";
 import CombAddRawBash from "../components/forms/CombAddRawBash.vue";
 
 const formComponents = [
@@ -38,6 +39,7 @@ const formComponents = [
   RegistrationForm,
   SaltForm,
   S390ChannelForm,
+  AddRepositoryForm,
   InstallPackageForm,
   CombAddRawBash,
 
@@ -311,6 +313,13 @@ const exportSettings= (formData) => {
                 </ExpandableComponent>
   
 		<hr class="divider-long" />
+
+                <ExpandableComponent
+                  title="Adding Repository"
+                  :displaysAtBegin="elementNumber(AddRepositoryForm)"
+                >
+                  <AddRepositoryForm></AddRepositoryForm>
+                </ExpandableComponent>
 
                 <ExpandableComponent
                   title="Install Additional Packages"

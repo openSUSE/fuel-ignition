@@ -26,11 +26,11 @@ describe('Disk Encryption', () => {
       expect(content).to.have.string(
         'echo "linux" > "$credential"')
       expect(content).to.have.string(
-        'systemd-creds encrypt --name=disk-encryption-tool-enroll.pw "$credential"')
+        'systemd-creds encrypt --name=sdbootutil-enroll.pw "$credential"')
       expect(content).to.have.string(
         'echo "1" > "$credential"')
       expect(content).to.have.string(
-        'systemd-creds encrypt --name=disk-encryption-tool-enroll.tpm2')
+        'systemd-creds encrypt --name=sdbootutil-enroll.tpm2')
       expect(content).to.have.string(
         'shred -u "$credential"')
       expect(content).to.have.string(
