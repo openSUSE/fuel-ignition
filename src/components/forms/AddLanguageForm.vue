@@ -62,8 +62,8 @@ export default {
 	  } else {
 	    code = code + Country.noneUtf8Encoding(lang);
 	  }
-          let content =
-            "data:,LANG=" + code;
+
+          let content = "LANG=" + code + "\n";
 
           json.storage.files.push(
               {
@@ -71,7 +71,8 @@ export default {
                 mode: 420,
                 overwrite: true,
                 contents: {
-                  source: content,
+                  source: "data:text/plain;charset=utf-8;base64," + Utils.b64EncodeUnicode(content),
+		  human_read: content
                 },
               }
           );
