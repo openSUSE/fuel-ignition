@@ -165,20 +165,6 @@ export default {
       const formValue = (key, uid) =>
         Utils.getFormValue(formPrefix, formData, key, uid);
 
-      const b64EncodeUnicode = function (str) {
-        // first we use encodeURIComponent to get percent-encoded UTF-8,
-        // then we convert the percent encodings into raw bytes which
-        // can be fed into btoa.
-        return window.btoa(
-          encodeURIComponent(str).replace(
-            /%([0-9A-F]{2})/g,
-            function toSolidBytes(match, p1) {
-              return String.fromCharCode("0x" + p1);
-            }
-          )
-        );
-      };
-
       const keyPrefix = formPrefix + "_path_";
       Object.keys(formData)
         .filter((x) => x.includes(keyPrefix))
@@ -200,7 +186,7 @@ export default {
               let dataValue = formValue("data_content", id);
               content =
                 "data:text/plain;charset=utf-8;base64," +
-                b64EncodeUnicode(dataValue === undefined ? "" : dataValue);
+                Utils.b64EncodeUnicode(dataValue === undefined ? "" : dataValue);
               break;
 
             case "data-vagrant":
