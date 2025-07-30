@@ -246,20 +246,6 @@ export default {
       const formValue = (key, uid) =>
         Utils.getFormValue(formPrefix, formData, key, uid);
 
-      const b64EncodeUnicode = function (str) {
-        // first we use encodeURIComponent to get percent-encoded UTF-8,
-        // then we convert the percent encodings into raw bytes which
-        // can be fed into btoa.
-        return window.btoa(
-          encodeURIComponent(str).replace(
-            /%([0-9A-F]{2})/g,
-            function toSolidBytes(match, p1) {
-              return String.fromCharCode("0x" + p1);
-            }
-          )
-        );
-      };
-
       const keyPrefix = formPrefix + "_task_";
       let counter = 0;
       let create_repart_dir = true
@@ -417,7 +403,7 @@ export default {
                   mode: 384,
                   overwrite: true,
                   contents: { 
-                    source: "data:text/plain;charset=utf-8;base64," + b64EncodeUnicode(content),
+                    source: "data:text/plain;charset=utf-8;base64," + Utils.b64EncodeUnicode(content),
   	  	    human_read: content
                   },
                 }

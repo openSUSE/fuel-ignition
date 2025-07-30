@@ -16,7 +16,7 @@ describe('Setting language', () => {
       expect(parsed.storage.files[0].path).to.equal('/etc/locale.conf')
       expect(parsed.storage.files[0].mode).to.equal(420)
       expect(parsed.storage.files[0].overwrite).to.equal(true)
-      expect(parsed.storage.files[0].contents.source).to.equal('data:,LANG=ast_ES@euro')
+      expect(parsed.storage.files[0].contents.human_read).to.equal('LANG=ast_ES@euro\n')
     });
   })
 })
