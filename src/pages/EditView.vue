@@ -156,7 +156,8 @@ const toCombustionScript = (formData) => {
     json.output += json.combustion
   }
 
-  json.output += '\n# Leave a marker\necho "Configured with combustion" > /etc/issue.d/combustion';
+  json.output += '\n# Leave a marker\necho "Configured with combustion" > /etc/issue.d/85-combustion.conf\n';
+  json.output += 'echo "Configured with combustion" > /etc/issue.d/85-combustion.issue';
 
   json.output += '\n\n# Close outputs and wait for tee to finish.\nexec 1>&- 2>&-; wait;';
 

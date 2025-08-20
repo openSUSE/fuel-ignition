@@ -13,8 +13,9 @@
     label="Product name"
     type="text"
     value="Base_Product"
-    help="Product or extension name"
+    help="Product or extension name. Do not change it for base products."
   />
+
   <FormKit
     :name="formKey('usb_regcode')"
     label="Reading registration code from mounted USB medium"
@@ -71,44 +72,42 @@ export default {
         .forEach((id) => {
 	  if (entries === 0) {
             json.combustion += "\n# Registration\n" + 
-	      "if ! which SUSEConnect > /dev/null 2>&1; then\n" +
-	      "    zypper --non-interactive install suseconnect-ng\n" +
-              "fi\n"
+	      "if which SUSEConnect > /dev/null 2>&1; then\n"
 	  }
 	  entries++;
-
-          json.combustion += "product=\"" + formValue("product", id) + "\"\n"
+	  if (formValue("product", id) && formValue("product", id)!== "Base_Product") {
+  	     json.combustion += "  product=\"" + formValue("product", id) + "\"\n"
+	  } else {
+             json.combustion += "  product=`xmllint --xpath \"//product/name/text()\" /etc/products.d/baseproduct`\n"
+          }
+	  json.combustion += "  architecture=`arch`\n"
+	  json.combustion += "  version=`xmllint --xpath \"//product/version/text()\" /etc/products.d/baseproduct`\n"
 
 	  if (formValue("usb_regcode", id) === true) {
-	      json.combustion += "for I in `fdisk -l | grep '^/dev' | awk '{print $1}'`\n" +
-                 "do\n" +
-	         "  if ! findmnt $I > /dev/null; then\n" +
-	         "    if mount $I /mnt; then\n" +
-		 "      if  [ -f /mnt/regcode.xml ]; then\n" +
-		 "        regcode=`cat /mnt/regcode.xml|sed '2 s/xmlns=\".*\"//g'|xmllint --xpath \"//addon[name='$product']/reg_code/text()\" -`\n" +
+	      json.combustion += "  for I in `fdisk -l | grep '^/dev' | awk '{print $1}'`\n" +
+                 "  do\n" +
+	         "    if ! findmnt $I > /dev/null; then\n" +
+	         "      if mount $I /mnt; then\n" +
+		 "        if  [ -f /mnt/regcode.xml ]; then\n" +
+		 "          regcode=`cat /mnt/regcode.xml|sed '2 s/xmlns=\".*\"//g'|xmllint --xpath \"//addon[name='$product']/reg_code/text()\" -`\n" +
+		 "          umount /mnt\n" +
+		 "          break\n" +
+		 "        fi\n" +
+		 "        if  [ -f /mnt/regcode.txt ]; then\n" +
+		 "          regcode=$(grep $product /mnt/regcode.txt|awk '{print $2}')\n" +
+		 "          umount /mnt\n" +
+		 "          break\n" +
+	         "        fi\n" +
 		 "        umount /mnt\n" +
-		 "        break\n" +
-		 "      fi\n" +
-		 "      if  [ -f /mnt/regcode.txt ]; then\n" +
-		 "        regcode=$(grep $product /mnt/regcode.txt|awk '{print $2}')\n" +
-		 "        umount /mnt\n" +
-		 "        break\n" +
-	         "      fi\n" +
-		 "      umount /mnt\n" +
+                 "      fi\n" +
                  "    fi\n" +
-                 "  fi\n" +
-                 "done\n"
+                 "  done\n"
 	  } else {
-	      json.combustion += "regcode=\"" + formValue("regcode", id) + "\"\n"
+	      json.combustion += "  regcode=\"" + formValue("regcode", id) + "\"\n"
           }
 
-	  if (formValue("product", id) && formValue("product", id)!== "Base_Product") {
-              json.combustion += "architecture=`arch`\n"
-	      json.combustion += "version=`xmllint --xpath \"//version/text()\" /etc/products.d/baseproduct`\n"
-	      json.combustion += "SUSEConnect " + "--product $product/$version/$architecture "
-	  } else {
-              json.combustion += "SUSEConnect "
-          }
+          json.combustion += "  echo Registering $product/$version/$architecture with " + formValue("registrationserver", id) + "\n"
+          json.combustion += "  SUSEConnect " + "--product $product/$version/$architecture "
 
           if (formValue("email", id) ) {
             json.combustion += "--email " + formValue("email", id) + " "
@@ -116,6 +115,10 @@ export default {
 	  json.combustion += "--url " + formValue("registrationserver", id) +
 	    " --regcode $regcode" + "\n"
         });
+
+	if (entries > 0) {
+          json.combustion += "fi\n"
+        }
     },
     encodeToExport: function (json, formData) {
       const formValue = (key, uid) =>
