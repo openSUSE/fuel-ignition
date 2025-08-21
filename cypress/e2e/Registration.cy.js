@@ -12,7 +12,7 @@ describe('Registering system', () => {
     cy.readFile('cypress/downloads/script').then((content) => {
       cy.log(content)
       expect(content).to.have.string(
-        'zypper --non-interactive install suseconnect-ng')
+        'if which SUSEConnect')
       expect(content).to.have.string(
         'SUSEConnect --product $product/$version/$architecture --email test@suse.com --url scc.suse.com --regcode $regcode')
     });

@@ -5,7 +5,9 @@
         "registrationserver": "scc.suse.com",
         "regcode": "1234567890",
         "product": "testproduct",
-        "email": "test@suse.com"
+        "email": "test@suse.com",
+        "usb_regcode": false,
+        "base_product": false
       }
     ]
   }

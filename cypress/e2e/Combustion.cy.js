@@ -15,7 +15,7 @@ describe('General combustion script test', () => {
       expect(content).to.have.string(
         '# combustion: network')
       expect(content).to.have.string(
-        'echo "Configured with combustion" > /etc/issue.d/combustion')
+        'echo "Configured with combustion" > /etc/issue.d/85-combustion.issue')
     });
   })
 })
