@@ -9,13 +9,21 @@
     help="URL of the registration server"
   />
   <FormKit
-    :name="formKey('product')"
-    label="Product name"
-    type="text"
-    value="Base_Product"
-    help="Product or extension name. Do not change it for base products."
+    :name="formKey('base_product')"
+    label="Registering Base Product"
+    type="checkbox"
+    validation-behavior="live"
+    v-model="base_product"
   />
-
+  <div v-if="base_product === false">
+    <FormKit
+      :name="formKey('product')"
+      label="Product name"
+      type="text"
+      value=""
+      help="Product or extension name"
+    />
+  </div>
   <FormKit
     :name="formKey('usb_regcode')"
     label="Reading registration code from mounted USB medium"
@@ -51,10 +59,12 @@ export default {
   setup: () => {
     const uid = Utils.uid();
     const usb_regcode = ref(false);
+    const base_product = ref(true);
 
     return {
       uid,
       usb_regcode,
+      base_product,
       formKey: (key) => Utils.getFormKey(formPrefix, key, uid),
     };
   },
@@ -75,7 +85,7 @@ export default {
 	      "if which SUSEConnect > /dev/null 2>&1; then\n"
 	  }
 	  entries++;
-	  if (formValue("product", id) && formValue("product", id)!== "Base_Product") {
+	  if (formValue("base_product", id) === false) {
   	     json.combustion += "  product=\"" + formValue("product", id) + "\"\n"
 	  } else {
              json.combustion += "  product=`xmllint --xpath \"//product/name/text()\" /etc/products.d/baseproduct`\n"
@@ -143,6 +153,7 @@ export default {
 	  registration.product = formValue("product", id)
 	  registration.email = formValue("email", id)
 	  registration.usb_regcode = formValue("usb_regcode", id)
+	  registration.base_product = formValue("base_product", id)
           json.registration.registrations.push(registration)
         }
       );
@@ -160,6 +171,7 @@ export default {
 	    let registration = json.registration.registrations.shift();
 	    setValue("registrationserver", id, registration.registrationserver);
 	    setValue("usb_regcode", id, registration.usb_regcode);
+	    setValue("base_product", id, registration.base_product);
 	    setValue("regcode", id, registration.regcode);
 	    setValue("product", id, registration.product);
 	    setValue("email", id, registration.email);
