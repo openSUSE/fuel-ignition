@@ -31,6 +31,9 @@
     validation-behavior="live"
     v-model="usb_regcode"
   />
+  <div v-if="usb_regcode === true">
+    <a href="https://github.com/openSUSE/fuel-ignition/wiki/How-to-store-Registration-Codes-on-an-USB-Stick-which-will-be-used-for-combustion-registration-workflow" target="_blank" >How to store registation keys on an USB stick.</a>
+  </div>    
   <div v-if="usb_regcode === false">
     <FormKit
       :name="formKey('regcode')"
@@ -88,23 +91,23 @@ export default {
 	  if (formValue("base_product", id) === false) {
   	     json.combustion += "  product=\"" + formValue("product", id) + "\"\n"
 	  } else {
-             json.combustion += "  product=`xmllint --xpath \"//product/name/text()\" /etc/products.d/baseproduct`\n"
+             json.combustion += "  product=`xmllint --xpath \"/product/name/text()\" /etc/products.d/baseproduct`\n"
           }
 	  json.combustion += "  architecture=`arch`\n"
-	  json.combustion += "  version=`xmllint --xpath \"//product/version/text()\" /etc/products.d/baseproduct`\n"
+	  json.combustion += "  version=`xmllint --xpath \"/product/version/text()\" /etc/products.d/baseproduct`\n"
 
 	  if (formValue("usb_regcode", id) === true) {
 	      json.combustion += "  for I in `fdisk -l | grep '^/dev' | awk '{print $1}'`\n" +
                  "  do\n" +
 	         "    if ! findmnt $I > /dev/null; then\n" +
 	         "      if mount $I /mnt; then\n" +
-		 "        if  [ -f /mnt/regcode.xml ]; then\n" +
-		 "          regcode=`cat /mnt/regcode.xml|sed '2 s/xmlns=\".*\"//g'|xmllint --xpath \"//addon[name='$product']/reg_code/text()\" -`\n" +
+		 "        if  [ -f /mnt/regcodes.xml ]; then\n" +
+		 "          regcode=`cat /mnt/regcodes.xml|sed '2 s/xmlns=\".*\"//g'|xmllint --xpath \"//addon[name='$product']/reg_code/text()\" -`\n" +
 		 "          umount /mnt\n" +
 		 "          break\n" +
 		 "        fi\n" +
-		 "        if  [ -f /mnt/regcode.txt ]; then\n" +
-		 "          regcode=$(grep -P \"$product |$product\\t\" /mnt/regcode.txt|awk '{print $2}')\n" +
+		 "        if  [ -f /mnt/regcodes.txt ]; then\n" +
+		 "          regcode=$(grep -P \"$product |$product\\t\" /mnt/regcodes.txt|awk '{print $2}')\n" +
 		 "          umount /mnt\n" +
 		 "          break\n" +
 	         "        fi\n" +
