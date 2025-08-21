@@ -94,7 +94,7 @@ export default {
 		 "          break\n" +
 		 "        fi\n" +
 		 "        if  [ -f /mnt/regcode.txt ]; then\n" +
-		 "          regcode=$(grep $product /mnt/regcode.txt|awk '{print $2}')\n" +
+		 "          regcode=$(grep -P \"$product |$product\\t\" /mnt/regcode.txt|awk '{print $2}')\n" +
 		 "          umount /mnt\n" +
 		 "          break\n" +
 	         "        fi\n" +
