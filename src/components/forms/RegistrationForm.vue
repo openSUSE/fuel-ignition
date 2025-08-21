@@ -9,12 +9,21 @@
     help="URL of the registration server"
   />
   <FormKit
-    :name="formKey('product')"
-    label="Product name"
-    type="text"
-    value="Base_Product"
-    help="Product or extension name"
+    :name="formKey('base_product')"
+    label="Registering Base Product"
+    type="checkbox"
+    validation-behavior="live"
+    v-model="base_product"
   />
+  <div v-if="base_product === false">
+    <FormKit
+      :name="formKey('product')"
+      label="Product name"
+      type="text"
+      value=""
+      help="Product or extension name"
+    />
+  </div>
   <FormKit
     :name="formKey('usb_regcode')"
     label="Reading registration code from mounted USB medium"
@@ -50,10 +59,12 @@ export default {
   setup: () => {
     const uid = Utils.uid();
     const usb_regcode = ref(false);
+    const base_product = ref(true);
 
     return {
       uid,
       usb_regcode,
+      base_product,
       formKey: (key) => Utils.getFormKey(formPrefix, key, uid),
     };
   },
@@ -71,44 +82,42 @@ export default {
         .forEach((id) => {
 	  if (entries === 0) {
             json.combustion += "\n# Registration\n" + 
-	      "if ! which SUSEConnect > /dev/null 2>&1; then\n" +
-	      "    zypper --non-interactive install suseconnect-ng\n" +
-              "fi\n"
+	      "if which SUSEConnect > /dev/null 2>&1; then\n"
 	  }
 	  entries++;
-
-          json.combustion += "product=\"" + formValue("product", id) + "\"\n"
+	  if (formValue("base_product", id) === false) {
+  	     json.combustion += "  product=\"" + formValue("product", id) + "\"\n"
+	  } else {
+             json.combustion += "  product=`xmllint --xpath \"//product/name/text()\" /etc/products.d/baseproduct`\n"
+          }
+	  json.combustion += "  architecture=`arch`\n"
+	  json.combustion += "  version=`xmllint --xpath \"//product/version/text()\" /etc/products.d/baseproduct`\n"
 
 	  if (formValue("usb_regcode", id) === true) {
-	      json.combustion += "for I in `fdisk -l | grep '^/dev' | awk '{print $1}'`\n" +
-                 "do\n" +
-	         "  if ! findmnt $I > /dev/null; then\n" +
-	         "    if mount $I /mnt; then\n" +
-		 "      if  [ -f /mnt/regcode.xml ]; then\n" +
-		 "        regcode=`cat /mnt/regcode.xml|sed '2 s/xmlns=\".*\"//g'|xmllint --xpath \"//addon[name='$product']/reg_code/text()\" -`\n" +
+	      json.combustion += "  for I in `fdisk -l | grep '^/dev' | awk '{print $1}'`\n" +
+                 "  do\n" +
+	         "    if ! findmnt $I > /dev/null; then\n" +
+	         "      if mount $I /mnt; then\n" +
+		 "        if  [ -f /mnt/regcode.xml ]; then\n" +
+		 "          regcode=`cat /mnt/regcode.xml|sed '2 s/xmlns=\".*\"//g'|xmllint --xpath \"//addon[name='$product']/reg_code/text()\" -`\n" +
+		 "          umount /mnt\n" +
+		 "          break\n" +
+		 "        fi\n" +
+		 "        if  [ -f /mnt/regcode.txt ]; then\n" +
+		 "          regcode=$(grep -P \"$product |$product\\t\" /mnt/regcode.txt|awk '{print $2}')\n" +
+		 "          umount /mnt\n" +
+		 "          break\n" +
+	         "        fi\n" +
 		 "        umount /mnt\n" +
-		 "        break\n" +
-		 "      fi\n" +
-		 "      if  [ -f /mnt/regcode.txt ]; then\n" +
-		 "        regcode=$(grep $product /mnt/regcode.txt|awk '{print $2}')\n" +
-		 "        umount /mnt\n" +
-		 "        break\n" +
-	         "      fi\n" +
-		 "      umount /mnt\n" +
+                 "      fi\n" +
                  "    fi\n" +
-                 "  fi\n" +
-                 "done\n"
+                 "  done\n"
 	  } else {
-	      json.combustion += "regcode=\"" + formValue("regcode", id) + "\"\n"
+	      json.combustion += "  regcode=\"" + formValue("regcode", id) + "\"\n"
           }
 
-	  if (formValue("product", id) && formValue("product", id)!== "Base_Product") {
-              json.combustion += "architecture=`arch`\n"
-	      json.combustion += "version=`xmllint --xpath \"//version/text()\" /etc/products.d/baseproduct`\n"
-	      json.combustion += "SUSEConnect " + "--product $product/$version/$architecture "
-	  } else {
-              json.combustion += "SUSEConnect "
-          }
+          json.combustion += "  echo Registering $product/$version/$architecture with " + formValue("registrationserver", id) + "\n"
+          json.combustion += "  SUSEConnect " + "--product $product/$version/$architecture "
 
           if (formValue("email", id) ) {
             json.combustion += "--email " + formValue("email", id) + " "
@@ -116,6 +125,10 @@ export default {
 	  json.combustion += "--url " + formValue("registrationserver", id) +
 	    " --regcode $regcode" + "\n"
         });
+
+	if (entries > 0) {
+          json.combustion += "fi\n"
+        }
     },
     encodeToExport: function (json, formData) {
       const formValue = (key, uid) =>
@@ -140,6 +153,7 @@ export default {
 	  registration.product = formValue("product", id)
 	  registration.email = formValue("email", id)
 	  registration.usb_regcode = formValue("usb_regcode", id)
+	  registration.base_product = formValue("base_product", id)
           json.registration.registrations.push(registration)
         }
       );
@@ -157,6 +171,7 @@ export default {
 	    let registration = json.registration.registrations.shift();
 	    setValue("registrationserver", id, registration.registrationserver);
 	    setValue("usb_regcode", id, registration.usb_regcode);
+	    setValue("base_product", id, registration.base_product);
 	    setValue("regcode", id, registration.regcode);
 	    setValue("product", id, registration.product);
 	    setValue("email", id, registration.email);
