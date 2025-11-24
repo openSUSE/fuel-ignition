@@ -76,7 +76,7 @@
       type="checkbox"
       :value=true
       validation-behavior="live"
-      help="DNS server settings are evalutated automatically."
+      help="DNS server settings are evaluated automatically."
     />
     <FormKit
       :name="formKey('ipv4_dns')"
@@ -157,7 +157,7 @@
       type="checkbox"
       :value=true
       validation-behavior="live"
-      help="DNS server settings are evalutated automatically."
+      help="DNS server settings are evaluated automatically."
     />
     <FormKit
       :name="formKey('ipv6_dns')"
