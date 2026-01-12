@@ -31,28 +31,12 @@ export default {
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))
         .forEach((id) => {
-          if (json.storage === undefined) {
-            json.storage = {};
-          }
-
-          if (json.storage.files === undefined) {
-            json.storage.files = [];
-          }
-
           let dataValue = formValue("hostname", id);
-          let content =
-            "data:," + (dataValue === undefined ? "" : dataValue);
-
-          json.storage.files.push(
-              {
-                path: "/etc/hostname",
-                mode: 420,
-                overwrite: true,
-                contents: {
-                  source: content,
-                },
-              }
-          );
+          let content = dataValue === undefined ? "" : dataValue;
+          json.combustion +=
+	    "# Hostname\n" +
+	    "echo \"" +  content + "\"" + " > /etc/hostname\n" +
+            "chmod 644 /etc/hostname\n";
         }
       );
     },
