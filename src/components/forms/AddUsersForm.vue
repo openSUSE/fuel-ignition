@@ -63,7 +63,7 @@
         validation="required"
         type="checkbox"
         validation-behavior="live"
-        help="Required on SUSE related systems for creating users not named root. Otherwise, applying the Ignition config will fail"
+        help="Required on SUSE related systems for creating users not named root. Otherwise, applying the Combustion config will fail."
       />
     </div>
   </div>
@@ -116,52 +116,41 @@ export default {
 
           // append config for mounting /home
           if (formValue("runs_on_suse", id) === true) {
-	    json.combustion += "# Configuring /home...\n\n"+
+	    json.combustion += "\n# Setup /home...\n"+
 	       "DEVICE=\"/dev/disk/by-label/ROOT\"\n" +
 	       "MOUNT_POINT=\"/home\"\n" +
-	       "SUBVOL_PATH=\"/@/home\"\n\n" +
+	       "SUBVOL_PATH=\"/@/home\"\n" +
 	       "# Check if the device exists\n" +
                "if [ ! -e \"$DEVICE\" ]; then\n" +
                "  echo \"Error: Device $DEVICE not found. Cannot proceed with storage setup.\"\n" +
                "  exit 1\n" +
-               "fi\n\n" +
-               "# Temporary mount to check/create Btrfs subvolume\n" +
-               "TEMP_MNT=$(mktemp -d)\n" +
-               "mount -t btrfs \"$DEVICE\" \"$TEMP_MNT\"\n\n" +
-               "# Ensure the parent directory (like /@) exists inside the Btrfs root\n" +
-               "SUBVOL_PARENT=$(dirname \"$SUBVOL_PATH\")\n" +
-               "if [ ! -d \"$TEMP_MNT$SUBVOL_PARENT\" ]; then\n" +
-               "  mkdir -p \"$TEMP_MNT$SUBVOL_PARENT\"\n" +
-               "fi\n\n" +
-               "# Create subvolume if it doesn't exist\n" +
-               "if ! btrfs subvolume list \"$TEMP_MNT\" | grep -q \"${SUBVOL_PATH#*/}\"; then\n" +
-               "  echo \"Creating Btrfs subvolume $SUBVOL_PATH...\"\n" +
-               "  btrfs subvolume create \"$TEMP_MNT$SUBVOL_PATH\"\n" +
-               "else\n" +
-               "  echo \"Subvolume $SUBVOL_PATH already exists.\"\n" +
-               "fi\n\n" +
-               "umount \"$TEMP_MNT\"\n" +
-               "rmdir \"$TEMP_MNT\"\n\n" +
+               "fi\n" +
                "# Mount the subvolume to /home\n" +
                "mkdir -p \"$MOUNT_POINT\"\n" +
                "if ! mountpoint -q \"$MOUNT_POINT\"; then\n" +
                "  echo \"Mounting $DEVICE ($SUBVOL_PATH) to $MOUNT_POINT...\"\n" +
                "  mount -t btrfs -o \"subvol=$SUBVOL_PATH\" \"$DEVICE\" \"$MOUNT_POINT\"\n" +
-               "fi\n\n" +
+               "fi\n" +
                "# Ensure persistence in /etc/fstab\n" +
                "if ! grep -q \"$MOUNT_POINT\" /etc/fstab; then\n" +
+	       "  echo \"Create $MOUNT_POINT in /etc/fstab\"\n" +
                "  echo \"$DEVICE $MOUNT_POINT btrfs subvol=$SUBVOL_PATH 0 0\" >> /etc/fstab\n" +
-               "fi\n\n"
+	       "else\n" +
+               "  echo \"/etc/fstab already contains $MOUNT_POINT.\"\n" +
+               "fi\n"
           }
 
           let homePath;
-          json.combustion += "# Configuring user: " + name + " ...\n";
+          json.combustion += "\n# Configuring user: " + name + " ...\n";
           if (name !== "root") {
 	    json.combustion += "useradd -m -s /bin/bash " + name + "\n";
+	    homePath = "/home/";
+	  } else {
+	    homePath = "/";
 	  }
 	  if (!userPasswdIsEmpty) {
             json.combustion +=
-	      "echo \'" + name + ":" + Utils.PasswordHashes.hashes[id]+ "\' | chpasswd -e\n\n";
+	      "echo \'" + name + ":" + Utils.PasswordHashes.hashes[id]+ "\' | chpasswd -e\n";
 	  }	  
 
 	  if (publicKeys !== undefined && publicKeys !== "") {
@@ -172,18 +161,18 @@ export default {
 
 	    json.combustion +=
 	      "\n# Configure SSH keys for " + name + "\n" +
-              "mkdir -p \"~" + name + "/.ssh\"\n" +
+              "mkdir -p \"" + homePath + name + "/.ssh\"\n" +
               "{\n";
 	    for (const key of publicKeysArray) {
   	      json.combustion +=
                 "  echo \"" + key + "\"\n";
 	    }
  	    json.combustion +=
-              "} > \"~" + name + "/.ssh/authorized_keys\"\n" +
+              "} > \"" + homePath + name + "/.ssh/authorized_keys\"\n" +
               "# Set correct ownership and permissions\n" +
-              "chown -R " + name + ":" + name + " \"~" + name + "/.ssh\"\n" +
-              "chmod 700 \"~" + name + "/.ssh\"\n" +
-              "chmod 600 \"~" + name + "/.ssh/authorized_keys\"\n\n";
+              "chown -R " + name + ":" + name + " \"" + homePath + name + "/.ssh\"\n" +
+              "chmod 700 \"" + homePath + name + "/.ssh\"\n" +
+              "chmod 600 \"" + homePath + name + "/.ssh/authorized_keys\"\n\n";
 	  }
 
           if (formValue("totp_enabled", id)) {
