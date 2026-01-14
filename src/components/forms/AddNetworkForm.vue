@@ -356,42 +356,33 @@ export default {
 	  }
 
 	  if (available_in_initrd) {
-	    // writing with combustion
             json.combustion_initrd_and_running_system +=
+	      "# Network settings\n" +
 	      "umask 077 # Required for NM config\n" +
               "mkdir -p /etc/NetworkManager/system-connections/\n" +
               "cat >" + filename + " <<-EOF\n" +
 	      content +
               "EOF\n\n"
 	  } else {
-	    // writing with ignition
-            json.storage.files.push(
-              {
-                path: filename,
-                mode: 384,
-                overwrite: true,
-                contents: {
-                  source: "data:text/plain;charset=utf-8;base64," + Utils.b64EncodeUnicode(content),
-	          human_read: content
-                },
-              }
-            );
+            json.combustion +=
+	      "# Network settings \n" +
+              "mkdir -p /etc/NetworkManager/system-connections/\n" +
+              "cat >" + filename + " <<-EOF\n" +
+	      content +
+              "EOF\n" +
+	      "chmod 600 " + filename + "\n"
 	  }
 
           if (counter == 0 ) {
             content = "[main]\n# Do not do automatic (DHCP/SLAAC) configuration on ethernet devices\n" +
                       "# with no other matching connections.\nno-auto-default=*\n"
-            json.storage.files.push(
-              {
-                path: "/etc/NetworkManager/conf.d/noauto.conf",
-                mode: 420,
-                overwrite: true,
-                contents: {
-                  source: "data:text/plain;charset=utf-8;base64," + Utils.b64EncodeUnicode(content),
-                  human_read: content
-                },
-              },
-	    )
+            json.combustion +=
+	      "\n# Network settings \n" +
+              "mkdir -p /etc/NetworkManager/conf.d/\n" +
+              "cat >/etc/NetworkManager/conf.d/noauto.conf " + " <<-EOF\n" +
+	      content +
+              "EOF\n" +
+	      "chmod 644 /etc/NetworkManager/conf.d/noauto.conf\n"
 	  }
 	  counter++
         }
