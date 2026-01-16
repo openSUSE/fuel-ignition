@@ -6,7 +6,6 @@ import ExpandableComponent from "@/components/ExpandableComponent.vue";
 import BlobEditorComponent from "@/components/TemplateBlobEditorComponent.vue";
 
 import AddUsersForm from "@/components/forms/AddUsersForm.vue";
-import CreateFileForm from "@/components/forms/CreateFileForm.vue";
 import AddHostnameForm from "@/components/forms/AddHostnameForm.vue";
 import AddLanguageForm from "@/components/forms/AddLanguageForm.vue";
 import AddNetworkForm from "@/components/forms/AddNetworkForm.vue";
@@ -27,7 +26,6 @@ import CombAddRawBash from "../components/forms/CombAddRawBash.vue";
 
 const formComponents = [
   AddUsersForm,
-  CreateFileForm,
   AddHostnameForm,
   AddLanguageForm,
   ChangeStorageForm,
@@ -327,13 +325,6 @@ const exportSettings= (formData) => {
                   :displaysAtBegin="elementNumber(InstallPackageForm)"
                 >
                   <InstallPackageForm></InstallPackageForm>
-                </ExpandableComponent>
-
-                <ExpandableComponent
-                  title="Add Files To System"
-                  :displaysAtBegin="elementNumber(CreateFileForm)"
-                >
-                  <CreateFileForm></CreateFileForm>
                 </ExpandableComponent>
 
                 <ExpandableComponent
