@@ -65,7 +65,7 @@ export default {
 
           let content = "LANG=" + code;
           json.combustion +=
-	    "# Language\n" +
+	    "\n# Language\n" +
 	    "echo \"" +  content + "\"" + " > /etc/locale.conf\n" +
             "chmod 644 /etc/locale.conf\n";
         }

@@ -34,7 +34,7 @@ export default {
           let dataValue = formValue("hostname", id);
           let content = dataValue === undefined ? "" : dataValue;
           json.combustion +=
-	    "# Hostname\n" +
+	    "\n# Hostname\n" +
 	    "echo \"" +  content + "\"" + " > /etc/hostname\n" +
             "chmod 644 /etc/hostname\n";
         }
