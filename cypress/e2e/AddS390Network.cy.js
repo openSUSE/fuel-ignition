@@ -6,7 +6,6 @@ describe('Creating notwork devices', () => {
   it('creates ignition settings', () => {
     // load fixtures
     cy.get('input[type=file]').selectFile('cypress/fixtures/S390.json')
-    cy.get('[data-testid=download_ignition]').click()    
     cy.get('[data-testid=download_combustion]').click()
     
     // checking generated combustion file

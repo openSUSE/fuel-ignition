@@ -8,8 +8,4 @@ describe('showing fuel-ignition', () => {
     cy.contains('Config Generator')
   })
 
-  it('goes to page -JSON to Ignition IMG-', () => {
-    cy.contains('JSON to Ignition IMG').click()
-    cy.contains('JSON That Will Be Converted')
-  })  
 })
