@@ -159,7 +159,7 @@ export class BlobEditor {
     var a = window.document.createElement("a");
     a.href = window.URL.createObjectURL(file);
     a.download =
-      "ignition-" +
+      "combustion-" +
       this.alphabet[
         Math.floor(Math.random() * this.alphabet.length) // add random word, so there are more diverse file names for debugging
       ].toLowerCase() +
