@@ -4,7 +4,6 @@ const base = "/fuel-ignition/";
 
 import HomeView from "../pages/HomeView.vue";
 import EditView from "../pages/EditView.vue";
-import ConvertView from "@/pages/ConvertView.vue";
 import ImportView from "@/pages/ImportView.vue";
 import TestView from "@/pages/TestView.vue";
 
@@ -23,11 +22,6 @@ const routes = [
     path: "/import",
     name: "Import",
     component: ImportView,
-  },
-  {
-    path: "/convert",
-    name: "Convert",
-    component: ConvertView,
   },
   {
     path: "/test",

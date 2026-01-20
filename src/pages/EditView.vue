@@ -75,39 +75,6 @@ onUpdated(() => {
   }
 });
 
-const downloadConfigIgn = (formData) => {
-  console.log("downloading..");
-  Utils.saveTemplateAsFile("config.ign", toIgnitionConfig(formData));
-};
-
-const copyConfigToClipboard = (formData) => {
-  Utils.copy(JSON.stringify(toIgnitionConfig(formData), null, 2));
-};
-
-function copyToClipboard(text) {
-  window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
-}
-
-const toIgnitionConfig = (formData) => {
-  let json = {
-    ignition: { version: "3.2.0" },
-  };
-
-  formComponents
-    .filter((comp) => comp.methods.hasOwnProperty("encodeToInstallation"))
-    .forEach((comp) => comp.methods.encodeToInstallation(json, formData));
-
-  if (formData.debug) {
-    json["debug:form"] = formData;
-  }
-
-  json.combustion = undefined;
-  json.combustion_initrd_and_running_system = undefined;
-  json.combustion_initrd = undefined;
-
-  return json;
-};
-
 const toCombustionScript = (formData) => {
   let json = { combustion: "", combustion_initrd: "", combustion_initrd_and_running_system: "", output: "" };
 
@@ -362,52 +329,9 @@ const exportSettings= (formData) => {
       <div class="container mt-5 px-0">
         <div class="row gx-4 gx-lg-5 justify-content-center">
           <div class="col-lg-8 col-xl-6">
-            <h1 class="mt-5 text-center">config.ign</h1>
             <div class="d-grid mb-5">
-              <pre class="form-data">{{ toIgnitionConfig(formData) }}</pre>
-  
-              <div class="double">
-                <FormKit
-                  v-model="formData.debug"
-                  type="checkbox"
-                  label="Debug"
-                  name="debug"
-                />
-  
-                <button
-                  class="btn btn-outline-secondary mb-2"
-                  @click="copyConfigToClipboard(formData)"
-                >
-                  Copy
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    class="bi bi-clipboard"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"
-                    />
-                    <path
-                      d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"
-                    />
-                  </svg>
-                </button>
-              </div>
-  
-              <button
-                class="btn btn-primary mb-4"
-                @click="downloadConfigIgn(formData)"
-		data-testid=download_ignition
-              >
-                Download
-              </button>
-  
               <div v-if="toCombustionScript(formData) !== undefined">
                 <h1 class="mt-5 text-center">combustion script</h1>
-                <hr class="divider" />
                 <div class="d-grid mb-5">
                   <pre class="form-data">{{ toCombustionScript(formData) }}</pre>
   
@@ -430,14 +354,10 @@ const exportSettings= (formData) => {
               <div>
                 <hr class="divider" />
                 <h2 class="mt-5 text-center">
-                  Convert to Ignition-<span
-                    v-if="toCombustionScript(formData) !== undefined"
-                    >Combustion-</span
-                  >Ready Filesystem IMG in the Browser
+                  Convert to Combustion-Ready Filesystem IMG in the Browser
                 </h2>
   
                 <BlobEditorComponent
-                  :ignJson="toIgnitionConfig(formData)"
                   :combustionScript="toCombustionScript(formData)"
                 ></BlobEditorComponent>
               </div>
@@ -448,16 +368,11 @@ const exportSettings= (formData) => {
                 </h2>
   
                 <pre class="form-data">
-  Using ignition file only:
-  # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition -root ignition config.ign
-
-  Using ignition and combustion configuration files:
-  The files has to be stored under
-   - fuel-ignition/combustion/script
-   - fuel-ignition/ignition/config.ign
-  # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition fuel-ignition </pre>
+  Using combustion file only:
+  # mkisofs -full-iso9660-filenames -o combustion.iso -V combustion -root combustion fuel-ignition/combustion/script
+                </pre>
                 <p>
-                  How to use the generated data with <a href="https://documentation.suse.com/sle-micro/6.0/html/Micro-deployment-raw-images/index.html#deployment-configuring-with-ignition" target="_blank">ignition</a> and <a href="https://documentation.suse.com/sle-micro/6.0/html/Micro-deployment-raw-images/index.html#deployment-configuring-with-combustion" target="_blank">combustion</a> .
+                  How to use the generated data with <a href="https://github.com/openSUSE/combustion" target="_blank">combustion</a> .
                 </p>
                 <hr class="divider" />
 	      </div>

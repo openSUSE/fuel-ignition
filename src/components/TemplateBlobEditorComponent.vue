@@ -20,7 +20,7 @@
 
 <script setup>
 import { ref } from "vue";
-const props = defineProps(["ignJson", "combustionScript"]);
+const props = defineProps(["combustionScript"]);
 var loading = ref(false);
 
 const blobEditor = new BlobEditor();
@@ -29,7 +29,6 @@ const convertAndDownload = async function () {
   toggleLoading();
   try {
     let image = await blobEditor.convertToImage(
-      props.ignJson,
       props.combustionScript
     );
     blobEditor.downloadImageFile(image);
@@ -85,7 +84,6 @@ export class BlobEditor {
 
   // Properties of the generated file system image
   images = {
-    zero: { ignFatDirEntry: 0xf060, ignFileOffset: 0x15000 },
     combustion: { ignFatDirEntry: 0xf0c0, combFatDirEntry: 0xf8c0, ignFileOffset: 0xf10800, combFileOffset: 0x318000 },
   };
 
@@ -95,11 +93,9 @@ export class BlobEditor {
     );
   }
 
-  async convertToImage(json, combustionScript) {
-    let jsonStr = JSON.stringify(json, null, 2);
-    let imgTemplateName =
-      combustionScript === undefined ? "zero" : "combustion"; // TODO: rename zero template to ignition-only
-    let hasCombustion = combustionScript !== undefined;
+  async convertToImage(combustionScript) {
+    let jsonStr = "{\n  \"ignition\": {\n    \"version\": \"3.2.0\"\n  }\n}" // empty ignition
+    let imgTemplateName = "combustion";
 
     console.log(
       "images[" + imgTemplateName + "] :>> ",
@@ -135,23 +131,21 @@ export class BlobEditor {
       this.images[imgTemplateName]
     );
 
-    if (hasCombustion && true) {
-      let combDirEntry = this.images[imgTemplateName].combFatDirEntry;
-      fileSizeView = new DataView(image, combDirEntry + 0x1c, 4);
-      let combBin = encoder.encode(combustionScript);
-      let origCombLength = fileSizeView.getInt32(0, true);
-      fileSizeView.setInt32(0, combBin.length, true);
+    let combDirEntry = this.images[imgTemplateName].combFatDirEntry;
+    fileSizeView = new DataView(image, combDirEntry + 0x1c, 4);
+    let combBin = encoder.encode(combustionScript);
+    let origCombLength = fileSizeView.getInt32(0, true);
+    fileSizeView.setInt32(0, combBin.length, true);
 
-      if (combBin.length >= origCombLength) {
-        throw new Error(
-          "Warning!\n\nCombustion configuration is too large.\n\n" +
-            "The maximum file size for the Combustion configuration is currently set to " + origCombLength + "B."
-        );
-      }
+    if (combBin.length >= origCombLength) {
+      throw new Error(
+        "Warning!\n\nCombustion configuration is too large.\n\n" +
+          "The maximum file size for the Combustion configuration is currently set to " + origCombLength + "B."
+      );
+    }
 
-      for (let i = 0; i < combBin.length; i++) {
-        imageView.setInt8(this.images[imgTemplateName].combFileOffset + i, combBin[i]);
-      }
+    for (let i = 0; i < combBin.length; i++) {
+      imageView.setInt8(this.images[imgTemplateName].combFileOffset + i, combBin[i]);
     }
 
     var byteArray = new Uint8Array(image);
@@ -202,7 +196,7 @@ export class BlobEditor {
     "Tango",
     "Uniform",
     "Victor",
-    "Whisky", // shoutout an nico
+    "Whisky",
     "X-ray",
     "Yankee",
     "Zulu",
