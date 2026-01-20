@@ -32,7 +32,7 @@ export default {
         .filter((x) => x.includes(formPrefix))
         .forEach((key) => {
 	  if (formData[key] != undefined) {
-            json.combustion += "\n" + formData[key];
+            json.combustion += "\n" + formData[key] + "\n";
 	  }
         });
     },
