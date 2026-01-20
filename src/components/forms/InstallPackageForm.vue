@@ -33,7 +33,8 @@ export default {
         .forEach((key) => {
 	  if (formData[key]) {
             json.combustion +=
-              "\nzypper --non-interactive install " + Utils.normalizeZypperPackages(formData[key]);
+	      "\n# Installing Package: " + Utils.normalizeZypperPackages(formData[key]) +
+              "\nzypper --non-interactive install " + Utils.normalizeZypperPackages(formData[key]) + "\n";
 	  }
         });
     },

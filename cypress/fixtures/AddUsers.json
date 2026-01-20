@@ -3,7 +3,6 @@
     "users": [
       {
         "name": "schubi",
-        "hash_type": "Hash Yourself",
         "passwd": "linux",
         "ssh_keys": "ssh_pubilic_keys",
         "totp_enabled": true,
@@ -12,7 +11,6 @@
       },
       {
         "name": "root",
-        "hash_type": "Hash Yourself",
         "passwd": "linux",
         "totp_enabled": false
       }

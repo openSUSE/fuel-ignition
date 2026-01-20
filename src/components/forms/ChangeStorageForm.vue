@@ -396,18 +396,13 @@ export default {
 	      }
               json.combustion_initrd += "   echo -e \"" + content + "\" >" + filename + "\n"
 	    } else {
-	      // repart via service systemd-repart
-              json.storage.files.push(
-                {
-                  path: filename,
-                  mode: 384,
-                  overwrite: true,
-                  contents: { 
-                    source: "data:text/plain;charset=utf-8;base64," + Utils.b64EncodeUnicode(content),
-  	  	    human_read: content
-                  },
-                }
-              );
+	      json.combustion += "\n# Repartition\n"
+	      if (create_repart_dir) {
+	        create_repart_dir=false
+	        json.combustion += "mkdir -p /etc/repart.d\n"
+	      }
+              json.combustion += "echo -e \"" + content + "\" >" + filename + "\n" +
+                "chmod 600 " + filename + "\n"
 	    }
 	  }
 

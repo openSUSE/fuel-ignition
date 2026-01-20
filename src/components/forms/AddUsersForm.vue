@@ -13,18 +13,6 @@
     />
 
     <FormKit
-      :name="formKey('hash_type')"
-      label="Password Hash Type"
-      placeholder="bcrypt"
-      type="select"
-      validation="optional"
-      validation-behavior="live"
-      value="bcrypt"
-      :options="['bcrypt', 'Hash Yourself']"
-      help="The way you want your password to be hashed."
-    />
-
-    <FormKit
       :name="formKey('passwd')"
       label="Password"
       placeholder="write the corresponding password here"
@@ -75,7 +63,7 @@
         validation="required"
         type="checkbox"
         validation-behavior="live"
-        help="Required on SUSE related systems for creating users not named root. Otherwise, applying the Ignition config will fail"
+        help="Required on SUSE related systems for creating users not named root. Otherwise, applying the Combustion config will fail."
       />
     </div>
   </div>
@@ -89,6 +77,7 @@ import QRCode from "qrcode";
 import base32Encode from "base32-encode";
 
 const formPrefix = "user";
+const keyPrefix = formPrefix + "_name_";
 
 export default {
   props: ['index'],
@@ -114,89 +103,97 @@ export default {
       const formValue = (key, uid) =>
         Utils.getFormValue(formPrefix, formData, key, uid);
 
-      const keyPrefix = formPrefix + "_name_";
       Object.keys(formData)
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))
         .forEach((id) => {
-          json.passwd = "passwd" in json ? json.passwd : { users: [] };
-          if (formValue("name", id) !== "root") {
-            Utils.GlobalStorage.store.addUsers.onlyUsernameRoot = false;
-          }
 
-          // append config for mounting /home, since otherwise users not named root will cause an ignition emergency mode
+          const publicKeys = formValue("ssh_keys", id);
+	  const name = formValue("name", id);
+          const userPasswdIsEmpty =
+            formValue("passwd", id) === "" ||
+            formValue("passwd", id) === undefined;
+
+          // append config for mounting /home
           if (formValue("runs_on_suse", id) === true) {
-            if (json.storage === undefined) {
-              json.storage = {};
-            }
-
-            if (json.storage.filesystems === undefined) {
-              json.storage.filesystems = [];
-            }
-
-            json.storage.filesystems.push({
-              device: "/dev/disk/by-label/ROOT",
-              format: "btrfs",
-              mountOptions: ["subvol=/@/home"],
-              path: "/home",
-              wipeFilesystem: false,
-            });
+	    json.combustion += "\n# Setup /home...\n"+
+	       "DEVICE=\"/dev/disk/by-label/ROOT\"\n" +
+	       "MOUNT_POINT=\"/home\"\n" +
+	       "SUBVOL_PATH=\"/@/home\"\n" +
+	       "# Check if the device exists\n" +
+               "if [ ! -e \"$DEVICE\" ]; then\n" +
+               "  echo \"Error: Device $DEVICE not found. Cannot proceed with storage setup.\"\n" +
+               "  exit 1\n" +
+               "fi\n" +
+               "# Mount the subvolume to /home\n" +
+               "mkdir -p \"$MOUNT_POINT\"\n" +
+               "if ! mountpoint -q \"$MOUNT_POINT\"; then\n" +
+               "  echo \"Mounting $DEVICE ($SUBVOL_PATH) to $MOUNT_POINT...\"\n" +
+               "  mount -t btrfs -o \"subvol=$SUBVOL_PATH\" \"$DEVICE\" \"$MOUNT_POINT\"\n" +
+               "fi\n" +
+               "# Ensure persistence in /etc/fstab\n" +
+               "if ! grep -q \"$MOUNT_POINT\" /etc/fstab; then\n" +
+	       "  echo \"Create $MOUNT_POINT in /etc/fstab\"\n" +
+               "  echo \"$DEVICE $MOUNT_POINT btrfs subvol=$SUBVOL_PATH 0 0\" >> /etc/fstab\n" +
+	       "else\n" +
+               "  echo \"/etc/fstab already contains $MOUNT_POINT.\"\n" +
+               "fi\n"
           }
+
+          let homePath;
+          json.combustion += "\n# Configuring user: " + name + " ...\n";
+          if (name !== "root") {
+	    json.combustion += "useradd -m -s /bin/bash " + name + "\n";
+	    homePath = "/home/";
+	  } else {
+	    homePath = "/";
+	  }
+	  if (!userPasswdIsEmpty) {
+            json.combustion +=
+	      "echo \'" + name + ":" + Utils.PasswordHashes.hashes[id]+ "\' | chpasswd -e\n";
+	  }	  
+
+	  if (publicKeys !== undefined && publicKeys !== "") {
+            const publicKeysArray =
+              publicKeys !== undefined && publicKeys.includes(",")
+                ? publicKeys.replaceAll(" ", "").split(",") // base64 ssh keys can't contain spaces
+                : [publicKeys];
+
+	    json.combustion +=
+	      "\n# Configure SSH keys for " + name + "\n" +
+              "mkdir -p \"" + homePath + name + "/.ssh\"\n" +
+              "{\n";
+	    for (const key of publicKeysArray) {
+  	      json.combustion +=
+                "  echo \"" + key + "\"\n";
+	    }
+ 	    json.combustion +=
+              "} > \"" + homePath + name + "/.ssh/authorized_keys\"\n" +
+              "# Set correct ownership and permissions\n" +
+              "chown -R " + name + ":" + name + " \"" + homePath + name + "/.ssh\"\n" +
+              "chmod 700 \"" + homePath + name + "/.ssh\"\n" +
+              "chmod 600 \"" + homePath + name + "/.ssh/authorized_keys\"\n\n";
+	  }
 
           if (formValue("totp_enabled", id)) {
-            if (json.storage === undefined) {
-              json.storage = {};
-            }
-
-            if (json.storage.files === undefined) {
-              json.storage.files = [];
-            }
-
-            const totpContents = encodeURIComponent("HOTP/T30/6 " + formValue("name", id) + " - " + formValue("totp_secret", id))
+            const totpContents = "HOTP/T30/6 " + formValue("name", id) + " - " + formValue("totp_secret", id)
+	    const name = formValue("name", id);
+	    
             let totpPath;
             if (formValue("name", id) === "root") {
               totpPath = "/root/.pam_oath_usersfile"
             } else {
               totpPath = "/home/" + formValue("name", id) + "/.pam_oath_usersfile"
             }
-            json.storage.files.push({
-              overwrite: true,
-              path: totpPath,
-              contents: {
-                "source": "data:," + totpContents
-              },
-              user: {
-                "name": formValue("name", id)
-              },
-              group: {
-                "name": formValue("name", id)
-              },
-              mode: 384,
-            })
-          }
 
-          if (json.passwd.users !== undefined) {
-            const publicKeys = formValue("ssh_keys", id);
-
-            const publicKeysArray =
-              publicKeys !== undefined && publicKeys.includes(",")
-                ? publicKeys.replaceAll(" ", "").split(",") // base64 ssh keys can't contain spaces
-                : [publicKeys];
-
-            const userPasswdIsEmpty =
-              formValue("passwd", id) === "" ||
-              formValue("passwd", id) === undefined;
-
-            json.passwd.users.push({
-              name: formValue("name", id),
-              passwordHash: userPasswdIsEmpty
-                ? undefined
-                : Utils.PasswordHashes.hashes[id],
-              sshAuthorizedKeys:
-                publicKeys === undefined || publicKeys === ""
-                  ? undefined
-                  : publicKeysArray,
-            });
+ 	    json.combustion +=
+	      "# Set Time-based one-time password\n" +
+              "FILE_PATH=\"" + totpPath + "\"\n" +
+              "CONTENT=\"" + totpContents + "\"\n" +
+	      "mkdir -p \"$(dirname \"$FILE_PATH\")\"\n" +
+	      "echo \"$CONTENT\" > \"$FILE_PATH\"\n" +
+	      "chown " + name + ":" + name + " \"$FILE_PATH\"\n" +
+	      "chmod 600 \"$FILE_PATH\"\n";
           }
         });
     },
@@ -224,8 +221,6 @@ export default {
         .map((key) => key.replace("user_passwd_", ""))
         .forEach(async (id) => {
           const password = formValue("passwd", id);
-          const hashType = formValue("hash_type", id);
-
           const passwordIsEmpty = password === "" || password === undefined;
 
           const passwordHasNotChanged =
@@ -235,7 +230,7 @@ export default {
             return;
           }
 
-          hashMessage(password, hashType).then(
+          hashMessage(password).then(
             (hash) => (Utils.PasswordHashes.hashes[id] = hash)
           );
         });
@@ -244,7 +239,6 @@ export default {
       const formValue = (key, uid) =>
         Utils.getFormValue(formPrefix, formData, key, uid);
 
-      const keyPrefix = formPrefix + "_name_";
       Object.keys(formData)
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))
@@ -258,7 +252,6 @@ export default {
           }
           let user = {}
           user.name = formValue("name", id)
-          user.hash_type  = formValue("hash_type", id)
           user.passwd = formValue("passwd", id)
           user.ssh_keys = formValue("ssh_keys", id)
           user.runs_on_suse = formValue("runs_on_suse", id)
@@ -273,7 +266,6 @@ export default {
     fillImport: function (json, formData) {
       const setValue = (key, uid, value) =>
         Utils.setFormValue(formPrefix, formData, key, uid, value);
-      const keyPrefix = formPrefix + "_name_";
 
       if (json.login == undefined || json.login.users == undefined) return;
       Object.keys(formData)
@@ -282,7 +274,6 @@ export default {
           .forEach((id) => {
             let user = json.login.users.shift();
             setValue("name", id, user.name)
-            setValue("hash_type", id, user.hash_type)
             if (user.passwd) {
               setValue("passwd", id, user.passwd)
               Utils.PasswordHashes.hashes[id] = Bcrypt.hashSync(user.passwd, 8);
@@ -317,29 +308,9 @@ export default {
   },
 };
 
-async function hashMessage(message, hashType) {
-  if (hashType === "Hash Yourself") return message;
-
-  // TODO: implement other hash types in the future
+async function hashMessage(message) {
 
   var salt = await Bcrypt.genSalt(10).then();
   return Bcrypt.hash(message, salt);
-
-  // relic from the way I used to hash
-
-  // // encode as UTF-8
-  // const msgBuffer = new TextEncoder().encode(message);
-
-  // // hash the message, hashType can be SHA-256, SHA-384, SHA-512
-  // const hashBuffer = await crypto.subtle.digest(hashType, msgBuffer);
-
-  // // convert ArrayBuffer to Array
-  // const hashArray = Array.from(new Uint8Array(hashBuffer));
-
-  // // convert bytes to hex string
-  // const hashHex = hashArray
-  //   .map((b) => b.toString(16).padStart(2, "0"))
-  //   .join("");
-  // return hashHex;
 }
 </script>
