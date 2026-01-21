@@ -18,10 +18,7 @@
   />
 
   <div v-if="ipv4enabled === true">
-    <div class="container-fluid">
-    <div class="row">
-    <div class="col-1"></div>
-    <div class="col-12">
+    <div class="ps-3 ps-md-4">
     <FormKit
       type="select"
       :name="formKey('ipv4_network_type')"
@@ -85,9 +82,7 @@
       validation-behavior="live"
       help="Additional DNS servers separated by a semicolon (;)."
     />
-  </div>
-  </div>
-  </div>
+    </div>
   </div>
 
   <FormKit
@@ -99,10 +94,7 @@
   />
 
   <div v-if="ipv6enabled === true">
-    <div class="container-fluid">
-    <div class="row">
-    <div class="col-1"></div>
-    <div class="col-12">
+    <div class="ps-3 ps-md-4">
     <FormKit
       type="select"
       :name="formKey('ipv6_network_type')"
@@ -166,9 +158,7 @@
       validation-behavior="live"
       help="Additional DNS servers separated by a semicolon (;)."
     />
-  </div>
-  </div>
-  </div>
+    </div>
   </div>
 
   <FormKit
@@ -181,10 +171,7 @@
   />
 
   <div v-if="wifienabled === true">
-    <div class="container-fluid">
-    <div class="row">
-    <div class="col-1"></div>
-    <div class="col-12">
+    <div class="ps-3 ps-md-4">
     <FormKit
       :name="formKey('wifi_ssid_content')"
       label="SSID"
@@ -214,8 +201,6 @@
         type="text"
         help="Password required for the WiFi connection."
       />
-    </div>
-    </div>
     </div>
     </div>
   </div>
