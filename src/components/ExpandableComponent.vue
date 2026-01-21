@@ -11,7 +11,7 @@
 
     <div class="mt-1">
       <button
-        class="btn btn-primary mr-5 mb-5"
+        class="btn btn-primary me-2 mb-5"
         @click="compCount++"
         v-if="
           maxComponents === -1 ||
@@ -24,7 +24,7 @@
 
       <button
         v-if="compCount >= 1"
-        class="btn btn-danger ml-5 mr-5 mb-5"
+        class="btn btn-danger mb-5"
         @click="
           compCount >= 1 ? compCount-- : compCount
         "

@@ -26,3 +26,30 @@ body {
 .text-white-75 {
     color: fade-out($white, 0.25) !important;
 }
+
+// responsive pre/code blocks
+pre.form-data {
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-width: 100%;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+
+    @media (min-width: 768px) {
+        font-size: 0.875rem;
+    }
+}
+
+// responsive form inputs
+.expandable-comp {
+    h4 {
+        font-size: 1.1rem;
+
+        @media (min-width: 768px) {
+            font-size: 1.25rem;
+        }
+    }
+}

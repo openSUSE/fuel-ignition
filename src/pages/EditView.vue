@@ -162,21 +162,22 @@ const exportSettings= (formData) => {
 <template>
   <div :key="componentKey">
     <section class="page-section p-2 bg-dark" id="edit">
-      <div class="container mt-5 px-0">
+      <div class="container mt-5 px-3 px-md-4">
         <div class="row gx-4 gx-lg-5 justify-content-center">
-          <div class="col-lg-8 col-xl-6 text-white text-center">
+          <div class="col-12 col-lg-8 col-xl-6 text-white text-center">
             <h1 class="mt-5">Config Generator</h1>
             <div class="d-grid mb-5">
               <img
-                class="text-center mx-auto w-50"
+                class="text-center mx-auto img-fluid"
+                style="max-width: 50%"
                 src="@/assets/template/img/undraw_programming_re_kg9v.svg"
               />
             </div>
           </div>
         </div>
-  
+
         <div class="row gx-4 gx-lg-5 justify-content-center mb-5">
-          <div class="col-lg-6">
+          <div class="col-12 col-md-10 col-lg-8 col-xl-6">
             <div class="form-floating mb-3">
               <FormKit type="group" v-model="formData">
                 <ExpandableComponent
@@ -326,9 +327,9 @@ const exportSettings= (formData) => {
     </section>
   
     <section class="page-section p-2" id="export">
-      <div class="container mt-5 px-0">
+      <div class="container mt-5 px-3 px-md-4">
         <div class="row gx-4 gx-lg-5 justify-content-center">
-          <div class="col-lg-8 col-xl-6">
+          <div class="col-12 col-md-10 col-lg-8 col-xl-6">
             <div class="d-grid mb-5">
               <div v-if="toCombustionScript(formData) !== undefined">
                 <h1 class="mt-5 text-center">combustion script</h1>
