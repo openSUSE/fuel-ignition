@@ -25,6 +25,11 @@
                   >Create New Config</router-link
                 >
               </div>
+              <div class="col-xs-6 mb-3">
+                <router-link class="btn btn-primary btn-xl" to="/edit/v2"
+                  >Try out v2</router-link
+                >
+              </div>
             </div>
           </div>
         </div>
