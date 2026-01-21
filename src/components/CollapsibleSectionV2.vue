@@ -300,6 +300,13 @@ const removeAt = (index) => {
   align-items: start;
 }
 
+@media (max-width: 480px) {
+  .instances-grid.has-multiple {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
 .form-instance {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;

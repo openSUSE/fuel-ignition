@@ -1,7 +1,7 @@
 <template>
   <!-- Navigation-->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
-    <div class="container px-4 px-lg-5">
+    <div class="container nav-container px-4 px-lg-5">
       <router-link class="navbar-brand" to="/">Fuel Ignition 🚀</router-link>
       <button
         class="navbar-toggler navbar-toggler-right"
@@ -45,3 +45,35 @@
     </div>
   </nav>
 </template>
+
+<style scoped>
+.nav-container {
+  max-width: 1800px;
+  padding-left: 48px !important;
+  padding-right: 48px !important;
+}
+
+.navbar-brand {
+  margin-right: auto;
+}
+
+@media (max-width: 1200px) {
+  .nav-container {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-container {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+</style>

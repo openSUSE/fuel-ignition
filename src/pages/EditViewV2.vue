@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onUpdated, computed, provide } from "vue";
+import { ref, watch, onUpdated, onMounted, onUnmounted, computed, provide } from "vue";
 import Utils from "@/utils/utils.js";
 import CollapsibleSection from "@/components/CollapsibleSectionV2.vue";
 import BlobEditorComponent from "@/components/TemplateBlobEditorComponent.vue";
@@ -164,13 +164,64 @@ const copyToClipboard = async () => {
 const downloadScript = () => {
   Utils.saveTemplateAsFile('script', combustionScript.value, true);
 };
+
+const formsPanel = ref(null);
+
+const scrollToTop = () => {
+  // on mobile, window scrolls; on desktop, forms panel scrolls
+  if (window.innerWidth <= 1200) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (formsPanel.value) {
+    formsPanel.value.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+};
+
+const scrollToBottom = () => {
+  // on mobile, scroll to output panel; on desktop, scroll forms panel to bottom
+  if (window.innerWidth <= 1200) {
+    const outputPanel = document.querySelector('.output-panel');
+    if (outputPanel) {
+      outputPanel.scrollIntoView({ behavior: 'smooth' });
+    }
+  } else if (formsPanel.value) {
+    formsPanel.value.scrollTo({ top: formsPanel.value.scrollHeight, behavior: 'smooth' });
+  }
+};
+
+const handleFormsScroll = (e) => {
+  const navbar = document.querySelector('#mainNav');
+  if (!navbar) return;
+
+  if (e.target.scrollTop > 0) {
+    navbar.classList.add('navbar-shrink');
+  } else {
+    navbar.classList.remove('navbar-shrink');
+  }
+};
+
+onMounted(() => {
+  if (formsPanel.value) {
+    formsPanel.value.addEventListener('scroll', handleFormsScroll);
+  }
+});
+
+onUnmounted(() => {
+  if (formsPanel.value) {
+    formsPanel.value.removeEventListener('scroll', handleFormsScroll);
+  }
+  // reset navbar state when leaving
+  const navbar = document.querySelector('#mainNav');
+  if (navbar) {
+    navbar.classList.remove('navbar-shrink');
+  }
+});
 </script>
 
 <template>
   <div :key="componentKey" class="edit-v2">
     <div class="edit-layout">
       <!-- left panel: forms -->
-      <div class="forms-panel">
+      <div class="forms-panel" ref="formsPanel">
         <div class="panel-header">
           <h1>Config Generator</h1>
           <p class="subtitle">Build your combustion configuration</p>
@@ -507,13 +558,74 @@ const downloadScript = () => {
         Copied to clipboard
       </div>
     </Transition>
+
+    <!-- mobile nav buttons -->
+    <div class="mobile-nav">
+      <button type="button" class="nav-btn" @click="scrollToTop" title="Go to top">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+      </button>
+      <button type="button" class="nav-btn" @click="scrollToBottom" title="Go to output">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+    </div>
   </div>
 </template>
 
+<style>
+/* navbar styling for v2 */
+@media (min-width: 1201px) {
+  /* solid dark background */
+  body:has(.edit-v2) #mainNav {
+    background: #1a1d21 !important;
+  }
+
+  body:has(.edit-v2) #mainNav .navbar-brand {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+
+  body:has(.edit-v2) #mainNav .navbar-brand:hover {
+    color: #fff !important;
+  }
+
+  body:has(.edit-v2) #mainNav .nav-link {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  body:has(.edit-v2) #mainNav .nav-link:hover {
+    color: #fff !important;
+  }
+
+  /* after scroll - keep same, no effects */
+  body:has(.edit-v2) #mainNav.navbar-shrink {
+    background: #1a1d21 !important;
+    box-shadow: none !important;
+  }
+
+  body:has(.edit-v2) #mainNav.navbar-shrink .navbar-brand {
+    color: rgba(255, 255, 255, 0.9) !important;
+  }
+
+  body:has(.edit-v2) #mainNav.navbar-shrink .navbar-brand:hover {
+    color: #81c13b !important;
+  }
+
+  body:has(.edit-v2) #mainNav.navbar-shrink .nav-link {
+    color: rgba(255, 255, 255, 0.7) !important;
+  }
+
+  body:has(.edit-v2) #mainNav.navbar-shrink .nav-link:hover {
+    color: #81c13b !important;
+  }
+}
+</style>
+
 <style scoped>
 .edit-v2 {
-  min-height: 100vh;
+  height: 100vh;
+  padding-top: 72px;
   background: #212529;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .edit-layout {
@@ -522,11 +634,21 @@ const downloadScript = () => {
   gap: 0;
   max-width: 1800px;
   margin: 0 auto;
+  width: 100%;
+  height: 100%;
 }
 
 @media (max-width: 1200px) {
+  .edit-v2 {
+    height: auto;
+    min-height: 100vh;
+    padding-top: 0;
+    overflow: visible;
+  }
+
   .edit-layout {
     grid-template-columns: 1fr;
+    height: auto;
   }
 }
 
@@ -534,24 +656,69 @@ const downloadScript = () => {
 .forms-panel {
   padding: 40px 48px;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  height: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.forms-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.forms-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.forms-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.forms-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 @media (max-width: 1200px) {
   .forms-panel {
     border-right: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-y: visible;
+    height: auto;
+    padding-top: 100px;
   }
 }
 
 @media (max-width: 768px) {
   .forms-panel {
-    padding: 24px 20px;
+    padding: 100px 24px 24px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .forms-panel {
+    padding: 88px 16px 16px;
   }
 }
 
 .panel-header {
   margin-bottom: 32px;
-  padding-top: 60px;
+}
+
+@media (max-width: 768px) {
+  .panel-header {
+    margin-bottom: 24px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .panel-header {
+    margin-bottom: 20px;
+  }
 }
 
 .panel-header h1 {
@@ -559,6 +726,12 @@ const downloadScript = () => {
   font-weight: 600;
   color: #fff;
   margin: 0 0 4px;
+}
+
+@media (max-width: 480px) {
+  .panel-header h1 {
+    font-size: 1.25rem;
+  }
 }
 
 .subtitle {
@@ -569,7 +742,11 @@ const downloadScript = () => {
 
 /* form categories */
 .form-category {
-  margin-bottom: 28px;
+  margin-bottom: 24px;
+}
+
+.form-category:last-of-type {
+  margin-bottom: 0;
 }
 
 .category-title {
@@ -596,9 +773,8 @@ const downloadScript = () => {
 
 /* settings section */
 .settings-section {
-  margin-top: 40px;
-  padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 16px;
+  padding-top: 0;
 }
 
 .settings-grid {
@@ -612,6 +788,18 @@ const downloadScript = () => {
 .settings-card {
   flex: 1;
   min-width: 200px;
+}
+
+@media (max-width: 480px) {
+  .settings-grid {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .settings-card {
+    width: 100%;
+    min-width: 0;
+  }
 }
 
 .settings-card :deep(.formkit-outer) {
@@ -629,6 +817,13 @@ const downloadScript = () => {
 .save-row {
   display: flex;
   gap: 10px;
+}
+
+@media (max-width: 480px) {
+  .save-row {
+    flex-direction: column;
+    gap: 8px;
+  }
 }
 
 .save-row :deep(.formkit-outer) {
@@ -672,12 +867,12 @@ const downloadScript = () => {
 /* output panel */
 .output-panel {
   background: #1a1d21;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .output-sticky {
-  position: sticky;
-  top: 72px;
-  height: calc(100vh - 72px);
+  height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -685,15 +880,26 @@ const downloadScript = () => {
 
 @media (max-width: 1200px) {
   .output-sticky {
-    position: static;
     height: auto;
     min-height: 500px;
   }
 }
 
+@media (max-width: 480px) {
+  .output-sticky {
+    min-height: 400px;
+  }
+}
+
 .output-header {
-  padding: 24px 24px 16px;
+  padding: 40px 24px 16px;
   flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .output-header {
+    padding: 16px 12px 12px;
+  }
 }
 
 .output-header h2 {
@@ -707,11 +913,37 @@ const downloadScript = () => {
   flex: 1;
   padding: 20px 24px;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.output-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.output-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.output-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.output-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 480px) {
+  .output-content {
+    padding: 12px;
+  }
 }
 
 /* script view */
 .script-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 12px;
 }
@@ -745,10 +977,39 @@ const downloadScript = () => {
   font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Consolas', monospace;
   font-size: 12px;
   line-height: 1.5;
-  overflow-x: auto;
+  overflow: auto;
   white-space: pre-wrap;
   word-break: break-all;
   margin: 0;
+  max-height: calc(100vh - 420px);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(129, 193, 59, 0.3) transparent;
+}
+
+.script-preview::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.script-preview::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.script-preview::-webkit-scrollbar-thumb {
+  background: rgba(129, 193, 59, 0.3);
+  border-radius: 3px;
+}
+
+.script-preview::-webkit-scrollbar-thumb:hover {
+  background: rgba(129, 193, 59, 0.5);
+}
+
+@media (max-width: 480px) {
+  .script-preview {
+    padding: 12px;
+    font-size: 11px;
+    max-height: 300px;
+  }
 }
 
 /* blob editor inline */
@@ -945,5 +1206,66 @@ const downloadScript = () => {
   padding: 6px 12px;
   margin-right: 10px;
   cursor: pointer;
+}
+
+/* scroll nav */
+.mobile-nav {
+  display: flex;
+  position: fixed;
+  left: calc(50% - 44px);
+  bottom: 16px;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 100;
+}
+
+@media (max-width: 1200px) {
+  .mobile-nav {
+    left: auto;
+    right: 12px;
+    bottom: 24px;
+  }
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(33, 37, 41, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.nav-btn:hover {
+  color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.nav-btn:active {
+  background: rgba(129, 193, 59, 0.2);
+  border-color: #81c13b;
+}
+
+@media (max-width: 1200px) {
+  .nav-btn {
+    width: 44px;
+    height: 44px;
+    backdrop-filter: blur(8px);
+  }
+
+  .nav-btn svg {
+    width: 20px;
+    height: 20px;
+  }
 }
 </style>
