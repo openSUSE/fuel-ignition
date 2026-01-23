@@ -51,9 +51,7 @@
     />
 
     <div v-if="root_full_size === false">
-      <div class="row">
-      <div class="col-1"></div>
-      <div class="col-12">
+      <div class="ps-3 ps-md-4">
       <FormKit
         type="number"
         :name="formKey('min_root')"
@@ -69,7 +67,6 @@
         help=" "
       />
       </div>
-      </div>
     </div>
   </div>
 
@@ -83,9 +80,7 @@
     />
 
     <div v-if="swap_full_size === false">
-      <div class="row">
-      <div class="col-1"></div>
-      <div class="col-12">
+      <div class="ps-3 ps-md-4">
       <FormKit
         type="number"
         :name="formKey('min_swap')"
@@ -101,7 +96,6 @@
         help=" "
       />
       </div>
-      </div>      
     </div>
   </div>
 
