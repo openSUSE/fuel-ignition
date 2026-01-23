@@ -88,7 +88,7 @@ export class BlobEditor {
   };
 
   async fetchImage(imageName) {
-    return fetch("templates/ignition-" + imageName + "-template.img").then(
+    return fetch(import.meta.env.BASE_URL + "templates/ignition-" + imageName + "-template.img").then(
       (response) => response.arrayBuffer()
     );
   }
