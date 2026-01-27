@@ -521,10 +521,24 @@ onUnmounted(() => {
       <div class="output-panel">
         <div class="output-sticky">
           <div class="output-header">
-            <h2>Generated Output</h2>
-            </div>
-
+	    <div class="settings-grid">
+              <div class="settings-card">
+                <h2>Generated Output</h2>
+	      </div>
+	      <div class="ignition-toggle">
+                <label class="toggle-label">
+                  <input
+                    type="checkbox"
+                    v-model="formData.ingnition_available"
+                  />
+                  <span>target System supports Ignition</span>
+                </label>
+              </div>
+            </div>	      
+          </div>
           <div class="output-content">
+	    <h4>Combustion</h4>
+            <pre class="script-preview">{{ combustionScript }}</pre>
             <div class="script-actions">
               <button type="button" class="btn-action" @click="copyToClipboard">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
@@ -534,11 +548,20 @@ onUnmounted(() => {
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                 Download
               </button>
-              <span title="Generate a ready-to-use .img file that can be written to USB">
-                <BlobEditorComponent :combustionScript="combustionScript"></BlobEditorComponent>
-              </span>
             </div>
+
+	    <h4>Ignition</h4>
             <pre class="script-preview">{{ combustionScript }}</pre>
+            <div class="script-actions">
+              <button type="button" class="btn-action" @click="copyToClipboard">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                Copy
+              </button>
+              <button type="button" class="btn-action" @click="downloadScript" data-testid="download_combustion">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                Download
+              </button>
+            </div>
 
             <div class="iso-info">
               <h4>Create ISO with mkisofs</h4>
@@ -546,7 +569,14 @@ onUnmounted(() => {
               <p class="help-text">
                 Learn more about <a href="https://github.com/openSUSE/combustion" target="_blank" rel="noopener">combustion</a>
               </p>
-            </div>
+	      <br>
+	      <h4>Create and Download an Image</h4>
+              <div class="script-actions">
+                <span title="Generate a ready-to-use .img file that can be written to USB">
+                  <BlobEditorComponent :combustionScript="combustionScript"></BlobEditorComponent>
+                </span>
+	      </div>
+	    </div>
           </div>
         </div>
       </div>
@@ -892,7 +922,7 @@ onUnmounted(() => {
 }
 
 .output-header {
-  padding: 40px 24px 16px;
+  padding: 10px 24px 1px;
   flex-shrink: 0;
 }
 
@@ -906,12 +936,12 @@ onUnmounted(() => {
   font-size: 1rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
-  margin: 0 0 12px;
+  margin: 0 0 1px;
 }
 
 .output-content {
   flex: 1;
-  padding: 20px 24px;
+  padding: 2px 24px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
@@ -934,6 +964,14 @@ onUnmounted(() => {
   background: rgba(255, 255, 255, 0.3);
 }
 
+.output-content h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 10px;
+}
+
+
 @media (max-width: 480px) {
   .output-content {
     padding: 12px;
@@ -946,6 +984,7 @@ onUnmounted(() => {
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 12px;
+  margin-top: 12px;
 }
 
 .btn-action {
