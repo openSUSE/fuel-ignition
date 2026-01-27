@@ -896,10 +896,33 @@ onUnmounted(() => {
 
 /* output panel */
 .output-panel {
-  background: #1a1d21;
+  padding: 40px 48px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
   min-width: 0;
   box-sizing: border-box;
+  overflow-y: auto;
+  height: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
+
+.output-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.output-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.output-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.output-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 
 .output-sticky {
   height: 100%;
