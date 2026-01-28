@@ -571,7 +571,12 @@ Using combustion file only:</div>  mkisofs -full-iso9660-filenames -o combustion
     - fuel-ignition/ignition/config.ign
   # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition fuel-ignition</div></pre>
               <p class="help-text">
-                Learn more about <a href="https://github.com/openSUSE/combustion" target="_blank" rel="noopener">combustion</a>
+  	        <div v-if="formData.ignition_enabled">
+                  How to use the generated data with <a href="https://documentation.suse.com/sle-micro/6.0/html/Micro-deployment-raw-images/index.html#deployment-configuring-with-ignition" target="_blank">ignition</a> and <a href="https://documentation.suse.com/sle-micro/6.0/html/Micro-deployment-raw-images/index.html#deployment-configuring-with-combustion" target="_blank">combustion</a> .
+		</div>
+		<div v-else>
+                  Learn more about <a href="https://github.com/openSUSE/combustion" target="_blank" rel="noopener">combustion</a>
+		</div>
               </p>
 	      <br>
 	      <h4>Create and Download an Image</h4>
@@ -1112,7 +1117,7 @@ Using combustion file only:</div>  mkisofs -full-iso9660-filenames -o combustion
 }
 
 .script-actions :deep(.btn-primary)::after {
-  content: "Download combustion/ignition ready .img";
+  content: "Download generated Image";
   font-size: 13px;
 }
 
