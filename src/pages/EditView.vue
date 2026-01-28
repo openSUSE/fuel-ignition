@@ -5,6 +5,7 @@ import CollapsibleSection from "@/components/CollapsibleSection.vue";
 import BlobEditorComponent from "@/components/TemplateBlobEditorComponent.vue";
 
 import AddUsersForm from "@/components/forms/AddUsersForm.vue";
+import CreateFileForm from "@/components/forms/CreateFileForm.vue";
 import AddHostnameForm from "@/components/forms/AddHostnameForm.vue";
 import AddLanguageForm from "@/components/forms/AddLanguageForm.vue";
 import AddNetworkForm from "@/components/forms/AddNetworkForm.vue";
@@ -12,8 +13,6 @@ import ChangeStorageForm from "@/components/forms/ChangeStorageForm.vue";
 import StartServiceForm from "@/components/forms/StartServiceForm.vue";
 import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 
-import DebugAddBytesForm from "@/components/forms/DebugAddBytesForm.vue";
-import DebugAnalyzeImgForm from "@/components/forms/DebugAnalyzeImgForm.vue";
 import AddKeyboardForm from "@/components/forms/AddKeyboardForm.vue";
 import AddTimezoneForm from "@/components/forms/AddTimezoneForm.vue";
 import RegistrationForm from "@/components/forms/RegistrationForm.vue";
@@ -26,6 +25,7 @@ import CombAddRawBash from "@/components/forms/CombAddRawBash.vue";
 const formComponents = [
   AddUsersForm,
   AddHostnameForm,
+  CreateFileForm,
   AddLanguageForm,
   ChangeStorageForm,
   AddNetworkForm,
@@ -38,17 +38,12 @@ const formComponents = [
   S390ChannelForm,
   AddRepositoryForm,
   InstallPackageForm,
-  CombAddRawBash,
-  DebugAddBytesForm,
-  DebugAnalyzeImgForm,
+  CombAddRawBash
 ];
 
-const formData = ref({ debug: false, save_to: "fuel-ignition.json" });
+const formData = ref({ ignition_enabled: true, save_to: "fuel-ignition.json" });
 const importedData = ref({});
 const showCopyNotification = ref(false);
-const skipDeleteConfirm = ref(false);
-
-provide('skipDeleteConfirm', skipDeleteConfirm);
 
 formComponents.forEach((comp) =>
   Utils.setupFormComponentWatcher(comp, watch, formData)
@@ -75,6 +70,27 @@ onUpdated(() => {
     importedData.value = {};
   }
 });
+
+const toIgnitionConfig = (formData) => {
+  let json = {
+    ignition: { version: "3.2.0" },
+  };
+
+  formComponents
+    .filter((comp) => comp.methods.hasOwnProperty("encodeToInstallation"))
+    .forEach((comp) => comp.methods.encodeToInstallation(json, formData));
+
+  if (formData.debug) {
+    json["debug:form"] = formData;
+  }
+
+  json.combustion = undefined;
+  json.combustion_initrd_and_running_system = undefined;
+  json.combustion_initrd = undefined;
+
+  return json;
+};
+
 
 const toCombustionScript = (formData) => {
   let json = { combustion: "", combustion_initrd: "", combustion_initrd_and_running_system: "", output: "" };
@@ -127,6 +143,7 @@ const toCombustionScript = (formData) => {
 };
 
 const combustionScript = computed(() => toCombustionScript(formData.value));
+const ignitionConfig = computed(() => toIgnitionConfig(formData.value));
 
 async function importData(event) {
   let file = event.target.files[0];
@@ -135,7 +152,7 @@ async function importData(event) {
     alert(jsonErrorMsg);
     Utils.clearFile();
   });
-  formData.value = { debug: formData.value.debug, save_to: formData.value.save_to };
+  formData.value = { ignition_enabled: formData.value.ignition_enabled, save_to: formData.value.save_to };
   forceRerender();
 }
 
@@ -149,7 +166,7 @@ const exportSettings = (formData) => {
   Utils.saveTemplateAsFile(formData.save_to, json, false);
 };
 
-const copyToClipboard = async () => {
+const copyCombToClipboard = async () => {
   try {
     await navigator.clipboard.writeText(combustionScript.value);
     showCopyNotification.value = true;
@@ -163,6 +180,15 @@ const copyToClipboard = async () => {
 
 const downloadScript = () => {
   Utils.saveTemplateAsFile('script', combustionScript.value, true);
+};
+
+const downloadConfigIgn = (formData) => {
+  console.log("downloading..");
+  Utils.saveTemplateAsFile("config.ign", ignitionConfig);
+};
+
+const copyConfigIgnToClipboard = (formData) => {
+  Utils.copy(JSON.stringify(ignitionConfig, null, 2));
 };
 
 const formsPanel = ref(null);
@@ -432,34 +458,19 @@ onUnmounted(() => {
             >
               <CombAddRawBash></CombAddRawBash>
             </CollapsibleSection>
+
+            <div v-if="formData.ignition_enabled">
+              <CollapsibleSection
+                title="Add Files To System"
+                singularTitle="Add File"
+                icon="terminal"
+                :displaysAtBegin="elementNumber(CreateFileForm)"
+              >
+                <CreateFileForm></CreateFileForm>
+              </CollapsibleSection>
+	    </div>
           </div>
 
-          <!-- debug section -->
-          <div v-if="formData.debug" class="form-category">
-            <h3 class="category-title debug-title">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.9 3.8-4"/><path d="M20.97 5c0 2.1-1.6 3.8-3.5 4"/><path d="M22 13h-4"/><path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"/></svg>
-              Debug
-            </h3>
-
-            <CollapsibleSection
-              title="Add Bytes"
-              singularTitle="Bytes"
-              icon="edit"
-              :displaysAtBegin="elementNumber(DebugAddBytesForm)"
-            >
-              <DebugAddBytesForm></DebugAddBytesForm>
-            </CollapsibleSection>
-
-            <CollapsibleSection
-              title="Analyze File"
-              singularTitle="File"
-              icon="edit"
-              :displaysAtBegin="1"
-              :maxComponents="1"
-            >
-              <DebugAnalyzeImgForm></DebugAnalyzeImgForm>
-            </CollapsibleSection>
-          </div>
         </FormKit>
 
         <!-- settings footer -->
@@ -498,22 +509,6 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <div class="debug-toggle">
-            <label class="toggle-label">
-              <input
-                type="checkbox"
-                v-model="formData.debug"
-              />
-              <span>Enable Debug Mode</span>
-            </label>
-            <label class="toggle-label">
-              <input
-                type="checkbox"
-                v-model="skipDeleteConfirm"
-              />
-              <span>Don't ask when deleting</span>
-            </label>
-          </div>
         </div>
       </div>
 
@@ -521,12 +516,26 @@ onUnmounted(() => {
       <div class="output-panel">
         <div class="output-sticky">
           <div class="output-header">
-            <h2>Generated Output</h2>
-            </div>
-
+	    <div class="settings-grid">
+              <div class="settings-card">
+                <h2>Generated Output</h2>
+	      </div>
+	      <div class="ignition-toggle">
+                <label class="toggle-label">
+                  <input
+                    type="checkbox"
+                    v-model="formData.ignition_enabled"
+                  />
+                  <span>target System supports Ignition</span>
+                </label>
+              </div>
+            </div>	      
+          </div>
           <div class="output-content">
+	    <h4>Combustion (script)</h4>
+            <pre class="script-preview">{{ combustionScript }}</pre>
             <div class="script-actions">
-              <button type="button" class="btn-action" @click="copyToClipboard">
+              <button type="button" class="btn-action" @click="copyCombToClipboard">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
                 Copy
               </button>
@@ -534,19 +543,52 @@ onUnmounted(() => {
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                 Download
               </button>
-              <span title="Generate a ready-to-use .img file that can be written to USB">
-                <BlobEditorComponent :combustionScript="combustionScript"></BlobEditorComponent>
-              </span>
             </div>
-            <pre class="script-preview">{{ combustionScript }}</pre>
+
+            <div v-if="formData.ignition_enabled">
+              <h4>Ignition (config.ign)</h4>
+              <pre class="script-preview">{{ ignitionConfig }}</pre>
+              <div class="script-actions">
+                <button type="button" class="btn-action" @click="copyConfigIgnToClipboard">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  Copy
+                </button>
+                <button type="button" class="btn-action" @click="downloadConfigIgn" data-testid="download_combustion">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                  Download
+                </button>
+              </div>
+            </div>
 
             <div class="iso-info">
               <h4>Create ISO with mkisofs</h4>
-              <pre class="code-block">mkisofs -full-iso9660-filenames -o combustion.iso -V combustion -root combustion fuel-ignition/combustion/script</pre>
+              <pre class="code-block"><div v-if="formData.ignition_enabled">Using ignition file only:
+  # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition -root ignition config.ign
+Using combustion file only:</div>  # mkisofs -full-iso9660-filenames -o combustion.iso -V combustion -root combustion fuel-ignition/combustion/script
+              <div v-if="formData.ignition_enabled">Using ignition and combustion configuration files:
+  The files has to be stored under
+    - fuel-ignition/combustion/script
+    - fuel-ignition/ignition/config.ign
+  # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition fuel-ignition</div></pre>
               <p class="help-text">
-                Learn more about <a href="https://github.com/openSUSE/combustion" target="_blank" rel="noopener">combustion</a>
+  	        <div v-if="formData.ignition_enabled">
+                  How to use the generated data with <a href="https://documentation.suse.com/sle-micro/6.0/html/Micro-deployment-raw-images/index.html#deployment-configuring-with-ignition" target="_blank">ignition</a> and <a href="https://documentation.suse.com/sle-micro/6.0/html/Micro-deployment-raw-images/index.html#deployment-configuring-with-combustion" target="_blank">combustion</a> .
+		</div>
+		<div v-else>
+                  Learn more about <a href="https://github.com/openSUSE/combustion" target="_blank" rel="noopener">combustion</a>
+		</div>
               </p>
-            </div>
+	      <br>
+	      <h4>Create and Download an Image</h4>
+              <div class="script-actions">
+                <span title="Generate a ready-to-use .img file that can be written to USB">
+                  <BlobEditorComponent
+		    :ignJson="ignitionConfig"
+		    :combustionScript="combustionScript">
+		  </BlobEditorComponent>
+                </span>
+	      </div>
+	    </div>
           </div>
         </div>
       </div>
@@ -767,10 +809,6 @@ onUnmounted(() => {
   opacity: 0.5;
 }
 
-.debug-title {
-  color: rgba(239, 68, 68, 0.5);
-}
-
 /* settings section */
 .settings-section {
   margin-top: 16px;
@@ -844,11 +882,6 @@ onUnmounted(() => {
   white-space: nowrap;
 }
 
-
-.debug-toggle {
-  margin-top: 12px;
-}
-
 .toggle-label {
   display: flex;
   align-items: center;
@@ -866,10 +899,33 @@ onUnmounted(() => {
 
 /* output panel */
 .output-panel {
-  background: #1a1d21;
+  padding: 40px 48px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
   min-width: 0;
   box-sizing: border-box;
+  overflow-y: auto;
+  height: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
+
+.output-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.output-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.output-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.output-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 
 .output-sticky {
   height: 100%;
@@ -892,7 +948,7 @@ onUnmounted(() => {
 }
 
 .output-header {
-  padding: 40px 24px 16px;
+  padding: 10px 24px 1px;
   flex-shrink: 0;
 }
 
@@ -906,12 +962,12 @@ onUnmounted(() => {
   font-size: 1rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
-  margin: 0 0 12px;
+  margin: 0 0 1px;
 }
 
 .output-content {
   flex: 1;
-  padding: 20px 24px;
+  padding: 2px 24px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
@@ -934,6 +990,14 @@ onUnmounted(() => {
   background: rgba(255, 255, 255, 0.3);
 }
 
+.output-content h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 10px;
+}
+
+
 @media (max-width: 480px) {
   .output-content {
     padding: 12px;
@@ -946,6 +1010,7 @@ onUnmounted(() => {
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 12px;
+  margin-top: 12px;
 }
 
 .btn-action {
@@ -1052,7 +1117,7 @@ onUnmounted(() => {
 }
 
 .script-actions :deep(.btn-primary)::after {
-  content: "Download combustion ready .img";
+  content: "Download generated Image";
   font-size: 13px;
 }
 

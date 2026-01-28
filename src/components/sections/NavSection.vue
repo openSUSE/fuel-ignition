@@ -17,12 +17,6 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ms-auto my-2 my-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="#/">Start</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#about">About</a>
-          </li>
-          <li class="nav-item">
             <a
               class="nav-link"
               href="https://microos.opensuse.org/"

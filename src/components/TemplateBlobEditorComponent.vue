@@ -20,7 +20,7 @@
 
 <script setup>
 import { ref } from "vue";
-const props = defineProps(["combustionScript"]);
+const props = defineProps(["ignJson", "combustionScript"]);
 var loading = ref(false);
 
 const blobEditor = new BlobEditor();
@@ -29,6 +29,7 @@ const convertAndDownload = async function () {
   toggleLoading();
   try {
     let image = await blobEditor.convertToImage(
+      props.ignJson,
       props.combustionScript
     );
     blobEditor.downloadImageFile(image);
@@ -93,8 +94,8 @@ export class BlobEditor {
     );
   }
 
-  async convertToImage(combustionScript) {
-    let jsonStr = "{\n  \"ignition\": {\n    \"version\": \"3.2.0\"\n  }\n}" // empty ignition
+  async convertToImage(json, combustionScript) {
+    let jsonStr = JSON.stringify(json, null, 2);
     let imgTemplateName = "combustion";
 
     console.log(

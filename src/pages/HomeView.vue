@@ -7,7 +7,7 @@
       >
         <div class="col-lg-8 align-self-end">
           <h1 class="text-white font-weight-bold">
-            Combustion
+            Ignition & Combustion
             <br />Config Generator
           </h1>
           <hr class="divider" />
@@ -15,14 +15,14 @@
 
         <div class="col-lg-8 align-self-baseline">
           <p class="text-white-75 mb-5">
-            Easily generate new or edit existing Combustion config.
+            Easily generate new or edit existing Ignition/Combustion configs.
           </p>
 
           <div class="container-fluid">
             <div class="row">
               <div class="col-xs-6 mb-3">
                 <router-link class="btn btn-primary btn-xl" to="/edit"
-                  >Create New Config</router-link
+                  >Let's do it</router-link
                 >
               </div>
             </div>
