@@ -5,6 +5,7 @@ import CollapsibleSection from "@/components/CollapsibleSection.vue";
 import BlobEditorComponent from "@/components/TemplateBlobEditorComponent.vue";
 
 import AddUsersForm from "@/components/forms/AddUsersForm.vue";
+import CreateFileForm from "@/components/forms/CreateFileForm.vue";
 import AddHostnameForm from "@/components/forms/AddHostnameForm.vue";
 import AddLanguageForm from "@/components/forms/AddLanguageForm.vue";
 import AddNetworkForm from "@/components/forms/AddNetworkForm.vue";
@@ -24,6 +25,7 @@ import CombAddRawBash from "@/components/forms/CombAddRawBash.vue";
 const formComponents = [
   AddUsersForm,
   AddHostnameForm,
+  CreateFileForm,
   AddLanguageForm,
   ChangeStorageForm,
   AddNetworkForm,
@@ -39,7 +41,7 @@ const formComponents = [
   CombAddRawBash
 ];
 
-const formData = ref({ save_to: "fuel-ignition.json" });
+const formData = ref({ ignition_enabled: true, save_to: "fuel-ignition.json" });
 const importedData = ref({});
 const showCopyNotification = ref(false);
 
@@ -68,6 +70,27 @@ onUpdated(() => {
     importedData.value = {};
   }
 });
+
+const toIgnitionConfig = (formData) => {
+  let json = {
+    ignition: { version: "3.2.0" },
+  };
+
+  formComponents
+    .filter((comp) => comp.methods.hasOwnProperty("encodeToInstallation"))
+    .forEach((comp) => comp.methods.encodeToInstallation(json, formData));
+
+  if (formData.debug) {
+    json["debug:form"] = formData;
+  }
+
+  json.combustion = undefined;
+  json.combustion_initrd_and_running_system = undefined;
+  json.combustion_initrd = undefined;
+
+  return json;
+};
+
 
 const toCombustionScript = (formData) => {
   let json = { combustion: "", combustion_initrd: "", combustion_initrd_and_running_system: "", output: "" };
@@ -120,6 +143,7 @@ const toCombustionScript = (formData) => {
 };
 
 const combustionScript = computed(() => toCombustionScript(formData.value));
+const ignitionConfig = computed(() => toIgnitionConfig(formData.value));
 
 async function importData(event) {
   let file = event.target.files[0];
@@ -128,7 +152,7 @@ async function importData(event) {
     alert(jsonErrorMsg);
     Utils.clearFile();
   });
-  formData.value = { save_to: formData.value.save_to };
+  formData.value = { ignition_enabled: formData.value.ignition_enabled, save_to: formData.value.save_to };
   forceRerender();
 }
 
@@ -142,7 +166,7 @@ const exportSettings = (formData) => {
   Utils.saveTemplateAsFile(formData.save_to, json, false);
 };
 
-const copyToClipboard = async () => {
+const copyCombToClipboard = async () => {
   try {
     await navigator.clipboard.writeText(combustionScript.value);
     showCopyNotification.value = true;
@@ -156,6 +180,15 @@ const copyToClipboard = async () => {
 
 const downloadScript = () => {
   Utils.saveTemplateAsFile('script', combustionScript.value, true);
+};
+
+const downloadConfigIgn = (formData) => {
+  console.log("downloading..");
+  Utils.saveTemplateAsFile("config.ign", ignitionConfig);
+};
+
+const copyConfigIgnToClipboard = (formData) => {
+  Utils.copy(JSON.stringify(ignitionConfig, null, 2));
 };
 
 const formsPanel = ref(null);
@@ -425,6 +458,17 @@ onUnmounted(() => {
             >
               <CombAddRawBash></CombAddRawBash>
             </CollapsibleSection>
+
+            <div v-if="formData.ignition_enabled">
+              <CollapsibleSection
+                title="Add Files To System"
+                singularTitle="Add File"
+                icon="terminal"
+                :displaysAtBegin="elementNumber(CreateFileForm)"
+              >
+                <CreateFileForm></CreateFileForm>
+              </CollapsibleSection>
+	    </div>
           </div>
 
         </FormKit>
@@ -480,7 +524,7 @@ onUnmounted(() => {
                 <label class="toggle-label">
                   <input
                     type="checkbox"
-                    v-model="formData.ingnition_available"
+                    v-model="formData.ignition_enabled"
                   />
                   <span>target System supports Ignition</span>
                 </label>
@@ -488,10 +532,10 @@ onUnmounted(() => {
             </div>	      
           </div>
           <div class="output-content">
-	    <h4>Combustion</h4>
+	    <h4>Combustion (script)</h4>
             <pre class="script-preview">{{ combustionScript }}</pre>
             <div class="script-actions">
-              <button type="button" class="btn-action" @click="copyToClipboard">
+              <button type="button" class="btn-action" @click="copyCombToClipboard">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
                 Copy
               </button>
@@ -501,22 +545,31 @@ onUnmounted(() => {
               </button>
             </div>
 
-	    <h4>Ignition</h4>
-            <pre class="script-preview">{{ combustionScript }}</pre>
-            <div class="script-actions">
-              <button type="button" class="btn-action" @click="copyToClipboard">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-                Copy
-              </button>
-              <button type="button" class="btn-action" @click="downloadScript" data-testid="download_combustion">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                Download
-              </button>
+            <div v-if="formData.ignition_enabled">
+              <h4>Ignition (config.ign)</h4>
+              <pre class="script-preview">{{ ignitionConfig }}</pre>
+              <div class="script-actions">
+                <button type="button" class="btn-action" @click="copyConfigIgnToClipboard">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  Copy
+                </button>
+                <button type="button" class="btn-action" @click="downloadConfigIgn" data-testid="download_combustion">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                  Download
+                </button>
+              </div>
             </div>
 
             <div class="iso-info">
               <h4>Create ISO with mkisofs</h4>
-              <pre class="code-block">mkisofs -full-iso9660-filenames -o combustion.iso -V combustion -root combustion fuel-ignition/combustion/script</pre>
+              <pre class="code-block"><div v-if="formData.ignition_enabled">Using ignition file only:
+  # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition -root ignition config.ign
+Using combustion file only:</div>  mkisofs -full-iso9660-filenames -o combustion.iso -V combustion -root combustion fuel-ignition/combustion/script
+              <div v-if="formData.ignition_enabled">Using ignition and combustion configuration files:
+  The files has to be stored under
+    - fuel-ignition/combustion/script
+    - fuel-ignition/ignition/config.ign
+  # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition fuel-ignition</div></pre>
               <p class="help-text">
                 Learn more about <a href="https://github.com/openSUSE/combustion" target="_blank" rel="noopener">combustion</a>
               </p>
@@ -524,7 +577,10 @@ onUnmounted(() => {
 	      <h4>Create and Download an Image</h4>
               <div class="script-actions">
                 <span title="Generate a ready-to-use .img file that can be written to USB">
-                  <BlobEditorComponent :combustionScript="combustionScript"></BlobEditorComponent>
+                  <BlobEditorComponent
+		    :ignJson="ignitionConfig"
+		    :combustionScript="combustionScript">
+		  </BlobEditorComponent>
                 </span>
 	      </div>
 	    </div>
@@ -1056,7 +1112,7 @@ onUnmounted(() => {
 }
 
 .script-actions :deep(.btn-primary)::after {
-  content: "Download combustion ready .img";
+  content: "Download combustion/ignition ready .img";
   font-size: 13px;
 }
 
