@@ -12,8 +12,6 @@ import ChangeStorageForm from "@/components/forms/ChangeStorageForm.vue";
 import StartServiceForm from "@/components/forms/StartServiceForm.vue";
 import ModifyServiceForm from "@/components/forms/ModifyServiceForm.vue";
 
-import DebugAddBytesForm from "@/components/forms/DebugAddBytesForm.vue";
-import DebugAnalyzeImgForm from "@/components/forms/DebugAnalyzeImgForm.vue";
 import AddKeyboardForm from "@/components/forms/AddKeyboardForm.vue";
 import AddTimezoneForm from "@/components/forms/AddTimezoneForm.vue";
 import RegistrationForm from "@/components/forms/RegistrationForm.vue";
@@ -38,17 +36,12 @@ const formComponents = [
   S390ChannelForm,
   AddRepositoryForm,
   InstallPackageForm,
-  CombAddRawBash,
-  DebugAddBytesForm,
-  DebugAnalyzeImgForm,
+  CombAddRawBash
 ];
 
-const formData = ref({ debug: false, save_to: "fuel-ignition.json" });
+const formData = ref({ save_to: "fuel-ignition.json" });
 const importedData = ref({});
 const showCopyNotification = ref(false);
-const skipDeleteConfirm = ref(false);
-
-provide('skipDeleteConfirm', skipDeleteConfirm);
 
 formComponents.forEach((comp) =>
   Utils.setupFormComponentWatcher(comp, watch, formData)
@@ -135,7 +128,7 @@ async function importData(event) {
     alert(jsonErrorMsg);
     Utils.clearFile();
   });
-  formData.value = { debug: formData.value.debug, save_to: formData.value.save_to };
+  formData.value = { save_to: formData.value.save_to };
   forceRerender();
 }
 
@@ -434,32 +427,6 @@ onUnmounted(() => {
             </CollapsibleSection>
           </div>
 
-          <!-- debug section -->
-          <div v-if="formData.debug" class="form-category">
-            <h3 class="category-title debug-title">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.9 3.8-4"/><path d="M20.97 5c0 2.1-1.6 3.8-3.5 4"/><path d="M22 13h-4"/><path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"/></svg>
-              Debug
-            </h3>
-
-            <CollapsibleSection
-              title="Add Bytes"
-              singularTitle="Bytes"
-              icon="edit"
-              :displaysAtBegin="elementNumber(DebugAddBytesForm)"
-            >
-              <DebugAddBytesForm></DebugAddBytesForm>
-            </CollapsibleSection>
-
-            <CollapsibleSection
-              title="Analyze File"
-              singularTitle="File"
-              icon="edit"
-              :displaysAtBegin="1"
-              :maxComponents="1"
-            >
-              <DebugAnalyzeImgForm></DebugAnalyzeImgForm>
-            </CollapsibleSection>
-          </div>
         </FormKit>
 
         <!-- settings footer -->
@@ -498,22 +465,6 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <div class="debug-toggle">
-            <label class="toggle-label">
-              <input
-                type="checkbox"
-                v-model="formData.debug"
-              />
-              <span>Enable Debug Mode</span>
-            </label>
-            <label class="toggle-label">
-              <input
-                type="checkbox"
-                v-model="skipDeleteConfirm"
-              />
-              <span>Don't ask when deleting</span>
-            </label>
-          </div>
         </div>
       </div>
 
@@ -797,10 +748,6 @@ onUnmounted(() => {
   opacity: 0.5;
 }
 
-.debug-title {
-  color: rgba(239, 68, 68, 0.5);
-}
-
 /* settings section */
 .settings-section {
   margin-top: 16px;
@@ -872,11 +819,6 @@ onUnmounted(() => {
   cursor: pointer;
   transition: background 0.2s ease;
   white-space: nowrap;
-}
-
-
-.debug-toggle {
-  margin-top: 12px;
 }
 
 .toggle-label {
