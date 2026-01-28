@@ -564,7 +564,7 @@ onUnmounted(() => {
               <h4>Create ISO with mkisofs</h4>
               <pre class="code-block"><div v-if="formData.ignition_enabled">Using ignition file only:
   # mkisofs -full-iso9660-filenames -o ignition.iso -V ignition -root ignition config.ign
-Using combustion file only:</div>  mkisofs -full-iso9660-filenames -o combustion.iso -V combustion -root combustion fuel-ignition/combustion/script
+Using combustion file only:</div>  # mkisofs -full-iso9660-filenames -o combustion.iso -V combustion -root combustion fuel-ignition/combustion/script
               <div v-if="formData.ignition_enabled">Using ignition and combustion configuration files:
   The files has to be stored under
     - fuel-ignition/combustion/script
