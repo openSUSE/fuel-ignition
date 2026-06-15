@@ -1,0 +1,108 @@
+<template>
+  <FormKit
+    type="text"
+    :name="formKey('azure_entra_id')"
+    label="Azure Entra ID"
+    help="Enter a valid domain name (e.g., example.com or sub.domain.org)"
+    placeholder="example.com"
+    :validation="[['required'], ['matches', /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/]]"
+    :validation-messages="{
+     required: 'This field is required.',
+     matches: 'Please enter a valid domain name (e.g., domain.com).'
+     }"
+    validation-visibility="live" 
+  />
+</template>
+
+<script>
+import Utils from "../../utils/utils.js";
+import { ref } from "vue";
+const formPrefix = "azure";
+
+export default {
+  setup: () => {
+    const uid = Utils.uid();
+    return {
+      formKey: (key) => Utils.getFormKey(formPrefix, key, uid),
+    };
+  },
+
+  methods: {
+    encodeToInstallation: function (json, formData) {
+      const formValue = (key, uid) =>
+        Utils.getFormValue(formPrefix, formData, key, uid);
+      const keyPrefix = formPrefix + "_azure_entra_id_";
+
+      Object.keys(formData)
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+          let dataValue = formValue("azure_entra_id", id);
+          let content = dataValue === undefined ? "" : dataValue;
+          json.combustion +=
+              "\n# Setup himmelblau\n" +
+              "zypper --non-interactive --gpg-auto-import-keys install himmelblau " +
+              "himmelblau-sso pam-himmelblau libnss_himmelblau2 himmelblau-sshd-config\n" +
+              "# himmelblau-qr-greeter is only for gdm\n\n" +
+              "mkdir -p /etc/himmelblau\n" +
+	      "cat << EOF > /etc/himmelblau/himmelblau.conf\n" +
+	      "[global]\n" +
+	      "domain =" + content + "\n" +
+	      "EOF\n\n" +
+	      "pam-config --add --himmelblau\n" +
+	      "# configure NSS\n" +
+	      "if [ -f /etc/nsswitch.conf ]; then\n" +
+	      "  cp -a /etc/nsswitch.conf /etc/nsswitch.conf.bak\n" +
+	      "else\n" +
+	      "  cp /usr/etc/nsswitch.conf /etc/nsswitch.conf\n" +
+	      "fi\n" +
+	      "# We need \"files himmelblau ...\"\n" +
+	      "sed -E -i '\n" +
+	      "/^(passwd|group):/ {\n" +
+	      "    s/^((passwd|group):[[:space:]]+)compat/\\1files/\n" +
+	      "    /himmelblau/! s/^((passwd|group):[[:space:]]+files)([[:space:]]+|$)/\\1 himmelblau\\3/\n" +
+	      "}\n" +
+	      "' /etc/nsswitch.conf\n" +
+	      "systemctl enable himmelblaud himmelblaud-tasks\n";
+        }
+      );
+    },
+    encodeToExport: function (json, formData) {
+      const formValue = (key, uid) =>
+        Utils.getFormValue(formPrefix, formData, key, uid);
+      const keyPrefix = formPrefix + "_azure_entra_id_";
+      
+      Object.keys(formData)
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+          let dataValue = formValue("azure_entra_id", id);
+          json.azure_entra_id = dataValue === undefined ? "" : dataValue;
+        }
+      );
+    },
+    fillImport: function (json, formData) {
+      const setValue = (key, uid, value) =>
+        Utils.setFormValue(formPrefix, formData, key, uid, value);
+      const keyPrefix = formPrefix + "azure_entra_id";
+      Object.keys(formData)
+        .filter((x) => x.includes(keyPrefix))
+        .map((key) => key.replace(keyPrefix, ""))
+        .forEach((id) => {
+          if (json.azure_entra_id != undefined) {
+	    setValue("azure_entra_id", id, json.azure_entra_id);
+	    json.azure_entra_id = undefined
+	  }
+        }
+      );
+    },
+    countImport: function (json) {
+      if (json.azure_entra_id != undefined) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+  },
+};
+</script>
