@@ -47,7 +47,7 @@ export default {
               "mkdir -p /etc/himmelblau\n" +
 	      "cat << EOF > /etc/himmelblau/himmelblau.conf\n" +
 	      "[global]\n" +
-	      "domain =" + content + "\n" +
+	      "domain = " + content + "\n" +
 	      "EOF\n\n" +
 	      "pam-config --add --himmelblau\n" +
 	      "# configure NSS\n" +
@@ -84,7 +84,7 @@ export default {
     fillImport: function (json, formData) {
       const setValue = (key, uid, value) =>
         Utils.setFormValue(formPrefix, formData, key, uid, value);
-      const keyPrefix = formPrefix + "azure_entra_id";
+      const keyPrefix = formPrefix + "_azure_entra_id_";
       Object.keys(formData)
         .filter((x) => x.includes(keyPrefix))
         .map((key) => key.replace(keyPrefix, ""))
