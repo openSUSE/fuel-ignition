@@ -7,7 +7,7 @@ No more fiddling around with JSON or Butane.
 https://opensuse.github.io/fuel-ignition/
 
 
-<img src="src/assets/template/img/readme/edit-page-1.png" width="225"> <img src="src/assets/template/img/readme/edit-page-2.png" width="150"> 
+<img src="src/assets/template/img/readme/edit-page-1.png" width="500">
 
 ## Local Development
 
