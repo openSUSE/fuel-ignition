@@ -18,6 +18,7 @@ import AddKeyboardForm from "@/components/forms/AddKeyboardForm.vue";
 import AddTimezoneForm from "@/components/forms/AddTimezoneForm.vue";
 import RegistrationForm from "@/components/forms/RegistrationForm.vue";
 import SaltForm from "@/components/forms/SaltForm.vue";
+import AzureForm from "@/components/forms/AzureForm.vue";
 import S390ChannelForm from "@/components/forms/S390ChannelForm.vue";
 import AddRepositoryForm from "@/components/forms/AddRepositoryForm.vue";
 import CombAddRawBash from "@/components/forms/CombAddRawBash.vue";
@@ -36,6 +37,7 @@ const formComponents = [
   AddTimezoneForm,
   RegistrationForm,
   SaltForm,
+  AzureForm,
   S390ChannelForm,
   AddRepositoryForm,
   CombAddRawBash
@@ -444,6 +446,16 @@ onUnmounted(() => {
               :maxComponents="1"
             >
               <SaltForm></SaltForm>
+            </CollapsibleSection>
+
+            <CollapsibleSection
+              title="Microsoft Azure Entra ID"
+              singularTitle="Azure Entra ID"
+              icon="user"
+              :displaysAtBegin="elementNumber(AzureForm)"
+              :maxComponents="1"
+            >
+              <AzureForm></AzureForm>
             </CollapsibleSection>
 
             <CollapsibleSection
