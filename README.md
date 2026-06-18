@@ -1,6 +1,6 @@
 # Fuel Ignition
-**Combustion Config Generator.**
-Easily generate new or edit existing Combustion config.
+**Ignition & Combustion Config Generator.**
+Easily generate new or edit existing Ignition/Combustion configs.
 
 No more fiddling around with JSON or Butane.
 
@@ -103,7 +103,7 @@ npm run cy:run
 In order to start the tests, the fuel-ignition server has to be started
 before:
 ```bash
-npm run dev
+npm run cy:run -- --config baseUrl=http://localhost:<port>/fuel-ignition/
 ```
 
 ## Bug reports / Feature requests
